@@ -1,0 +1,93 @@
+.navbar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background-color: var(--background);
+    /* Solid background always */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1rem 0;
+    transition: all 0.3s ease;
+}
+
+/* Remove or repurpose scrolled if needed, but keeping it simple for now as requested 'always solid' */
+.scrolled {
+    box-shadow: var(--shadow-sm);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--foreground);
+}
+
+.logoHighlight {
+    color: var(--primary);
+}
+
+.desktopMenu {
+    display: none;
+    align-items: center;
+    gap: 2rem;
+}
+
+.navLink {
+    font-weight: 500;
+    color: var(--foreground);
+    transition: color 0.2s;
+    position: relative;
+}
+
+.navLink:hover {
+    color: var(--primary);
+}
+
+.mobileToggle {
+    display: flex;
+    color: var(--foreground);
+}
+
+.mobileMenu {
+    background-color: var(--background);
+    padding: 1rem 1.5rem;
+    overflow: hidden;
+    border-bottom: 1px solid var(--surface-hover);
+}
+
+.mobileNavLink {
+    display: block;
+    padding: 0.75rem 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--foreground);
+    border-bottom: 1px solid var(--surface);
+}
+
+.mobileAction {
+    padding-top: 1rem;
+}
+
+@media (min-width: 768px) {
+    .desktopMenu {
+        display: flex;
+    }
+
+    .mobileToggle {
+        display: none;
+    }
+
+    .mobileMenu {
+        display: none !important;
+    }
+}

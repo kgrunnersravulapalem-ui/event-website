@@ -1,0 +1,89 @@
+.footer {
+    background-color: var(--foreground);
+    color: #fff;
+    padding: 4rem 0 2rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.top {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.brand h3 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.brand span {
+    color: var(--primary);
+}
+
+.brand p {
+    opacity: 0.8;
+    max-width: 300px;
+}
+
+.links h4,
+.social h4 {
+    font-size: 1.125rem;
+    margin-bottom: 1rem;
+}
+
+.links ul {
+    list-style: none;
+}
+
+.links li {
+    margin-bottom: 0.5rem;
+}
+
+.links a {
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.links a:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+.icons {
+    display: flex;
+    gap: 1rem;
+}
+
+.icon {
+    font-size: 1.5rem;
+    color: white;
+    opacity: 0.8;
+    transition: all 0.2s;
+}
+
+.icon:hover {
+    opacity: 1;
+    color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 2rem;
+    text-align: center;
+    font-size: 0.875rem;
+    opacity: 0.6;
+}
+
+@media (min-width: 768px) {
+    .top {
+        grid-template-columns: 2fr 1fr 1fr;
+    }
+}

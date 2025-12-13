@@ -50,7 +50,7 @@ export default function RegisterPage() {
                             <div className={styles.posterInfo}>
                                 <h3>Event Details</h3>
                                 <p><strong>Location:</strong> {eventConfig.location}</p>
-                                <p><strong>Organizer:</strong> Vizag Runners</p>
+                                <p><strong>Organizer:</strong> Tanuku Runners</p>
                                 <p className={styles.note}>
                                     Prices are inclusive of taxes. T-shirt and personalized bib included for all categories.
                                 </p>

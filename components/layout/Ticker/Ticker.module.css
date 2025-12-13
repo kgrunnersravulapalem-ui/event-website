@@ -1,13 +1,29 @@
 .tickerWrapper {
-    background-color: var(--secondary);
+    background: linear-gradient(90deg, var(--secondary), #e5ff66, var(--secondary));
+    background-size: 200% 100%;
+    animation: tickerGradient 5s ease infinite;
     color: var(--foreground);
     overflow: hidden;
-    height: 40px;
+    height: 44px;
     display: flex;
     align-items: center;
     position: relative;
     z-index: 60;
-    /* Above navbar */
+    box-shadow: 0 2px 10px rgba(204, 255, 0, 0.3);
+}
+
+@keyframes tickerGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .tickerContainer {
@@ -19,10 +35,9 @@
 .tickerText {
     display: inline-block;
     padding-left: 100%;
-    /* Start off-screen */
-    font-weight: 600;
-    font-size: 0.9rem;
-    letter-spacing: 0.05em;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
 }
 

@@ -55,13 +55,19 @@ const Navbar = () => {
     ];
 
     const isActive = (href: string) => {
-        // For page routes (not hash links)
-        if (!href.includes('#')) {
-            return pathname === href;
+        // For hash links on home page
+        if (href.includes('#')) {
+            const hash = href.split('#')[1];
+            return activeSection === `#${hash}`;
         }
 
-        // Don't highlight hash links on homepage to avoid double borders
-        return false;
+        // For Home link specifically: only active if pathname is '/' AND no section is active
+        if (href === '/') {
+            return pathname === '/' && activeSection === '';
+        }
+
+        // For other pages
+        return pathname === href;
     };
 
     return (

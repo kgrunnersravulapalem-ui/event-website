@@ -25,8 +25,6 @@ export const eventConfig = {
 
     // Contact Section
     contact: {
-        title: "Contact Us",
-        subtitle: "We'd love to hear from you.",
         heading: "Get in Touch",
         description: "Have questions about registration, the route, or sponsorship? We're here to help.",
         email: "kgrunnersravulapalem@gmail.com",
@@ -34,8 +32,18 @@ export const eventConfig = {
         location: {
             line1: "Sri Potamsetti Rami Reddy Park,",
             line2: "Ravulapalem, Konaseema Dist, Andhra Pradesh - 533238",
+            mapLink: "https://maps.app.goo.gl/pKamaAwknD7Vigva8",
         },
     },
+
+    // Participant Kit / Deliverables
+    deliverables: [
+        "T-Shirt",
+        "Goodie Bag",
+        "Participant Medal",
+        "Breakfast",
+        "Race Day Photographs"
+    ],
 
     // Registration & Prize Information
     registration: {

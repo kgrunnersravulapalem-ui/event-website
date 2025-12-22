@@ -1,5 +1,5 @@
 import styles from './Footer.module.css';
-import { FaFacebook, FaInstagram, FaTwitter } from 'react-icons/fa';
+import { FaFacebook, FaInstagram, FaTwitter, FaEnvelope, FaPhone } from 'react-icons/fa';
 import Link from 'next/link';
 import { eventConfig } from '@/lib/eventConfig';
 
@@ -11,12 +11,18 @@ const Footer = () => {
                     <div className={styles.contact}>
                         <h4>Contact Us</h4>
                         <div className={styles.contactInfo}>
-                            <p><strong>Email:</strong></p>
-                            <p>{eventConfig.contact.email}</p>
-                            <p><strong>Phone:</strong></p>
-                            {eventConfig.contact.phones.map((phone, index) => (
-                                <p key={index}>{phone}</p>
-                            ))}
+                            <div className={styles.contactItem}>
+                                <FaEnvelope className={styles.contactIcon} />
+                                <span>{eventConfig.contact.email}</span>
+                            </div>
+                            <div className={styles.contactItem}>
+                                <FaPhone className={styles.contactIcon} />
+                                <div>
+                                    {eventConfig.contact.phones.map((phone, index) => (
+                                        <div key={index}>{phone}</div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className={styles.links}>

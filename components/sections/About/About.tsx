@@ -15,27 +15,27 @@ const About = () => {
                     transition={{ duration: 0.6 }}
                     className={styles.contentWrapper}
                 >
+
                     <div className={styles.mainContent}>
                         <h2 className={styles.title}>{eventConfig.about.title}</h2>
+                        {/* Telugu Motto - Right Side */}
+                        <motion.div
+                            className={styles.mottoCard}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6, delay: 0.2 }}
+                        >
+                            <div className={styles.mottoIcon}>🏃</div>
+                            <h3 className={styles.teluguMotto}>{eventConfig.about.teluguMotto}</h3>
+                            <p className={styles.englishMotto}>{eventConfig.about.yearMotto}</p>
+                        </motion.div>
                         {eventConfig.about.paragraphs.map((paragraph, index) => (
                             <p key={index} className={styles.text}>
                                 {paragraph}
                             </p>
                         ))}
                     </div>
-
-                    {/* Telugu Motto - Right Side */}
-                    <motion.div
-                        className={styles.mottoCard}
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
-                    >
-                        <div className={styles.mottoIcon}>🏃</div>
-                        <h3 className={styles.teluguMotto}>{eventConfig.about.teluguMotto}</h3>
-                        <p className={styles.englishMotto}>{eventConfig.about.yearMotto}</p>
-                    </motion.div>
                 </motion.div>
             </div>
         </section>

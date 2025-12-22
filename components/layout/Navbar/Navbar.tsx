@@ -1,6 +1,7 @@
 'use client';
 import styles from './Navbar.module.css';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import Button from '@/components/ui/Button/Button';
 import { useState, useEffect } from 'react';
 import { HiMenu, HiX } from 'react-icons/hi';
@@ -10,12 +11,37 @@ import { motion, AnimatePresence } from 'framer-motion';
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [activeSection, setActiveSection] = useState('');
+    const pathname = usePathname();
 
     useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 50);
+
+            // Detect active section based on scroll position
+            const sections = ['about', 'race-categories', 'venue'];
+            const scrollPosition = window.scrollY + 100;
+
+            for (const section of sections) {
+                const element = document.getElementById(section);
+                if (element) {
+                    const { offsetTop, offsetHeight } = element;
+                    if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+                        setActiveSection(`#${section}`);
+                        return;
+                    }
+                }
+            }
+
+            // If at top of page, set home as active
+            if (window.scrollY < 100) {
+                setActiveSection('');
+            }
         };
+
         window.addEventListener('scroll', handleScroll);
+        handleScroll(); // Initial check
+
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
@@ -27,6 +53,21 @@ const Navbar = () => {
         { name: 'Gallery', href: '/gallery' },
         { name: 'Contact', href: '/contact' },
     ];
+
+    const isActive = (href: string) => {
+        // For page routes (not hash links)
+        if (!href.includes('#')) {
+            return pathname === href;
+        }
+
+        // For hash links on home page
+        if (pathname === '/') {
+            const hash = href.split('#')[1];
+            return activeSection === `#${hash}`;
+        }
+
+        return false;
+    };
 
     return (
         <nav className={clsx(styles.navbar, { [styles.scrolled]: scrolled })}>
@@ -40,7 +81,11 @@ const Navbar = () => {
                 {/* Desktop Menu */}
                 <div className={styles.desktopMenu}>
                     {navLinks.map((link) => (
-                        <Link key={link.name} href={link.href} className={styles.navLink}>
+                        <Link
+                            key={link.name}
+                            href={link.href}
+                            className={clsx(styles.navLink, { [styles.active]: isActive(link.href) })}
+                        >
                             {link.name}
                         </Link>
                     ))}
@@ -68,7 +113,7 @@ const Navbar = () => {
                             <Link
                                 key={link.name}
                                 href={link.href}
-                                className={styles.mobileNavLink}
+                                className={clsx(styles.mobileNavLink, { [styles.active]: isActive(link.href) })}
                                 onClick={() => setIsOpen(false)}
                             >
                                 {link.name}
@@ -89,3 +134,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

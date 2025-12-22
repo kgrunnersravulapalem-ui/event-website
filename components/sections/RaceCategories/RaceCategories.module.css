@@ -21,6 +21,7 @@
     margin-bottom: 1rem;
     color: var(--foreground);
     background: linear-gradient(135deg, var(--foreground) 0%, #334155 100%);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -89,6 +90,56 @@
 
 .cardDesc {
     color: #64748b;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     line-height: 1.7;
+}
+
+.routeImageWrapper {
+    margin-bottom: 1.5rem;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.routeImagePlaceholder {
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+    padding: 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 2px dashed #94a3b8;
+}
+
+.routeImagePlaceholder span {
+    font-weight: 600;
+    color: #475569;
+    font-size: 1rem;
+}
+
+.routeImagePlaceholder small {
+    color: #64748b;
+    font-size: 0.875rem;
+}
+
+.priceSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+}
+
+.priceLabel {
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.price {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary);
 }

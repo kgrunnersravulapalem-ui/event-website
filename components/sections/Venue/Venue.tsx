@@ -2,8 +2,21 @@
 import styles from './Venue.module.css';
 import { FaMapMarkerAlt, FaCalendarAlt } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { eventConfig } from '@/lib/eventConfig';
 
 const Venue = () => {
+    const eventDate = new Date(eventConfig.eventDate);
+    const formattedDate = eventDate.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    const formattedTime = eventDate.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
     return (
         <section className={styles.section} id="venue">
             <div className={styles.container}>
@@ -28,8 +41,8 @@ const Venue = () => {
                         >
                             <FaMapMarkerAlt className={styles.icon} />
                             <div>
-                                <h3>MGM Park / Beach Road</h3>
-                                <p>Vizag, India</p>
+                                <h3>{eventConfig.location.split(',')[0]}</h3>
+                                <p>{eventConfig.location.split(',').slice(1).join(',').trim()}</p>
                                 <small>Starting Point</small>
                             </div>
                         </motion.div>
@@ -43,8 +56,8 @@ const Venue = () => {
                         >
                             <FaCalendarAlt className={styles.icon} />
                             <div>
-                                <h3>January 5th, 2025</h3>
-                                <p>Sunday Morning</p>
+                                <h3>{formattedDate}</h3>
+                                <p>{formattedTime}</p>
                                 <small>Race Day</small>
                             </div>
                         </motion.div>
@@ -69,3 +82,4 @@ const Venue = () => {
 };
 
 export default Venue;
+

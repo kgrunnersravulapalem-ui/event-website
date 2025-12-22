@@ -1,5 +1,6 @@
 
 import Contact from "@/components/sections/Contact/Contact";
+import { eventConfig } from "@/lib/eventConfig";
 
 export default function ContactPage() {
     return (
@@ -9,10 +10,11 @@ export default function ContactPage() {
                 padding: '4rem 1.5rem',
                 textAlign: 'center',
             }}>
-                <h1 style={{ fontSize: '3rem', fontWeight: 700, color: 'var(--foreground)' }}>Contact Us</h1>
-                <p style={{ color: '#64748b' }}>We'd love to hear from you.</p>
+                <h1 style={{ fontSize: '3rem', fontWeight: 700, color: 'var(--foreground)' }}>{eventConfig.contact.title}</h1>
+                <p style={{ color: '#64748b' }}>{eventConfig.contact.subtitle}</p>
             </header>
             <Contact />
         </div>
     );
 }
+

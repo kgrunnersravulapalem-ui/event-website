@@ -34,6 +34,7 @@
 
 .logoHighlight {
     background: linear-gradient(135deg, var(--primary), var(--secondary));
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -71,6 +72,16 @@
     color: var(--primary);
 }
 
+.navLink.active {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.navLink.active::after {
+    width: 100%;
+}
+
+
 .mobileToggle {
     display: flex;
     color: var(--foreground);
@@ -102,6 +113,12 @@
 
 .mobileNavLink:hover {
     color: var(--primary);
+}
+
+.mobileNavLink.active {
+    color: var(--primary);
+    font-weight: 700;
+    background: rgba(0, 102, 204, 0.05);
 }
 
 .mobileAction {

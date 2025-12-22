@@ -2,6 +2,7 @@
 'use client';
 import styles from './About.module.css';
 import { motion } from 'framer-motion';
+import { eventConfig } from '@/lib/eventConfig';
 
 const About = () => {
     return (
@@ -14,15 +15,14 @@ const About = () => {
                     transition={{ duration: 0.6 }}
                     className={styles.content}
                 >
-                    <h2 className={styles.title}>About The Run</h2>
+                    <h2 className={styles.title}>{eventConfig.about.title}</h2>
+                    {eventConfig.about.paragraphs.map((paragraph, index) => (
+                        <p key={index} className={styles.text}>
+                            {paragraph}
+                        </p>
+                    ))}
                     <p className={styles.text}>
-                        Join us for the most anticipated running event of the year! The Tanuku Marathon is not just a race;
-                        it's a celebration of health, community, and the human spirit. Organized by running enthusiasts
-                        for running enthusiasts.
-                    </p>
-                    <p className={styles.text}>
-                        Our motto "Run Together" embodies our belief that running connects us all. Whether you are aiming
-                        for a personal best or just here for the fun, we have a spot for you.
+                        <strong>{eventConfig.about.year} Year motto:</strong> "{eventConfig.about.yearMotto}"
                     </p>
                 </motion.div>
                 <motion.div
@@ -43,3 +43,4 @@ const About = () => {
 };
 
 export default About;
+

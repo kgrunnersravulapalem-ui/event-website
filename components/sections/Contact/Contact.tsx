@@ -3,6 +3,7 @@ import styles from './Contact.module.css';
 import Button from '@/components/ui/Button/Button';
 import Input from '@/components/ui/Input/Input';
 import { useState } from 'react';
+import { eventConfig } from '@/lib/eventConfig';
 
 const Contact = () => {
     // Add logic to handle form submission if needed
@@ -19,20 +20,22 @@ const Contact = () => {
             <div className={styles.container}>
                 <div className={styles.content}>
                     <div className={styles.info}>
-                        <h2>Get in Touch</h2>
+                        <h2>{eventConfig.contact.heading}</h2>
                         <p className={styles.description}>
-                            Have questions about registration, the route, or sponsorship?
-                            We're here to help.
+                            {eventConfig.contact.description}
                         </p>
 
                         <div className={styles.details}>
                             <div className={styles.detailItem}>
                                 <strong>Email</strong>
-                                <p>support@runevent.com</p>
+                                <p>{eventConfig.contact.email}</p>
                             </div>
                             <div className={styles.detailItem}>
                                 <strong>Location</strong>
-                                <p>Beach Road, City Center<br />Vizag, India</p>
+                                <p>
+                                    {eventConfig.contact.location.line1}<br />
+                                    {eventConfig.contact.location.line2}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -68,3 +71,4 @@ const Contact = () => {
 };
 
 export default Contact;
+

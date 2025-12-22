@@ -1,25 +1,70 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import styles from './Register.module.css';
 import Button from '@/components/ui/Button/Button';
 import Input from '@/components/ui/Input/Input';
+import Select from '@/components/ui/Select/Select';
+import RadioGroup from '@/components/ui/RadioGroup/RadioGroup';
 import { motion } from 'framer-motion';
 import { eventConfig } from '@/lib/eventConfig';
 
-const tickets = [
-    { id: '20m', name: '20 Miler (32K)', price: '₹1400', color: '#ef4444' },
-    { id: '16m', name: '16 Miler (25K)', price: '₹1200', color: '#f97316' },
-    { id: '11m', name: '11 Miler (17K)', price: '₹1000', color: '#eab308' },
-    { id: '5m', name: '5 Miler (8K)', price: '₹700', color: '#22c55e' },
-    { id: '5k', name: '5K Run', price: '₹500', color: '#3b82f6' },
-];
+interface FormData {
+    fullName: string;
+    gender: string;
+    mobileNumber: string;
+    dateOfBirth: string;
+    tshirtSize: string;
+    bloodGroup: string;
+    email: string;
+}
 
 export default function RegisterPage() {
-    const [selectedTicket, setSelectedTicket] = useState<string | null>(null);
+    const searchParams = useSearchParams();
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const [formData, setFormData] = useState<FormData>({
+        fullName: '',
+        gender: '',
+        mobileNumber: '',
+        dateOfBirth: '',
+        tshirtSize: '',
+        bloodGroup: '',
+        email: '',
+    });
+
+    // Pre-select category from URL parameter
+    useEffect(() => {
+        const categoryParam = searchParams.get('category');
+        if (categoryParam) {
+            setSelectedCategory(categoryParam);
+        }
+    }, [searchParams]);
+
+    const handleInputChange = (field: keyof FormData, value: string) => {
+        setFormData(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const selectedCat = eventConfig.raceCategories.categories.find(
+            cat => cat.id === selectedCategory
+        );
+
+        const registrationData = {
+            ...formData,
+            category: selectedCat?.distance,
+            categoryId: selectedCategory,
+            price: selectedCat?.price,
+        };
+
+        console.log('Registration Data:', registrationData);
+        // TODO: Implement API call here
+        alert('Registration submitted! (API integration pending)');
+    };
 
     return (
         <div className={styles.page}>
-
             {/* Header Banner */}
             <div className={styles.header}>
                 <div className={styles.headerContent}>
@@ -35,8 +80,7 @@ export default function RegisterPage() {
 
             <div className={styles.container}>
                 <div className={styles.grid}>
-
-                    {/* Left Column: Event Poster / Details */}
+                    {/* Left Column: Event Details */}
                     <div className={styles.detailsCol}>
                         <motion.div
                             className={styles.posterCard}
@@ -50,7 +94,7 @@ export default function RegisterPage() {
                             <div className={styles.posterInfo}>
                                 <h3>Event Details</h3>
                                 <p><strong>Location:</strong> {eventConfig.location}</p>
-                                <p><strong>Organizer:</strong> Tanuku Runners</p>
+                                <p><strong>Organizer:</strong> Konaseema Godavari Runners Society - Ravulapalem</p>
                                 <p className={styles.note}>
                                     Prices are inclusive of taxes. T-shirt and personalized bib included for all categories.
                                 </p>
@@ -58,7 +102,7 @@ export default function RegisterPage() {
                         </motion.div>
                     </div>
 
-                    {/* Right Column: Ticket Selection / Form */}
+                    {/* Right Column: Registration Form */}
                     <div className={styles.formCol}>
                         <motion.div
                             className={styles.card}
@@ -68,42 +112,101 @@ export default function RegisterPage() {
                         >
                             <h2>Select Category</h2>
                             <div className={styles.ticketList}>
-                                {tickets.map((t) => (
+                                {eventConfig.raceCategories.categories.map((cat) => (
                                     <div
-                                        key={t.id}
-                                        className={`${styles.ticketItem} ${selectedTicket === t.id ? styles.selected : ''}`}
-                                        onClick={() => setSelectedTicket(t.id)}
+                                        key={cat.id}
+                                        className={`${styles.ticketItem} ${selectedCategory === cat.id ? styles.selected : ''}`}
+                                        onClick={() => setSelectedCategory(cat.id)}
                                     >
-                                        <div className={styles.ticketColor} style={{ backgroundColor: t.color }} />
+                                        <div className={styles.ticketColor} style={{ backgroundColor: cat.color }} />
                                         <div className={styles.ticketInfo}>
-                                            <span className={styles.ticketName}>{t.name}</span>
-                                            <span className={styles.ticketPrice}>{t.price}</span>
+                                            <span className={styles.ticketName}>{cat.distance}</span>
+                                            <span className={styles.ticketPrice}>₹{cat.price}</span>
                                         </div>
                                         <div className={styles.radio}>
-                                            {selectedTicket === t.id && <div className={styles.radioInner} />}
+                                            {selectedCategory === cat.id && <div className={styles.radioInner} />}
                                         </div>
                                     </div>
                                 ))}
                             </div>
 
-                            {selectedTicket && (
-                                <motion.div
+                            {selectedCategory && (
+                                <motion.form
                                     className={styles.registrationForm}
                                     initial={{ opacity: 0, height: 0 }}
                                     animate={{ opacity: 1, height: 'auto' }}
+                                    onSubmit={handleSubmit}
                                 >
                                     <h3>Participant Information</h3>
                                     <div className={styles.fieldGroup}>
-                                        <Input label="Full Name" placeholder="John Doe" />
-                                        <Input label="Email" type="email" placeholder="john@example.com" />
-                                        <Input label="Phone Number" type="tel" placeholder="+91 98765 43210" />
+                                        <Input
+                                            label="Full Name"
+                                            placeholder="Enter your full name"
+                                            value={formData.fullName}
+                                            onChange={(e) => handleInputChange('fullName', e.target.value)}
+                                            required
+                                        />
+
+                                        <RadioGroup
+                                            label="Gender"
+                                            name="gender"
+                                            options={eventConfig.formOptions.genders}
+                                            value={formData.gender}
+                                            onChange={(value) => handleInputChange('gender', value)}
+                                            required
+                                        />
+
+                                        <Input
+                                            label="Mobile Number"
+                                            type="tel"
+                                            placeholder="+91 98765 43210"
+                                            value={formData.mobileNumber}
+                                            onChange={(e) => handleInputChange('mobileNumber', e.target.value)}
+                                            required
+                                        />
+
+                                        <Input
+                                            label="Date of Birth"
+                                            type="date"
+                                            value={formData.dateOfBirth}
+                                            onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
+                                            required
+                                        />
+
+                                        <Select
+                                            label="T-Shirt Size"
+                                            name="tshirtSize"
+                                            options={eventConfig.formOptions.tshirtSizes}
+                                            value={formData.tshirtSize}
+                                            onChange={(value) => handleInputChange('tshirtSize', value)}
+                                            placeholder="Select your size"
+                                            required
+                                        />
+
+                                        <RadioGroup
+                                            label="Blood Group (Optional)"
+                                            name="bloodGroup"
+                                            options={eventConfig.formOptions.bloodGroups}
+                                            value={formData.bloodGroup}
+                                            onChange={(value) => handleInputChange('bloodGroup', value)}
+                                        />
+
+                                        <Input
+                                            label="Email"
+                                            type="email"
+                                            placeholder="john@example.com"
+                                            value={formData.email}
+                                            onChange={(e) => handleInputChange('email', e.target.value)}
+                                            required
+                                        />
+
                                         <div className={styles.formActions}>
-                                            <Button fullWidth onClick={() => alert('Proceed to Payment Gateway Mock')}>
+                                            <Button type="submit" fullWidth>
                                                 Proceed to Pay
                                             </Button>
                                         </div>
                                     </div>
-                                </motion.div>
+                                </motion.form>
                             )}
                         </motion.div>
                     </div>

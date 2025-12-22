@@ -2,36 +2,49 @@
 import styles from './Prizes.module.css';
 import { eventConfig } from '@/lib/eventConfig';
 import { motion } from 'framer-motion';
+import { FaTrophy, FaMedal, FaAward } from 'react-icons/fa';
 
 // Prize structure based on the image
-const prizeStructure = {
-    above18: {
-        title: "Above 18 years (DOB ON OR BEFORE :07/02/2008)",
-        categories: {
-            "10k": {
+const prizeStructure = [
+    {
+        id: 'above18',
+        title: "Above 18 years",
+        criteria: "DOB ON OR BEFORE: 07/02/2008",
+        categories: [
+            {
+                name: "10K RUN",
                 male: [5000, 4000, 3000],
-                female: [5000, 4000, 3000]
+                female: [5000, 4000, 3000],
+                color: "#ef4444"
             },
-            "5k": {
+            {
+                name: "5K RUN",
                 male: [3000, 2000, 1000],
-                female: [3000, 2000, 1000]
+                female: [3000, 2000, 1000],
+                color: "#f97316"
             }
-        }
+        ]
     },
-    below18: {
-        title: "Below 18 years (DOB ON OR AFTER:08/02/2008)",
-        categories: {
-            "10k": {
+    {
+        id: 'below18',
+        title: "Below 18 years",
+        criteria: "DOB ON OR AFTER: 08/02/2008",
+        categories: [
+            {
+                name: "10K RUN",
                 male: [3000, 2500, 2000],
-                female: [3000, 2500, 2000]
+                female: [3000, 2500, 2000],
+                color: "#ef4444"
             },
-            "5k": {
+            {
+                name: "5K RUN",
                 male: [2000, 1500, 1000],
-                female: [2000, 1500, 1000]
+                female: [2000, 1500, 1000],
+                color: "#f97316"
             }
-        }
+        ]
     }
-};
+];
 
 export default function PrizesPage() {
     return (
@@ -43,18 +56,39 @@ export default function PrizesPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                     >
-                        Prize Money & Registration
+                        Prizes & Benefits
                     </motion.h1>
-                    <p>Compete for exciting prizes and be part of the celebration!</p>
+                    <p>Compete for excitement and celebrate your achievement!</p>
                 </div>
             </div>
 
             <div className={styles.container}>
+                {/* Participant Kit Info - Now at the Top */}
+                <motion.div
+                    className={styles.deliverablesSection}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.1 }}
+                >
+                    <h2 className={styles.sectionTitle}>Participant Benefits</h2>
+                    <p className={styles.benefitsText}>Every registered participant will receive:</p>
+                    <div className={styles.deliverablesGrid}>
+                        {eventConfig.deliverables.map((item, index) => (
+                            <div key={index} className={styles.deliverableItem}>
+                                <span className={styles.checkIcon}>✓</span>
+                                {item}
+                            </div>
+                        ))}
+                    </div>
+                </motion.div>
+
                 {/* Registration Info Section */}
                 <motion.section
                     className={styles.registrationSection}
                     initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.2 }}
                 >
                     <h2 className={styles.sectionTitle}>Registration Information</h2>
@@ -75,144 +109,109 @@ export default function PrizesPage() {
                     </div>
                 </motion.section>
 
-                {/* Prize Money Tables */}
+                {/* Prize Money Redesign */}
                 <motion.section
                     className={styles.prizeSection}
                     initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.3 }}
                 >
                     <h2 className={styles.sectionTitle}>Prize Money Distribution</h2>
 
-                    {/* Above 18 Table */}
-                    <div className={styles.prizeTableWrapper}>
-                        <h3 className={styles.ageGroupTitle}>{prizeStructure.above18.title}</h3>
-                        <div className={styles.tableContainer}>
-                            <table className={styles.prizeTable}>
-                                <thead>
-                                    <tr>
-                                        <th colSpan={2}>10k</th>
-                                        <th colSpan={2}>5k</th>
-                                    </tr>
-                                    <tr>
-                                        <th>Male</th>
-                                        <th>Female</th>
-                                        <th>Male</th>
-                                        <th>Female</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>₹{prizeStructure.above18.categories["10k"].male[0]}</td>
-                                        <td>₹{prizeStructure.above18.categories["10k"].female[0]}</td>
-                                        <td>₹{prizeStructure.above18.categories["5k"].male[0]}</td>
-                                        <td>₹{prizeStructure.above18.categories["5k"].female[0]}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>₹{prizeStructure.above18.categories["10k"].male[1]}</td>
-                                        <td>₹{prizeStructure.above18.categories["10k"].female[1]}</td>
-                                        <td>₹{prizeStructure.above18.categories["5k"].male[1]}</td>
-                                        <td>₹{prizeStructure.above18.categories["5k"].female[1]}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>₹{prizeStructure.above18.categories["10k"].male[2]}</td>
-                                        <td>₹{prizeStructure.above18.categories["10k"].female[2]}</td>
-                                        <td>₹{prizeStructure.above18.categories["5k"].male[2]}</td>
-                                        <td>₹{prizeStructure.above18.categories["5k"].female[2]}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    <div className={styles.ageGroupsGrid}>
+                        {prizeStructure.map((group) => (
+                            <div key={group.id} className={styles.ageGroupBlock}>
+                                <div className={styles.ageGroupHeader}>
+                                    <h3>{group.title}</h3>
+                                    <span className={styles.criteria}>{group.criteria}</span>
+                                </div>
 
-                    {/* Below 18 Table */}
-                    <div className={styles.prizeTableWrapper}>
-                        <h3 className={styles.ageGroupTitle}>{prizeStructure.below18.title}</h3>
-                        <div className={styles.tableContainer}>
-                            <table className={styles.prizeTable}>
-                                <thead>
-                                    <tr>
-                                        <th colSpan={2}>10k</th>
-                                        <th colSpan={2}>5k</th>
-                                    </tr>
-                                    <tr>
-                                        <th>Male</th>
-                                        <th>Female</th>
-                                        <th>Male</th>
-                                        <th>Female</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>₹{prizeStructure.below18.categories["10k"].male[0]}</td>
-                                        <td>₹{prizeStructure.below18.categories["10k"].female[0]}</td>
-                                        <td>₹{prizeStructure.below18.categories["5k"].male[0]}</td>
-                                        <td>₹{prizeStructure.below18.categories["5k"].female[0]}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>₹{prizeStructure.below18.categories["10k"].male[1]}</td>
-                                        <td>₹{prizeStructure.below18.categories["10k"].female[1]}</td>
-                                        <td>₹{prizeStructure.below18.categories["5k"].male[1]}</td>
-                                        <td>₹{prizeStructure.below18.categories["5k"].female[1]}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>₹{prizeStructure.below18.categories["10k"].male[2]}</td>
-                                        <td>₹{prizeStructure.below18.categories["10k"].female[2]}</td>
-                                        <td>₹{prizeStructure.below18.categories["5k"].male[2]}</td>
-                                        <td>₹{prizeStructure.below18.categories["5k"].female[2]}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </motion.section>
+                                <div className={styles.categoriesGrid}>
+                                    {group.categories.map((cat, idx) => (
+                                        <div key={idx} className={styles.prizeCard} style={{ borderTop: `4px solid ${cat.color}` }}>
+                                            <div className={styles.cardHeader}>
+                                                <FaTrophy style={{ color: cat.color }} />
+                                                <h4>{cat.name}</h4>
+                                            </div>
 
-                {/* Participant Kit Info */}
-                <motion.div
-                    className={styles.deliverablesSection}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 }}
-                >
-                    <h2 className={styles.sectionTitle}>Participant Benefits</h2>
-                    <p className={styles.benefitsText}>Every registered participant will receive:</p>
-                    <div className={styles.deliverablesGrid}>
-                        {eventConfig.deliverables.map((item, index) => (
-                            <div key={index} className={styles.deliverableItem}>
-                                <span className={styles.checkIcon}>✓</span>
-                                {item}
+                                            <div className={styles.genderSplit}>
+                                                <div className={styles.genderCol}>
+                                                    <h5>Male</h5>
+                                                    <div className={styles.prizesList}>
+                                                        <div className={styles.prizeRank}>
+                                                            <FaMedal className={styles.gold} />
+                                                            <span>1st: ₹{cat.male[0]}</span>
+                                                        </div>
+                                                        <div className={styles.prizeRank}>
+                                                            <FaMedal className={styles.silver} />
+                                                            <span>2nd: ₹{cat.male[1]}</span>
+                                                        </div>
+                                                        <div className={styles.prizeRank}>
+                                                            <FaMedal className={styles.bronze} />
+                                                            <span>3rd: ₹{cat.male[2]}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className={styles.divider} />
+
+                                                <div className={styles.genderCol}>
+                                                    <h5>Female</h5>
+                                                    <div className={styles.prizesList}>
+                                                        <div className={styles.prizeRank}>
+                                                            <FaMedal className={styles.gold} />
+                                                            <span>1st: ₹{cat.female[0]}</span>
+                                                        </div>
+                                                        <div className={styles.prizeRank}>
+                                                            <FaMedal className={styles.silver} />
+                                                            <span>2nd: ₹{cat.female[1]}</span>
+                                                        </div>
+                                                        <div className={styles.prizeRank}>
+                                                            <FaMedal className={styles.bronze} />
+                                                            <span>3rd: ₹{cat.female[2]}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         ))}
                     </div>
-                </motion.div>
+                </motion.section>
 
                 {/* Important Notes */}
                 <motion.section
                     className={styles.notesSection}
                     initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.4 }}
                 >
-                    <h3>Important Notes</h3>
-                    <ul>
-                        <li>Prizes will be awarded to the top 3 positions in each category</li>
-                        <li>Age categories are determined by date of birth</li>
-                        <li>Above 18: DOB ON OR BEFORE 07/02/2008</li>
-                        <li>Below 18: DOB ON OR AFTER 08/02/2008</li>
-                        <li>Winners must present valid ID proof for verification</li>
-                        <li>Prize distribution will be done on the event day</li>
-                    </ul>
+                    <div className={styles.notesCard}>
+                        <h3><FaAward /> Important Notes</h3>
+                        <ul>
+                            <li>Prizes will be awarded to the top 3 positions in each category.</li>
+                            <li>Age categories are determined by the provided date of birth criteria.</li>
+                            <li>Winners must present valid ID proof (Aadhar/Voter ID/School ID) for verification.</li>
+                            <li>Prize distribution will be conducted at the venue post-race.</li>
+                            <li>The organizer's decision will be final regarding any disputes.</li>
+                        </ul>
+                    </div>
                 </motion.section>
 
                 {/* CTA Section */}
                 <motion.div
                     className={styles.ctaSection}
                     initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.5 }}
                 >
                     <h2>Ready to Join?</h2>
-                    <p>Register now and compete for exciting prizes!</p>
+                    <p>Don't miss out on the thrill and the glory. Secure your spot today!</p>
                     <a href="/register" className={styles.ctaButton}>
                         Register Now
                     </a>

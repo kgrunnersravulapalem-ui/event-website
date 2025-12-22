@@ -36,9 +36,8 @@
 }
 
 .title {
-    font-size: 3.5rem;
+    font-size: 2.75rem;
     font-weight: 900;
-    margin-bottom: 3rem;
     color: var(--foreground);
     letter-spacing: -0.02em;
     position: relative;
@@ -53,7 +52,7 @@
     bottom: -15px;
     width: 100px;
     height: 6px;
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    /* background: linear-gradient(90deg, var(--primary), var(--secondary)); */
     border-radius: 99px;
 }
 
@@ -68,13 +67,13 @@
 .mottoCard {
     width: 100%;
     max-width: 600px;
-    padding: 3rem;
-    margin: 3rem 0;
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.02) 0%, rgba(15, 23, 42, 0.04) 100%);
-    border-radius: var(--radius-2xl);
-    border: 1px solid rgba(15, 23, 42, 0.1);
+    padding: 2rem;
+    /* margin: 3rem 0; */
+    /* background: linear-gradient(135deg, rgba(15, 23, 42, 0.02) 0%, rgba(15, 23, 42, 0.04) 100%); */
+    /* border-radius: var(--radius-2xl); */
+    /* border: 1px solid rgba(15, 23, 42, 0.1); */
     position: relative;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    /* box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05); */
 }
 
 .mottoIcon {
@@ -92,6 +91,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     line-height: 1.4;
+    padding-bottom: 1rem;
 }
 
 .englishMotto {

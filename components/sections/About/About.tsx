@@ -26,7 +26,7 @@ const About = () => {
                             viewport={{ once: true }}
                             transition={{ duration: 0.6, delay: 0.2 }}
                         >
-                            <div className={styles.mottoIcon}>🏃</div>
+                            {/* <div className={styles.mottoIcon}>🏃</div> */}
                             <h3 className={styles.teluguMotto}>{eventConfig.about.teluguMotto}</h3>
                             <p className={styles.englishMotto}>{eventConfig.about.yearMotto}</p>
                         </motion.div>

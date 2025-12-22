@@ -184,7 +184,15 @@
 .formActions {
     margin-top: 1rem;
 }
-
+.errorMessage {
+    background-color: #fee;
+    border: 1px solid #fcc;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    color: #c00;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}
 @media (min-width: 768px) {
     .grid {
         grid-template-columns: 1fr 2fr;

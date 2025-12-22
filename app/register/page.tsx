@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import styles from './Register.module.css';
 import Button from '@/components/ui/Button/Button';
 import Input from '@/components/ui/Input/Input';
@@ -8,6 +8,21 @@ import Select from '@/components/ui/Select/Select';
 import RadioGroup from '@/components/ui/RadioGroup/RadioGroup';
 import { motion } from 'framer-motion';
 import { eventConfig } from '@/lib/eventConfig';
+import type { RegistrationData } from '@/lib/types/payment';
+
+// Declare PhonePe checkout types for TypeScript
+declare global {
+    interface Window {
+        PhonePeCheckout?: {
+            transact: (options: {
+                tokenUrl: string;
+                callback?: (response: 'USER_CANCEL' | 'CONCLUDED') => void;
+                type?: 'IFRAME' | 'REDIRECT';
+            }) => void;
+            closePage: () => void;
+        };
+    }
+}
 
 interface FormData {
     fullName: string;
@@ -21,16 +36,19 @@ interface FormData {
 
 function RegisterForm() {
     const searchParams = useSearchParams();
+    const router = useRouter();
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [formData, setFormData] = useState<FormData>({
-        fullName: '',
-        gender: '',
-        mobileNumber: '',
-        dateOfBirth: '',
-        tshirtSize: '',
-        bloodGroup: '',
-        email: '',
+        fullName: 'kiran',
+        gender: 'Male',
+        mobileNumber: '8686868686',
+        dateOfBirth: '1995-08-14',
+        tshirtSize: 'XL',
+        bloodGroup: 'O+',
+        email: 'mail2me.krishkiran@gmail.com',
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     // Pre-select category from URL parameter
     useEffect(() => {
@@ -44,23 +62,88 @@ function RegisterForm() {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError(null);
+        setIsSubmitting(true);
 
-        const selectedCat = eventConfig.raceCategories.categories.find(
-            cat => cat.id === selectedCategory
-        );
+        try {
+            const selectedCat = eventConfig.raceCategories.categories.find(
+                cat => cat.id === selectedCategory
+            );
 
-        const registrationData = {
-            ...formData,
-            category: selectedCat?.distance,
-            categoryId: selectedCategory,
-            price: selectedCat?.price,
-        };
+            if (!selectedCat) {
+                throw new Error('Please select a category');
+            }
 
-        console.log('Registration Data:', registrationData);
-        // TODO: Implement API call here
-        alert('Registration submitted! (API integration pending)');
+            const registrationData = {
+                name: formData.fullName,
+                email: formData.email,
+                phone: formData.mobileNumber,
+                age: new Date().getFullYear() - new Date(formData.dateOfBirth).getFullYear(),
+                gender: formData.gender,
+                emergencyContact: formData.mobileNumber, // Can be separate field if needed
+                raceCategory: selectedCat.distance,
+                amount: selectedCat.price,
+                dateOfBirth: formData.dateOfBirth,
+                tshirtSize: formData.tshirtSize,
+                bloodGroup: formData.bloodGroup,
+            };
+
+            // Get Cloud Functions URL from environment
+            const cloudFunctionsUrl = process.env.NEXT_PUBLIC_CLOUD_FUNCTIONS_URL;
+            
+            if (!cloudFunctionsUrl) {
+                throw new Error('Cloud Functions URL not configured');
+            }
+
+            // Initiate payment via Cloud Function
+            const response = await fetch(`${cloudFunctionsUrl}/initiatePayment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(registrationData),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.error || 'Failed to initiate payment');
+            }
+
+            // Get the redirect URL from response (v2 API returns redirectUrl directly)
+            const checkoutUrl = data.data?.redirectUrl;
+            const orderId = data.data?.merchantOrderId;
+            
+            if (!checkoutUrl) {
+                throw new Error('No checkout URL received');
+            }
+
+            // Use PhonePe iframe mode if available (recommended), else fallback to redirect
+            if (window.PhonePeCheckout?.transact) {
+                window.PhonePeCheckout.transact({
+                    tokenUrl: checkoutUrl,
+                    type: 'IFRAME',
+                    callback: (response) => {
+                        setIsSubmitting(false);
+                        if (response === 'USER_CANCEL') {
+                            setError('Payment was cancelled. Please try again.');
+                        } else if (response === 'CONCLUDED') {
+                            // Payment concluded - redirect to status page
+                            router.push(`/payment/status?orderId=${orderId}`);
+                        }
+                    }
+                });
+            } else {
+                // Fallback to redirect mode
+                window.location.href = checkoutUrl;
+            }
+        } catch (err) {
+            console.error('Error submitting registration:', err);
+            setError(err instanceof Error ? err.message : 'Failed to process registration');
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -210,9 +293,15 @@ function RegisterForm() {
                                     onChange={(value) => handleInputChange('bloodGroup', value)}
                                 />
 
+                                {error && (
+                                    <div className={styles.errorMessage}>
+                                        {error}
+                                    </div>
+                                )}
+
                                 <div className={styles.formActions}>
-                                    <Button type="submit" fullWidth>
-                                        Proceed to Pay
+                                    <Button type="submit" fullWidth disabled={isSubmitting}>
+                                        {isSubmitting ? 'Processing...' : 'Proceed to Pay'}
                                     </Button>
                                 </div>
                             </div>

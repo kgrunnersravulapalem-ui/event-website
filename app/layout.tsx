@@ -27,6 +27,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* PhonePe Checkout Script for iframe payment integration */}
+        <script src="https://mercury.phonepe.com/web/bundle/checkout.js" defer></script>
+      </head>
       <body className={`${outfit.variable} font-sans`}>
         {/* Ticker and Navbar are global now, so pages don't need to import them repeatedly */}
         <Ticker />

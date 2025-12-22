@@ -4,6 +4,12 @@ import { getFirestore, Firestore } from "firebase/firestore";
 import { getAuth, Auth } from "firebase/auth";
 
 const firebaseConfig = {
+  // apiKey: "AIzaSyCrqHyb6-2gwTzl_SRHtJ7svSDM6zqU8Xs",
+  // authDomain: "konaseema-run.firebaseapp.com",
+  // projectId: "konaseema-run",
+  // storageBucket: "konaseema-run.firebasestorage.app",
+  // messagingSenderId: "866739988328",
+  // appId: "1:866739988328:web:99f28290a4aba00e67d8dd",
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,

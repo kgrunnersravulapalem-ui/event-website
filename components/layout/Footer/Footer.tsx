@@ -8,7 +8,7 @@ const Footer = () => {
         <footer className={styles.footer}>
             <div className={styles.container}>
                 <div className={styles.top}>
-                    <div className={styles.contact}>
+                    <div className={styles.footerBlock}>
                         <h4>Contact Us</h4>
                         <div className={styles.contactInfo}>
                             <div className={styles.contactItem}>
@@ -25,24 +25,28 @@ const Footer = () => {
                             </div>
                         </div>
                     </div>
-                    <div className={styles.links}>
+
+                    <div className={styles.footerBlock}>
                         <h4>Quick Links</h4>
-                        <ul>
-                            <li><Link href="/">Home</Link></li>
-                            <li><Link href="/#about">About Us</Link></li>
-                            <li><Link href="/#race-categories">Race Categories</Link></li>
-                            <li><Link href="/#venue">Venue</Link></li>
-                            <li><Link href="/prizes">Prizes</Link></li>
-                            <li><Link href="/contact">Contact</Link></li>
-                            <li><Link href="/register">Register</Link></li>
-                        </ul>
+                        <div className={styles.links}>
+                            <ul>
+                                <li><Link href="/#race-categories">Race Categories</Link></li>
+                                <li><Link href="/#venue">Venue</Link></li>
+                                <li><Link href="/prizes">Prizes</Link></li>
+                                <li><Link href="/contact">Contact</Link></li>
+                                <li><Link href="/register">Register</Link></li>
+                            </ul>
+                        </div>
                     </div>
-                    <div className={styles.social}>
+
+                    <div className={styles.footerBlock}>
                         <h4>Follow Us</h4>
-                        <div className={styles.icons}>
-                            <a href="#" className={styles.icon}><FaFacebook /></a>
-                            <a href="#" className={styles.icon}><FaInstagram /></a>
-                            <a href="#" className={styles.icon}><FaTwitter /></a>
+                        <div className={styles.social}>
+                            <div className={styles.icons}>
+                                <a href="#" className={styles.icon} aria-label="Facebook"><FaFacebook /></a>
+                                <a href="#" className={styles.icon} aria-label="Instagram"><FaInstagram /></a>
+                                <a href="#" className={styles.icon} aria-label="Twitter"><FaTwitter /></a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -55,4 +59,3 @@ const Footer = () => {
 };
 
 export default Footer;
-

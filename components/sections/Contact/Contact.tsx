@@ -6,14 +6,42 @@ import { useState } from 'react';
 import { eventConfig } from '@/lib/eventConfig';
 
 const Contact = () => {
-    // Add logic to handle form submission if needed
     const [submitted, setSubmitted] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setSubmitted(true);
-        // Integrate with firebase or API route later
-    }
+        setLoading(true);
+        setError(null);
+
+        const formData = new FormData(e.currentTarget);
+        const data = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            subject: formData.get('subject'),
+            message: formData.get('message'),
+        };
+
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                setSubmitted(true);
+            } else {
+                throw new Error('Failed to send message');
+            }
+        } catch (err) {
+            setError('Something went wrong. Please try again later.');
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <section className={styles.section} id="contact">
@@ -56,17 +84,26 @@ const Contact = () => {
                         ) : (
                             <form className={styles.form} onSubmit={handleSubmit}>
                                 <div className={styles.row}>
-                                    <Input label="Name" placeholder="Your Name" required />
-                                    <Input label="Email" type="email" placeholder="john@example.com" required />
+                                    <Input name="name" label="Name" placeholder="Your Name" required />
+                                    <Input name="email" label="Email" type="email" placeholder="john@example.com" required />
                                 </div>
-                                <Input label="Subject" placeholder="How can we help?" required />
+                                <Input name="subject" label="Subject" placeholder="How can we help?" required />
 
                                 <div className={styles.textareaWrapper}>
                                     <label className={styles.label}>Message</label>
-                                    <textarea className={styles.textarea} placeholder="Write your message here..." rows={5} required></textarea>
+                                    <textarea
+                                        name="message"
+                                        className={styles.textarea}
+                                        placeholder="Write your message here..."
+                                        rows={5}
+                                        required
+                                    ></textarea>
                                 </div>
 
-                                <Button type="submit" fullWidth>Send Message</Button>
+                                {error && <p className={styles.error}>{error}</p>}
+                                <Button type="submit" fullWidth disabled={loading}>
+                                    {loading ? 'Sending...' : 'Send Message'}
+                                </Button>
                             </form>
                         )}
                     </div>
@@ -77,4 +114,3 @@ const Contact = () => {
 };
 
 export default Contact;
-

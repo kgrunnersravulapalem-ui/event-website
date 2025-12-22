@@ -167,6 +167,25 @@ export default function PrizesPage() {
                     </div>
                 </motion.section>
 
+                {/* Participant Kit Info */}
+                <motion.div
+                    className={styles.deliverablesSection}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                >
+                    <h2 className={styles.sectionTitle}>Participant Benefits</h2>
+                    <p className={styles.benefitsText}>Every registered participant will receive:</p>
+                    <div className={styles.deliverablesGrid}>
+                        {eventConfig.deliverables.map((item, index) => (
+                            <div key={index} className={styles.deliverableItem}>
+                                <span className={styles.checkIcon}>✓</span>
+                                {item}
+                            </div>
+                        ))}
+                    </div>
+                </motion.div>
+
                 {/* Important Notes */}
                 <motion.section
                     className={styles.notesSection}

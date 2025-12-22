@@ -62,31 +62,12 @@ const RaceCategories = () => {
                         </motion.div>
                     ))}
                 </div>
-
-                {/* Participant Kit Info */}
-                <motion.div
-                    className={styles.deliverablesSection}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.2 }}
-                >
-                    <h3>Participant Benefits</h3>
-                    <p>Every registered participant will receive:</p>
-                    <div className={styles.deliverablesGrid}>
-                        {eventConfig.deliverables.map((item, index) => (
-                            <div key={index} className={styles.deliverableItem}>
-                                <span className={styles.checkIcon}>✓</span>
-                                {item}
-                            </div>
-                        ))}
-                    </div>
-                </motion.div>
             </div>
         </section>
     );
 };
 
 export default RaceCategories;
+
 
 

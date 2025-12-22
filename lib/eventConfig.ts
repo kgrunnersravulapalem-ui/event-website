@@ -9,6 +9,10 @@ export const eventConfig = {
         instagram: "#",
         twitter: "#",
     },
+    venue: {
+        date: "08 FEB 2026",
+        time: "5:30 AM Onwards",
+    },
 
     // About Section
     about: {

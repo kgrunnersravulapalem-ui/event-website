@@ -1,79 +1,91 @@
 'use client';
 import styles from './Venue.module.css';
-import { FaMapMarkerAlt, FaCalendarAlt } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { FaMapMarkerAlt, FaCalendarAlt, FaClock } from 'react-icons/fa';
 import { eventConfig } from '@/lib/eventConfig';
 
 const Venue = () => {
-    const eventDate = new Date(eventConfig.eventDate);
-    const formattedDate = eventDate.toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-    const formattedTime = eventDate.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-
     return (
         <section className={styles.section} id="venue">
             <div className={styles.container}>
-                <div className={styles.content}>
+                <div className={styles.header}>
                     <motion.h2
-                        initial={{ opacity: 0, y: -20 }}
+                        initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.6 }}
-                        className={styles.title}
                     >
-                        The Venue
+                        Location & Venue
                     </motion.h2>
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 }}
+                    >
+                        Join us at the starting line
+                    </motion.p>
+                </div>
 
-                    <div className={styles.infoGrid}>
+                <div className={styles.grid}>
+                    <div className={styles.info}>
                         <motion.div
-                            initial={{ opacity: 0, x: -50 }}
+                            className={styles.item}
+                            initial={{ opacity: 0, x: -20 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.6, delay: 0.2 }}
-                            className={styles.infoItem}
                         >
-                            <FaMapMarkerAlt className={styles.icon} />
+                            <div className={styles.iconWrapper}>
+                                <FaCalendarAlt className={styles.icon} />
+                            </div>
                             <div>
-                                <h3>{eventConfig.location.split(',')[0]}</h3>
-                                <p>{eventConfig.location.split(',').slice(1).join(',').trim()}</p>
-                                <small>Starting Point</small>
+                                <h3>Date & Time</h3>
+                                <p>{eventConfig.venue.date}</p>
+                                <p>{eventConfig.venue.time}</p>
                             </div>
                         </motion.div>
 
                         <motion.div
-                            initial={{ opacity: 0, x: 50 }}
+                            className={styles.item}
+                            initial={{ opacity: 0, x: -20 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.6, delay: 0.4 }}
-                            className={styles.infoItem}
+                            transition={{ delay: 0.1 }}
                         >
-                            <FaCalendarAlt className={styles.icon} />
+                            <div className={styles.iconWrapper}>
+                                <FaMapMarkerAlt className={styles.icon} />
+                            </div>
                             <div>
-                                <h3>{formattedDate}</h3>
-                                <p>{formattedTime}</p>
-                                <small>Race Day</small>
+                                <h3>Location</h3>
+                                <p>{eventConfig.contact.location.line1}</p>
+                                <p>{eventConfig.contact.location.line2}</p>
+                                <a
+                                    href={eventConfig.contact.location.mapLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={styles.mapLink}
+                                >
+                                    View on Google Maps
+                                </a>
                             </div>
                         </motion.div>
                     </div>
 
                     <motion.div
+                        className={styles.mapContainer}
                         initial={{ opacity: 0, scale: 0.95 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
-                        className={styles.mapPlaceholder}
+                        transition={{ delay: 0.2 }}
                     >
-                        {/* In a real app, embed Google Maps iframe here */}
-                        <div className={styles.mapContent}>
-                            Map View of Course
-                        </div>
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3822.846566417743!2d81.83646351187428!3d16.767191283415983!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTbCsDQ2JzAxLjkiTiA4McKwNTAnMjAuNSJF!5e0!3m2!1sen!2sin!4v1703241234567!5m2!1sen!2sin"
+                            width="100%"
+                            height="450"
+                            style={{ border: 0, borderRadius: 'var(--radius-xl)' }}
+                            allowFullScreen
+                            loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"
+                        ></iframe>
                     </motion.div>
                 </div>
             </div>
@@ -82,4 +94,3 @@ const Venue = () => {
 };
 
 export default Venue;
-

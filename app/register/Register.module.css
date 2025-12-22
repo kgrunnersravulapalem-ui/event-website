@@ -229,3 +229,27 @@
     font-weight: 800;
     font-size: 1.1rem;
 }
+
+@media (max-width: 480px) {
+    .header {
+        padding: 5rem 1rem 2rem;
+    }
+
+    .headerContent h1 {
+        font-size: 1.75rem;
+    }
+
+    .container {
+        margin-top: -1.5rem;
+        padding: 0 1rem;
+    }
+
+    .card {
+        padding: 1.5rem 1rem;
+    }
+
+    .posterPlaceholder {
+        height: 200px;
+        font-size: 1.25rem;
+    }
+}

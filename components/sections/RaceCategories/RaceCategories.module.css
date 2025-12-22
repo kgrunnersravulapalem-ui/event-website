@@ -143,3 +143,25 @@
     font-weight: 800;
     color: var(--primary);
 }
+
+@media (max-width: 480px) {
+    .header h2 {
+        font-size: 2rem;
+    }
+
+    .header p {
+        font-size: 1rem;
+    }
+
+    .card {
+        padding: 2rem 1.5rem;
+    }
+
+    .cardTitle {
+        font-size: 1.75rem;
+    }
+
+    .price {
+        font-size: 1.25rem;
+    }
+}

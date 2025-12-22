@@ -114,13 +114,47 @@
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 480px) {
     .title {
-        font-size: 2.5rem;
+        font-size: 2rem;
     }
 
     .text {
-        font-size: 1.125rem;
+        font-size: 1rem;
+        line-height: 1.8;
+    }
+
+    .teluguMotto {
+        font-size: 1.25rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .englishMotto {
+        font-size: 0.85rem;
+    }
+
+    .mottoCard {
+        padding: 1.5rem 1rem;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+    .title {
+        font-size: 2.25rem;
+    }
+
+    .teluguMotto {
+        font-size: 1.5rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .title {
+        font-size: 2.75rem;
+    }
+
+    .text {
+        font-size: 1.25rem;
     }
 
     .mottoCard {
@@ -128,6 +162,6 @@
     }
 
     .teluguMotto {
-        font-size: 1.5rem;
+        font-size: 2rem;
     }
 }

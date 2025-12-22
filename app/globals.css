@@ -55,6 +55,9 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  /* Prevent automatic font scaling on iOS */
+  -moz-text-size-adjust: 100%;
 }
 
 body {
@@ -64,6 +67,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: transparent;
+  /* Remove tap highlight on mobile */
 
   /* Refined animated gradient */
   background:
@@ -72,6 +78,8 @@ body {
     linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
   background-attachment: fixed;
   min-height: 100vh;
+  min-height: 100dvh;
+  /* Dynamic viewport height for modern browsers/iOS */
 }
 
 a {

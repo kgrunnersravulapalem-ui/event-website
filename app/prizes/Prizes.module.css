@@ -411,3 +411,51 @@
         margin-top: -2rem;
     }
 }
+
+@media (max-width: 480px) {
+    .headerContent h1 {
+        font-size: 2.25rem;
+    }
+
+    .sectionTitle {
+        font-size: 1.75rem;
+    }
+
+    .infoValue {
+        font-size: 1.75rem;
+    }
+
+    .ctaSection h2 {
+        font-size: 1.75rem;
+    }
+
+    .container {
+        margin-top: -2rem;
+    }
+
+    .prizeCard {
+        border-radius: var(--radius-xl);
+    }
+
+    .cardHeader h4 {
+        font-size: 1.25rem;
+    }
+
+    .genderSplit {
+        padding: 1.5rem 1rem;
+    }
+
+    .prizeRank {
+        font-size: 1rem;
+        padding: 0.6rem;
+    }
+
+    .deliverablesSection {
+        padding: 2rem 1rem;
+    }
+
+    .deliverableItem {
+        padding: 1rem;
+        font-size: 0.95rem;
+    }
+}

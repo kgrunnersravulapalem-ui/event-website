@@ -22,10 +22,16 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1.5rem;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 4rem;
-    align-items: center;
+}
+
+.contentWrapper {
+    display: flex;
+    gap: 3rem;
+    align-items: flex-start;
+}
+
+.mainContent {
+    flex: 1;
 }
 
 .title {
@@ -55,49 +61,167 @@
     margin-bottom: 1.5rem;
 }
 
-.imageBlock {
-    position: relative;
-}
-
-.placeholderImg {
-    width: 100%;
-    height: 400px;
-    background: linear-gradient(135deg, var(--surface) 0%, #e2e8f0 100%);
+.mottoCard {
+    flex-shrink: 0;
+    width: 350px;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(0, 102, 204, 0.08) 0%, rgba(204, 255, 0, 0.08) 100%);
     border-radius: var(--radius-xl);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #94a3b8;
-    font-weight: 600;
-    font-size: 1.5rem;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: var(--shadow-lg);
+    border: 2px solid rgba(0, 102, 204, 0.2);
     position: relative;
     overflow: hidden;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 102, 204, 0.12);
 }
 
-.placeholderImg::before {
+.mottoCard::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg,
-            transparent 40%,
-            rgba(255, 255, 255, 0.5) 50%,
-            transparent 60%);
-    animation: shimmer 3s infinite;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
 }
 
-@keyframes shimmer {
+@keyframes rotate {
     0% {
-        transform: translateX(-100%);
+        transform: rotate(0deg);
     }
 
     100% {
-        transform: translateX(100%);
+        transform: rotate(360deg);
     }
+}
+
+.mottoIcon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.teluguMotto {
+    font-size: 1.75rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary) 0%, #0052a3 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.75rem;
+    position: relative;
+    z-index: 1;
+    line-height: 1.4;
+}
+
+.englishMotto {
+    font-size: 1rem;
+    color: #475569;
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+}
+
+@media (max-width: 968px) {
+    .contentWrapper {
+        flex-direction: column;
+    }
+
+    .mottoCard {
+        width: 100%;
+    }
+}
+
+.mottoCard::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.mottoIcon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.teluguMotto {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary) 0%, #0052a3 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.75rem;
+    position: relative;
+    z-index: 1;
+    line-height: 1.4;
+}
+
+.englishMotto {
+    font-size: 1.125rem;
+    color: #475569;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.mottoYear {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    background: var(--primary);
+    color: white;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
 }
 
 @media (min-width: 768px) {

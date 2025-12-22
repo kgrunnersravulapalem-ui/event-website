@@ -9,33 +9,33 @@ const About = () => {
         <section className={styles.section} id="about">
             <div className={styles.container}>
                 <motion.div
-                    initial={{ opacity: 0, x: -30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
-                    className={styles.content}
+                    className={styles.contentWrapper}
                 >
-                    <h2 className={styles.title}>{eventConfig.about.title}</h2>
-                    {eventConfig.about.paragraphs.map((paragraph, index) => (
-                        <p key={index} className={styles.text}>
-                            {paragraph}
-                        </p>
-                    ))}
-                    <p className={styles.text}>
-                        <strong>{eventConfig.about.year} Year motto:</strong> "{eventConfig.about.yearMotto}"
-                    </p>
-                </motion.div>
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
-                    className={styles.imageBlock}
-                >
-                    {/* Placeholder for an about image */}
-                    <div className={styles.placeholderImg}>
-                        <span>Running Community</span>
+                    <div className={styles.mainContent}>
+                        <h2 className={styles.title}>{eventConfig.about.title}</h2>
+                        {eventConfig.about.paragraphs.map((paragraph, index) => (
+                            <p key={index} className={styles.text}>
+                                {paragraph}
+                            </p>
+                        ))}
                     </div>
+
+                    {/* Telugu Motto - Right Side */}
+                    <motion.div
+                        className={styles.mottoCard}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                    >
+                        <div className={styles.mottoIcon}>🏃</div>
+                        <h3 className={styles.teluguMotto}>{eventConfig.about.teluguMotto}</h3>
+                        <p className={styles.englishMotto}>{eventConfig.about.yearMotto}</p>
+                    </motion.div>
                 </motion.div>
             </div>
         </section>

@@ -31,6 +31,12 @@ const Contact = () => {
                                 <p>{eventConfig.contact.email}</p>
                             </div>
                             <div className={styles.detailItem}>
+                                <strong>Contact</strong>
+                                {eventConfig.contact.phones.map((phone, index) => (
+                                    <p key={index}>{phone}</p>
+                                ))}
+                            </div>
+                            <div className={styles.detailItem}>
                                 <strong>Location</strong>
                                 <p>
                                     {eventConfig.contact.location.line1}<br />

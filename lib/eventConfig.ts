@@ -18,6 +18,7 @@ export const eventConfig = {
             'Our motto "Health is Wealth" embodies our belief that running connects us all. Whether you are aiming for a personal best or just here for the fun, we have a spot for you.',
         ],
         motto: "Health is Wealth",
+        teluguMotto: "మన ఆరోగ్యం, మన ఊరు, మన భాధ్యత",
         yearMotto: "OUR HEALTH, OUR VILLAGE, OUR RESPONSIBILITY",
         year: "2026",
     },
@@ -29,9 +30,31 @@ export const eventConfig = {
         heading: "Get in Touch",
         description: "Have questions about registration, the route, or sponsorship? We're here to help.",
         email: "kgrunnersravulapalem@gmail.com",
+        phones: ["9494847967", "9849129557"],
         location: {
             line1: "Sri Potamsetti Rami Reddy Park,",
             line2: "Ravulapalem, Konaseema Dist, Andhra Pradesh - 533238",
+        },
+    },
+
+    // Registration & Prize Information
+    registration: {
+        deadline: "10 JAN 2026",
+        entryFee: 300,
+        prizeMoney: {
+            total: 60000,
+            above18: 36000,
+            below18: 24000,
+        },
+        ageCategories: {
+            above18: {
+                label: "Above 18 years",
+                dobCriteria: "DOB ON OR BEFORE: 07/02/2008",
+            },
+            below18: {
+                label: "Below 18 years",
+                dobCriteria: "DOB ON OR AFTER: 08/02/2008",
+            },
         },
     },
 

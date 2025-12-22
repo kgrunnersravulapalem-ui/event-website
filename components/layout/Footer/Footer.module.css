@@ -17,21 +17,7 @@
     margin-bottom: 3rem;
 }
 
-.brand h3 {
-    font-size: 1.5rem;
-    font-weight: 800;
-    margin-bottom: 0.5rem;
-}
-
-.brand span {
-    color: var(--primary);
-}
-
-.brand p {
-    opacity: 0.8;
-    max-width: 300px;
-}
-
+.contact h4,
 .links h4,
 .social h4 {
     font-size: 1.125rem;
@@ -54,6 +40,19 @@
 .links a:hover {
     opacity: 1;
     text-decoration: underline;
+}
+
+.contactInfo p {
+    opacity: 0.8;
+    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+}
+
+.contactInfo strong {
+    opacity: 1;
+    display: block;
+    margin-top: 0.75rem;
+    margin-bottom: 0.25rem;
 }
 
 .icons {
@@ -84,6 +83,6 @@
 
 @media (min-width: 768px) {
     .top {
-        grid-template-columns: 2fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
     }
 }

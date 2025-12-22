@@ -147,6 +147,15 @@ export default function RegisterPage() {
                                             required
                                         />
 
+                                        <Input
+                                            label="Email"
+                                            type="email"
+                                            placeholder="john@example.com"
+                                            value={formData.email}
+                                            onChange={(e) => handleInputChange('email', e.target.value)}
+                                            required
+                                        />
+
                                         <RadioGroup
                                             label="Gender"
                                             name="gender"
@@ -159,9 +168,16 @@ export default function RegisterPage() {
                                         <Input
                                             label="Mobile Number"
                                             type="tel"
-                                            placeholder="+91 98765 43210"
+                                            placeholder="10 digit mobile number"
                                             value={formData.mobileNumber}
-                                            onChange={(e) => handleInputChange('mobileNumber', e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value.replace(/\D/g, '');
+                                                if (value.length <= 10) {
+                                                    handleInputChange('mobileNumber', value);
+                                                }
+                                            }}
+                                            pattern="[0-9]{10}"
+                                            maxLength={10}
                                             required
                                         />
 
@@ -189,15 +205,6 @@ export default function RegisterPage() {
                                             options={eventConfig.formOptions.bloodGroups}
                                             value={formData.bloodGroup}
                                             onChange={(value) => handleInputChange('bloodGroup', value)}
-                                        />
-
-                                        <Input
-                                            label="Email"
-                                            type="email"
-                                            placeholder="john@example.com"
-                                            value={formData.email}
-                                            onChange={(e) => handleInputChange('email', e.target.value)}
-                                            required
                                         />
 
                                         <div className={styles.formActions}>

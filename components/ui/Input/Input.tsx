@@ -7,7 +7,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     error?: string;
 }
 
-const Input = ({ label, error, className, id, ...props }: InputProps) => {
+const Input = ({ label, error, className, id, required, ...props }: InputProps) => {
     const inputId = id || props.name;
 
     return (
@@ -15,11 +15,13 @@ const Input = ({ label, error, className, id, ...props }: InputProps) => {
             {label && (
                 <label htmlFor={inputId} className={styles.label}>
                     {label}
+                    {required && <span className={styles.required}>*</span>}
                 </label>
             )}
             <input
                 id={inputId}
                 className={clsx(styles.input, { [styles.hasError]: error })}
+                required={required}
                 {...props}
             />
             {error && <span className={styles.errorMessage}>{error}</span>}
@@ -28,3 +30,4 @@ const Input = ({ label, error, className, id, ...props }: InputProps) => {
 };
 
 export default Input;
+

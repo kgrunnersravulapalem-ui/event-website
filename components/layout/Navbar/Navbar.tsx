@@ -50,7 +50,7 @@ const Navbar = () => {
         { name: 'About', href: '/#about' },
         { name: 'Race Info', href: '/#race-categories' },
         { name: 'Venue', href: '/#venue' },
-        { name: 'Gallery', href: '/gallery' },
+        { name: 'Prizes', href: '/prizes' },
         { name: 'Contact', href: '/contact' },
     ];
 
@@ -60,12 +60,7 @@ const Navbar = () => {
             return pathname === href;
         }
 
-        // For hash links on home page
-        if (pathname === '/') {
-            const hash = href.split('#')[1];
-            return activeSection === `#${hash}`;
-        }
-
+        // Don't highlight hash links on homepage to avoid double borders
         return false;
     };
 

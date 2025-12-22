@@ -1,0 +1,289 @@
+.page {
+    min-height: 100vh;
+    padding-top: 4rem;
+}
+
+.header {
+    background: linear-gradient(135deg, var(--primary) 0%, #0052a3 100%);
+    padding: 4rem 1.5rem;
+    text-align: center;
+    color: white;
+}
+
+.headerContent h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+.headerContent p {
+    font-size: 1.25rem;
+    opacity: 0.95;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+}
+
+.sectionTitle {
+    font-size: 2.5rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--foreground);
+    position: relative;
+}
+
+.sectionTitle::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -10px;
+    width: 80px;
+    height: 5px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 3px;
+}
+
+/* Prize Section */
+.prizeSection {
+    margin-bottom: 5rem;
+}
+
+.prizeTableWrapper {
+    margin-bottom: 3rem;
+}
+
+.ageGroupTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--foreground);
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+    color: white;
+}
+
+.tableContainer {
+    overflow-x: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.prizeTable {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.prizeTable thead tr:first-child th {
+    background: #f97316;
+    color: white;
+    padding: 1.25rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-align: center;
+    border: 2px solid #ea580c;
+}
+
+.prizeTable thead tr:last-child th {
+    background: #fb923c;
+    color: white;
+    padding: 1rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    text-align: center;
+    border: 2px solid #f97316;
+}
+
+.prizeTable tbody td {
+    background: #fed7aa;
+    color: #7c2d12;
+    padding: 1.25rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    text-align: center;
+    border: 2px solid #fb923c;
+}
+
+.prizeTable tbody tr:hover td {
+    background: #fdba74;
+}
+
+/* Notes Section */
+.notesSection {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    padding: 2.5rem;
+    border-radius: var(--radius-xl);
+    border: 2px solid #cbd5e1;
+    margin-bottom: 3rem;
+}
+
+.notesSection h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--foreground);
+}
+
+.notesSection ul {
+    list-style: none;
+    padding: 0;
+}
+
+.notesSection li {
+    padding: 0.75rem 0;
+    padding-left: 2rem;
+    position: relative;
+    color: #475569;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.notesSection li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+
+/* Registration Section */
+.registrationSection {
+    margin-bottom: 5rem;
+}
+
+.infoGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.infoCard {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    padding: 2.5rem;
+    border-radius: var(--radius-xl);
+    border: 2px solid #cbd5e1;
+    text-align: center;
+}
+
+.infoLabel {
+    font-size: 1rem;
+    color: #64748b;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.infoValue {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.infoSubtext {
+    font-size: 0.95rem;
+    color: #475569;
+    margin-top: 0.75rem;
+}
+
+/* Categories Section */
+.categoriesSection {
+    margin-bottom: 5rem;
+}
+
+.categoryGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.categoryCard {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border-left: 5px solid var(--secondary);
+}
+
+.categoryCard h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin-bottom: 1rem;
+}
+
+.categoryCard p {
+    color: #64748b;
+    font-size: 1rem;
+}
+
+/* CTA Section */
+.ctaSection {
+    background: linear-gradient(135deg, rgba(0, 102, 204, 0.08) 0%, rgba(204, 255, 0, 0.08) 100%);
+    padding: 4rem 2rem;
+    border-radius: var(--radius-xl);
+    text-align: center;
+    border: 2px solid rgba(0, 102, 204, 0.2);
+}
+
+.ctaSection h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: var(--foreground);
+}
+
+.ctaSection p {
+    font-size: 1.25rem;
+    color: #475569;
+    margin-bottom: 2rem;
+}
+
+.ctaButton {
+    display: inline-block;
+    padding: 1rem 3rem;
+    background: linear-gradient(135deg, var(--primary) 0%, #0052a3 100%);
+    color: white;
+    font-weight: 700;
+    font-size: 1.125rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+}
+
+.ctaButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 102, 204, 0.4);
+}
+
+@media (max-width: 768px) {
+    .headerContent h1 {
+        font-size: 2rem;
+    }
+
+    .sectionTitle {
+        font-size: 2rem;
+    }
+
+    .prizeAmount,
+    .infoValue {
+        font-size: 2rem;
+    }
+
+    .ctaSection h2 {
+        font-size: 2rem;
+    }
+}

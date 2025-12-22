@@ -42,4 +42,4 @@ next-env.d.ts
 
 node_modules
 
-deploy-functions.sh
+deploy-firebase-function.sh

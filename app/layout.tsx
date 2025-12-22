@@ -12,8 +12,12 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "RunEvent - Ultimate Marathon Experience",
-  description: "Join the run, experience the thrill, and push your limits.",
+  title: {
+    default: "KONASEEMA RUN 2026 - Ravulapalem",
+    template: "%s | KONASEEMA RUN 2026",
+  },
+  description: "Join the most anticipated running event in Ravulapalem! KONASEEMA RUN 2026 offering 3K, 5K, and 10K categories. Register now to experience health and community.",
+  keywords: ["Konaseema Run", "Ravulapalem Marathon", "Andhra Pradesh Run", "10K Run Konaseema", "5K Run Ravulapalem", "Our Health Our Village", "Konaseema Godavari Runners"],
 };
 
 export default function RootLayout({

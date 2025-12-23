@@ -198,7 +198,7 @@ export async function createPayment(
       merchantOrderId: paymentData.merchantOrderId,
       amount: paymentData.amount,
       currency: 'INR', // Indian Rupees
-      expireAfter: 120, // 2 minutes
+      expireAfter: 300, // 2 minutes
       metaInfo: paymentData.metaInfo || {},
       paymentFlow: {
         type: 'PG_CHECKOUT',

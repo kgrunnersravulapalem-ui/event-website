@@ -50,7 +50,7 @@ const Navbar = () => {
         { name: 'About', href: '/#about' },
         { name: 'Race Info', href: '/#race-categories' },
         { name: 'Venue', href: '/#venue' },
-        { name: 'Prizes', href: '/prizes' },
+        { name: 'Prize Money', href: '/prizes' },
         { name: 'Contact', href: '/contact' },
     ];
 

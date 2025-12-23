@@ -32,6 +32,7 @@ interface FormData {
     tshirtSize: string;
     bloodGroup: string;
     email: string;
+    emergencyContact: string;
     acceptedTerms: boolean;
     acceptedRefundPolicy: boolean;
 }
@@ -48,6 +49,7 @@ function RegisterForm() {
         tshirtSize: 'XL',
         bloodGroup: 'O+',
         email: 'mail2me.krishkiran@gmail.com',
+        emergencyContact: '',
         acceptedTerms: false,
         acceptedRefundPolicy: false,
     });
@@ -94,7 +96,7 @@ function RegisterForm() {
                 phone: formData.mobileNumber,
                 age: new Date().getFullYear() - new Date(formData.dateOfBirth).getFullYear(),
                 gender: formData.gender,
-                emergencyContact: formData.mobileNumber, // Can be separate field if needed
+                emergencyContact: formData.emergencyContact || formData.mobileNumber, // Use form field or fallback to mobile
                 raceCategory: selectedCat.distance,
                 amount: selectedCat.price,
                 dateOfBirth: formData.dateOfBirth,
@@ -303,6 +305,20 @@ function RegisterForm() {
                                     options={eventConfig.formOptions.bloodGroups}
                                     value={formData.bloodGroup}
                                     onChange={(value) => handleInputChange('bloodGroup', value)}
+                                />
+                                <Input
+                                    label="Emergency Contact (Optional)"
+                                    type="tel"
+                                    placeholder="Mobile number of emergency contact"
+                                    value={formData.emergencyContact}
+                                    onChange={(e) => {
+                                        const value = e.target.value.replace(/\D/g, '');
+                                        if (value.length <= 10) {
+                                            handleInputChange('emergencyContact', value);
+                                        }
+                                    }}
+                                    pattern="[0-9]{0,10}"
+                                    maxLength={10}
                                 />
 
                                 {/* Policy Acceptance Checkboxes */}

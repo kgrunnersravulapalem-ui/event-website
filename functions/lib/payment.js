@@ -54,6 +54,13 @@ const getPhonePeConfig = () => {
         environment: ((config === null || config === void 0 ? void 0 : config.environment) || process.env.PHONEPE_ENVIRONMENT || 'SANDBOX')
     };
 };
+/**
+ * Get environment-specific collection name
+ * Separates sandbox and production data in Firestore
+ */
+const getCollectionName = (baseName, environment) => {
+    return environment === 'PRODUCTION' ? baseName : `${baseName}-sandbox`;
+};
 // Webhook credentials
 const getWebhookCredentials = () => {
     const config = functions.config().webhook;
@@ -95,12 +102,12 @@ exports.initiatePayment = functions.https.onRequest(async (req, res) => {
         // Generate unique order ID (merchantOrderId)
         const timestamp = Date.now();
         const merchantOrderId = `ORDER_${timestamp}`;
-        // Create registration document in Firestore
-        const registrationRef = db.collection('registrations').doc();
+        // Create registration document in Firestore (environment-specific collection)
+        const registrationRef = db.collection(getCollectionName('registrations', config.environment)).doc();
         const registrationId = registrationRef.id;
         await registrationRef.set(Object.assign(Object.assign({}, registrationData), { merchantOrderId, status: 'PENDING', createdAt: admin.firestore.FieldValue.serverTimestamp(), updatedAt: admin.firestore.FieldValue.serverTimestamp() }));
-        // Create transaction record
-        const transactionRef = db.collection('transactions').doc(merchantOrderId);
+        // Create transaction record (environment-specific collection)
+        const transactionRef = db.collection(getCollectionName('transactions', config.environment)).doc(merchantOrderId);
         await transactionRef.set({
             merchantOrderId,
             registrationId,
@@ -223,8 +230,9 @@ exports.paymentWebhook = functions.https.onRequest(async (req, res) => {
             return;
         }
         const merchantOrderId = payload.merchantOrderId;
-        // Get transaction from Firestore
-        const transactionRef = db.collection('transactions').doc(merchantOrderId);
+        const config = getPhonePeConfig();
+        // Get transaction from Firestore (environment-specific collection)
+        const transactionRef = db.collection(getCollectionName('transactions', config.environment)).doc(merchantOrderId);
         const transactionDoc = await transactionRef.get();
         if (!transactionDoc.exists) {
             console.error('Transaction not found:', merchantOrderId);
@@ -246,7 +254,7 @@ exports.paymentWebhook = functions.https.onRequest(async (req, res) => {
         });
         // Update registration status and send email
         if (transactionData === null || transactionData === void 0 ? void 0 : transactionData.registrationId) {
-            const registrationRef = db.collection('registrations').doc(transactionData.registrationId);
+            const registrationRef = db.collection(getCollectionName('registrations', config.environment)).doc(transactionData.registrationId);
             const registrationDoc = await registrationRef.get();
             const registrationData = registrationDoc.exists ? registrationDoc.data() : null;
             if (state === 'COMPLETED') {
@@ -401,8 +409,8 @@ exports.checkStatus = functions.https.onRequest(async (req, res) => {
             }
             return;
         }
-        // Update transaction in Firestore
-        const transactionRef = db.collection('transactions').doc(merchantOrderId);
+        // Update transaction in Firestore (environment-specific collection)
+        const transactionRef = db.collection(getCollectionName('transactions', config.environment)).doc(merchantOrderId);
         const transactionDoc = await transactionRef.get();
         if (transactionDoc.exists) {
             const transactionData = transactionDoc.data();
@@ -414,9 +422,9 @@ exports.checkStatus = functions.https.onRequest(async (req, res) => {
                 statusCheckedAt: admin.firestore.FieldValue.serverTimestamp(),
                 updatedAt: admin.firestore.FieldValue.serverTimestamp()
             });
-            // Update registration if payment completed
+            // Update registration if payment completed (environment-specific collection)
             if (state === 'COMPLETED' && (transactionData === null || transactionData === void 0 ? void 0 : transactionData.registrationId)) {
-                await db.collection('registrations').doc(transactionData.registrationId).update({
+                await db.collection(getCollectionName('registrations', config.environment)).doc(transactionData.registrationId).update({
                     status: 'CONFIRMED',
                     paymentStatus: 'SUCCESS',
                     paymentCompletedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -424,7 +432,7 @@ exports.checkStatus = functions.https.onRequest(async (req, res) => {
                 });
             }
             else if (state === 'FAILED' && (transactionData === null || transactionData === void 0 ? void 0 : transactionData.registrationId)) {
-                await db.collection('registrations').doc(transactionData.registrationId).update({
+                await db.collection(getCollectionName('registrations', config.environment)).doc(transactionData.registrationId).update({
                     status: 'PAYMENT_FAILED',
                     paymentStatus: 'FAILED',
                     errorCode: statusResponse.errorCode || null,
@@ -474,15 +482,15 @@ exports.verifyPayment = functions.https.onRequest(async (req, res) => {
             res.status(400).json({ success: false, error: 'Order ID required' });
             return;
         }
-        // Get transaction from Firestore
-        const transactionRef = db.collection('transactions').doc(merchantOrderId);
+        const config = getPhonePeConfig();
+        // Get transaction from Firestore (environment-specific collection)
+        const transactionRef = db.collection(getCollectionName('transactions', config.environment)).doc(merchantOrderId);
         const transactionDoc = await transactionRef.get();
         if (!transactionDoc.exists) {
             res.status(404).json({ success: false, error: 'Transaction not found' });
             return;
         }
         const transactionData = transactionDoc.data();
-        const config = getPhonePeConfig();
         // Verify with PhonePe
         const statusResponse = await (0, phonepe_1.checkOrderStatus)(config, merchantOrderId, {
             details: true,
@@ -496,15 +504,15 @@ exports.verifyPayment = functions.https.onRequest(async (req, res) => {
             verifiedAt: admin.firestore.FieldValue.serverTimestamp(),
             updatedAt: admin.firestore.FieldValue.serverTimestamp()
         });
-        // Get registration data
+        // Get registration data (environment-specific collection)
         let registrationData = null;
         if (transactionData === null || transactionData === void 0 ? void 0 : transactionData.registrationId) {
-            const registrationDoc = await db.collection('registrations').doc(transactionData.registrationId).get();
+            const registrationDoc = await db.collection(getCollectionName('registrations', config.environment)).doc(transactionData.registrationId).get();
             if (registrationDoc.exists) {
                 registrationData = registrationDoc.data();
                 // Update registration status based on payment
                 if (statusResponse.state === 'COMPLETED') {
-                    await db.collection('registrations').doc(transactionData.registrationId).update({
+                    await db.collection(getCollectionName('registrations', config.environment)).doc(transactionData.registrationId).update({
                         status: 'CONFIRMED',
                         paymentStatus: 'SUCCESS',
                         updatedAt: admin.firestore.FieldValue.serverTimestamp()
@@ -549,7 +557,7 @@ exports.verifyPayment = functions.https.onRequest(async (req, res) => {
                     }
                 }
                 else if (statusResponse.state === 'FAILED') {
-                    await db.collection('registrations').doc(transactionData.registrationId).update({
+                    await db.collection(getCollectionName('registrations', config.environment)).doc(transactionData.registrationId).update({
                         status: 'PAYMENT_FAILED',
                         paymentStatus: 'FAILED',
                         updatedAt: admin.firestore.FieldValue.serverTimestamp()

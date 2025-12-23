@@ -65,7 +65,7 @@ function generatePaymentFailedEmail(data) {
     <!-- CTA Button -->
     <tr>
       <td style="padding: 0 30px 30px; text-align: center;">
-        <a href="https://konaseemarkgrunners.netlify.app/register" style="display: inline-block; padding: 16px 40px; background: linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%); color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <a href="https://kgrunners.in/register" style="display: inline-block; padding: 16px 40px; background: linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%); color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
           Try Again - Register Now
         </a>
       </td>

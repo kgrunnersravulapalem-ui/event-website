@@ -4,6 +4,7 @@ import "./globals.css";
 import Footer from "@/components/layout/Footer/Footer";
 import Ticker from "@/components/layout/Ticker/Ticker";
 import Navbar from "@/components/layout/Navbar/Navbar";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -32,6 +33,8 @@ export default function RootLayout({
         <script src="https://mercury.phonepe.com/web/bundle/checkout.js" defer></script>
       </head>
       <body className={`${outfit.variable} font-sans`}>
+        <ScrollToTop />
+        {/* className={`${outfit.variable} font-sans`}>
         {/* Ticker and Navbar are global now, so pages don't need to import them repeatedly */}
         <Ticker />
         <Navbar />

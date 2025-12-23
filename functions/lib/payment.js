@@ -108,19 +108,52 @@ exports.initiatePayment = functions.https.onRequest(async (req, res) => {
         });
         // Get base URL for redirect
         const baseUrl = ((_a = functions.config().app) === null || _a === void 0 ? void 0 : _a.base_url) || process.env.NEXT_PUBLIC_BASE_URL || 'https://yourwebsite.com';
-        // Create payment using PhonePe API v2
-        const paymentResponse = await (0, phonepe_1.createPayment)(config, {
-            merchantOrderId,
-            amount: registrationData.amount * 100, // Convert to paisa
-            redirectUrl: `${baseUrl}/payment/status?orderId=${merchantOrderId}`,
-            metaInfo: {
-                udf1: registrationData.name,
-                udf2: registrationData.email,
-                udf3: registrationData.phone,
-                udf4: registrationData.raceCategory,
-                udf5: registrationId,
-            },
-        });
+        // Create payment using PhonePe API v2 with comprehensive metaInfo for dashboard visibility
+        let paymentResponse;
+        try {
+            paymentResponse = await (0, phonepe_1.createPayment)(config, {
+                merchantOrderId,
+                amount: registrationData.amount * 100, // Convert to paisa
+                redirectUrl: `${baseUrl}/payment/status?orderId=${merchantOrderId}`,
+                metaInfo: {
+                    udf1: registrationData.name, // Participant Name
+                    udf2: registrationData.email, // Email
+                    udf3: registrationData.phone, // Mobile Number
+                    udf4: registrationData.raceCategory, // Race Category (3K/5K/10K)
+                    udf5: registrationData.gender, // Gender
+                    udf6: registrationData.tshirtSize || 'N/A', // T-Shirt Size
+                    udf7: registrationData.bloodGroup || 'N/A', // Blood Group
+                    udf8: registrationData.dateOfBirth || 'N/A', // Date of Birth
+                    udf9: registrationId, // Internal Registration ID
+                    udf10: `Age: ${registrationData.age}`, // Age
+                },
+            });
+        }
+        catch (paymentError) {
+            console.error('PhonePe API error:', paymentError);
+            // Update registration status to failed
+            await registrationRef.update({
+                status: 'PAYMENT_INIT_FAILED',
+                error: paymentError.message,
+                updatedAt: admin.firestore.FieldValue.serverTimestamp()
+            });
+            // Check if it's a timeout error
+            if (paymentError.message.includes('timeout')) {
+                res.status(504).json({
+                    success: false,
+                    error: 'Payment gateway is taking too long to respond. Please try again.',
+                    errorType: 'TIMEOUT'
+                });
+            }
+            else {
+                res.status(500).json({
+                    success: false,
+                    error: 'Failed to initiate payment. Please try again.',
+                    errorType: 'PAYMENT_API_ERROR'
+                });
+            }
+            return;
+        }
         // Update transaction with PhonePe order ID
         await transactionRef.update({
             phonePeOrderId: paymentResponse.orderId,
@@ -267,11 +300,32 @@ exports.checkStatus = functions.https.onRequest(async (req, res) => {
             return;
         }
         const config = getPhonePeConfig();
-        // Check status with PhonePe
-        const statusResponse = await (0, phonepe_1.checkOrderStatus)(config, merchantOrderId, {
-            details: true,
-            errorContext: true,
-        });
+        // Check status with PhonePe with timeout handling
+        let statusResponse;
+        try {
+            statusResponse = await (0, phonepe_1.checkOrderStatus)(config, merchantOrderId, {
+                details: true,
+                errorContext: true,
+            });
+        }
+        catch (statusError) {
+            console.error('Status check error:', statusError);
+            if (statusError.message.includes('timeout')) {
+                res.status(504).json({
+                    success: false,
+                    error: 'Payment status check is taking too long. Please try again.',
+                    errorType: 'TIMEOUT'
+                });
+            }
+            else {
+                res.status(500).json({
+                    success: false,
+                    error: 'Failed to check payment status. Please try again.',
+                    errorType: 'STATUS_CHECK_ERROR'
+                });
+            }
+            return;
+        }
         // Update transaction in Firestore
         const transactionRef = db.collection('transactions').doc(merchantOrderId);
         const transactionDoc = await transactionRef.get();

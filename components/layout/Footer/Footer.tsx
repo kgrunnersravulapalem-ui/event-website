@@ -30,11 +30,12 @@ const Footer = () => {
                         <h4>Quick Links</h4>
                         <div className={styles.links}>
                             <ul>
-                                <li><Link href="/#race-categories">Race Categories</Link></li>
-                                <li><Link href="/#venue">Venue</Link></li>
                                 <li><Link href="/prizes">Prizes</Link></li>
                                 <li><Link href="/contact">Contact</Link></li>
                                 <li><Link href="/register">Register</Link></li>
+                                <li><Link href="/terms">Terms & Conditions</Link></li>
+                                <li><Link href="/privacy">Privacy Policy</Link></li>
+                                <li><Link href="/refund">Refund Policy</Link></li>
                             </ul>
                         </div>
                     </div>

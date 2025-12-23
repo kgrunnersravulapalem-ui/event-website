@@ -92,12 +92,12 @@ export const eventConfig = {
                 routeImage: "/images/routes/5k-route.jpg", // Placeholder - will be updated later
             },
             {
-                id: "3km",
-                distance: "3 Km",
+                id: "3k",
+                distance: "3K",
                 desc: "Short, sweet, and spirited. Great for beginners & speedsters.",
                 color: "#22c55e", // Green
                 price: 300, // Update with actual price
-                routeImage: "/images/routes/3km-route.jpg", // Placeholder - will be updated later
+                routeImage: "/images/routes/3k-route.jpg", // Placeholder - will be updated later
             },
         ],
     },

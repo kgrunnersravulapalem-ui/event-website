@@ -1,4 +1,4 @@
-import { ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, listAll, deleteObject } from "firebase/storage";
 import { storage } from "./firebase";
 
 export const uploadImage = async (file: File, folder: string = 'uploads') => {
@@ -32,5 +32,20 @@ export const fetchImages = async (folder: string = 'uploads') => {
     } catch (error) {
         console.error("Error fetching images: ", error);
         return [];
+    }
+};
+
+export const deleteImage = async (imageName: string, folder: string = 'uploads') => {
+    if (!storage) {
+        return { success: false, error: "Firebase storage not initialized" };
+    }
+
+    try {
+        const imageRef = ref(storage, `${folder}/${imageName}`);
+        await deleteObject(imageRef);
+        return { success: true };
+    } catch (error) {
+        console.error("Error deleting image: ", error);
+        return { success: false, error };
     }
 };

@@ -32,6 +32,8 @@ interface FormData {
     tshirtSize: string;
     bloodGroup: string;
     email: string;
+    acceptedTerms: boolean;
+    acceptedRefundPolicy: boolean;
 }
 
 function RegisterForm() {
@@ -46,6 +48,8 @@ function RegisterForm() {
         tshirtSize: 'XL',
         bloodGroup: 'O+',
         email: 'mail2me.krishkiran@gmail.com',
+        acceptedTerms: false,
+        acceptedRefundPolicy: false,
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -68,6 +72,14 @@ function RegisterForm() {
         setIsSubmitting(true);
 
         try {
+            // Validate policy acceptance
+            if (!formData.acceptedTerms) {
+                throw new Error('Please accept the Terms & Conditions to continue');
+            }
+            if (!formData.acceptedRefundPolicy) {
+                throw new Error('Please accept the Refund Policy to continue');
+            }
+
             const selectedCat = eventConfig.raceCategories.categories.find(
                 cat => cat.id === selectedCategory
             );
@@ -292,6 +304,44 @@ function RegisterForm() {
                                     value={formData.bloodGroup}
                                     onChange={(value) => handleInputChange('bloodGroup', value)}
                                 />
+
+                                {/* Policy Acceptance Checkboxes */}
+                                <div className={styles.policySection}>
+                                    <div className={styles.checkboxGroup}>
+                                        <label className={styles.checkboxLabel}>
+                                            <input
+                                                type="checkbox"
+                                                checked={formData.acceptedTerms}
+                                                onChange={(e) => handleInputChange('acceptedTerms', e.target.checked as any)}
+                                                required
+                                                className={styles.checkbox}
+                                            />
+                                            <span>
+                                                I have read and agree to the{' '}
+                                                <a href="/terms" target="_blank" rel="noopener noreferrer" className={styles.policyLink}>
+                                                    Terms & Conditions
+                                                </a>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div className={styles.checkboxGroup}>
+                                        <label className={styles.checkboxLabel}>
+                                            <input
+                                                type="checkbox"
+                                                checked={formData.acceptedRefundPolicy}
+                                                onChange={(e) => handleInputChange('acceptedRefundPolicy', e.target.checked as any)}
+                                                required
+                                                className={styles.checkbox}
+                                            />
+                                            <span>
+                                                I have read and agree to the{' '}
+                                                <a href="/refund" target="_blank" rel="noopener noreferrer" className={styles.policyLink}>
+                                                    Refund Policy
+                                                </a>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
 
                                 {error && (
                                     <div className={styles.errorMessage}>

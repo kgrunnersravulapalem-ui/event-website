@@ -33,7 +33,7 @@ const Hero = () => {
                     </div>
 
                     <p className={styles.subhead}>
-                        Join thousands of runners in the most scenic marathon of the year.
+                        Join hundreds of runners in the most scenic run of the year.
                         Experience the thrill, the view, and the glory.
                     </p>
 

@@ -273,6 +273,7 @@ exports.paymentWebhook = functions.https.onRequest(async (req, res) => {
                         orderId: merchantOrderId,
                         transactionId: payload.orderId || merchantOrderId,
                         paymentDate: new Date().toLocaleString('en-IN', {
+                            timeZone: 'Asia/Kolkata',
                             day: '2-digit',
                             month: 'short',
                             year: 'numeric',
@@ -314,6 +315,7 @@ exports.paymentWebhook = functions.https.onRequest(async (req, res) => {
                         orderId: merchantOrderId,
                         transactionId: payload.orderId || merchantOrderId,
                         paymentDate: new Date().toLocaleString('en-IN', {
+                            timeZone: 'Asia/Kolkata',
                             day: '2-digit',
                             month: 'short',
                             year: 'numeric',
@@ -524,6 +526,7 @@ exports.verifyPayment = functions.https.onRequest(async (req, res) => {
                             orderId: merchantOrderId,
                             transactionId: statusResponse.orderId || merchantOrderId,
                             paymentDate: new Date().toLocaleString('en-IN', {
+                                timeZone: 'Asia/Kolkata',
                                 day: '2-digit',
                                 month: 'short',
                                 year: 'numeric',
@@ -568,6 +571,7 @@ exports.verifyPayment = functions.https.onRequest(async (req, res) => {
                             orderId: merchantOrderId,
                             transactionId: statusResponse.orderId || merchantOrderId,
                             paymentDate: new Date().toLocaleString('en-IN', {
+                                timeZone: 'Asia/Kolkata',
                                 day: '2-digit',
                                 month: 'short',
                                 year: 'numeric',
@@ -604,6 +608,7 @@ exports.verifyPayment = functions.https.onRequest(async (req, res) => {
                             orderId: merchantOrderId,
                             transactionId: statusResponse.orderId || merchantOrderId,
                             paymentDate: new Date().toLocaleString('en-IN', {
+                                timeZone: 'Asia/Kolkata',
                                 day: '2-digit',
                                 month: 'short',
                                 year: 'numeric',

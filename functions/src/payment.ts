@@ -294,7 +294,8 @@ export const paymentWebhook = functions.https.onRequest(async (req, res) => {
             amount: transactionData.amount || 0,
             orderId: merchantOrderId,
             transactionId: payload.orderId || merchantOrderId,
-            paymentDate: new Date().toLocaleString('en-IN', { 
+            paymentDate: new Date().toLocaleString('en-IN', {
+              timeZone: 'Asia/Kolkata',
               day: '2-digit', 
               month: 'short', 
               year: 'numeric',
@@ -337,7 +338,8 @@ export const paymentWebhook = functions.https.onRequest(async (req, res) => {
             amount: transactionData.amount || 0,
             orderId: merchantOrderId,
             transactionId: payload.orderId || merchantOrderId,
-            paymentDate: new Date().toLocaleString('en-IN', { 
+            paymentDate: new Date().toLocaleString('en-IN', {
+              timeZone: 'Asia/Kolkata',
               day: '2-digit', 
               month: 'short', 
               year: 'numeric',
@@ -574,6 +576,7 @@ export const verifyPayment = functions.https.onRequest(async (req, res) => {
               orderId: merchantOrderId,
               transactionId: statusResponse.orderId || merchantOrderId,
               paymentDate: new Date().toLocaleString('en-IN', { 
+                timeZone: 'Asia/Kolkata',
                 day: '2-digit', 
                 month: 'short', 
                 year: 'numeric',
@@ -620,6 +623,7 @@ export const verifyPayment = functions.https.onRequest(async (req, res) => {
               orderId: merchantOrderId,
               transactionId: statusResponse.orderId || merchantOrderId,
               paymentDate: new Date().toLocaleString('en-IN', { 
+                timeZone: 'Asia/Kolkata',
                 day: '2-digit', 
                 month: 'short', 
                 year: 'numeric',
@@ -656,7 +660,8 @@ export const verifyPayment = functions.https.onRequest(async (req, res) => {
               amount: statusResponse.amount || 0,
               orderId: merchantOrderId,
               transactionId: statusResponse.orderId || merchantOrderId,
-              paymentDate: new Date().toLocaleString('en-IN', { 
+              paymentDate: new Date().toLocaleString('en-IN', {
+                timeZone: 'Asia/Kolkata',
                 day: '2-digit', 
                 month: 'short', 
                 year: 'numeric',

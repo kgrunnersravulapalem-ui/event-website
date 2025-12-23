@@ -169,11 +169,13 @@ function generateContactEmail(data) {
                     <td style="padding: 8px 0; color: #6B7280; font-size: 14px;">Received:</td>
                     <td style="padding: 8px 0; color: ${colors.dark}; font-size: 14px;">
                       ${new Date().toLocaleString('en-IN', {
+        timeZone: 'Asia/Kolkata',
         day: '2-digit',
         month: 'short',
         year: 'numeric',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
+        hour12: true
     })}
                     </td>
                   </tr>

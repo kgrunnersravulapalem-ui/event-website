@@ -40,30 +40,31 @@ function generateStatusIcon(type, heading, message) {
     const icons = {
         success: {
             color: colors.success,
-            svg: '<path d="M20 6L9 17L4 12" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'
+            symbol: '✓',
+            fontSize: '48px'
         },
         pending: {
             color: colors.warning,
-            svg: '<circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"/><path d="M12 6v6l4 2" stroke="white" stroke-width="2" stroke-linecap="round"/>'
+            symbol: '⏰',
+            fontSize: '40px'
         },
         failed: {
             color: colors.danger,
-            svg: '<path d="M6 18L18 6M6 6l12 12" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'
+            symbol: '✗',
+            fontSize: '48px'
         }
     };
     const icon = icons[type];
     return `
     <tr>
       <td style="padding: 40px 30px; text-align: center;">
-        <table role="presentation" style="margin: 0 auto;">
-          <tr>
-            <td style="width: 80px; height: 80px; background-color: ${icon.color}; border-radius: 50%; text-align: center; vertical-align: middle;">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle;">
-                ${icon.svg}
-              </svg>
-            </td>
-          </tr>
-        </table>
+        <div style="width: 80px; height: 80px; background-color: ${icon.color}; border-radius: 50%; margin: 0 auto; display: table;">
+          <div style="display: table-cell; vertical-align: middle; text-align: center;">
+            <span style="color: #ffffff; font-size: ${icon.fontSize}; font-weight: bold; line-height: 80px;">
+              ${icon.symbol}
+            </span>
+          </div>
+        </div>
         <h2 style="margin: 20px 0 15px; color: ${colors.dark}; font-size: 24px;">
           ${heading}
         </h2>

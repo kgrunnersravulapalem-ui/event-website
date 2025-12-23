@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState, Suspense, useRef, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import styles from './PaymentStatus.module.css';
 import Button from '@/components/ui/Button/Button';
@@ -11,15 +11,88 @@ interface PaymentData {
     transaction: any;
 }
 
+// Polling configuration for PENDING status
+const POLLING_CONFIG = {
+    INTERVAL_MS: 3000,      // Check every 3 seconds
+    MAX_ATTEMPTS: 15,       // Max 15 attempts (3s x 15 = 45 seconds)
+    MAX_DURATION_MS: 45 * 1000, // 45 seconds maximum polling time
+};
+
 function PaymentStatusContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [paymentData, setPaymentData] = useState<PaymentData | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [pollCount, setPollCount] = useState(0);
+    const [pollingTimedOut, setPollingTimedOut] = useState(false);
+    
+    // Refs for cleanup
+    const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
+    const pollStartTimeRef = useRef<number>(0);
+    const isPollingRef = useRef(false);
+
+    // Cleanup function
+    const stopPolling = useCallback(() => {
+        if (pollIntervalRef.current) {
+            clearInterval(pollIntervalRef.current);
+            pollIntervalRef.current = null;
+        }
+        isPollingRef.current = false;
+    }, []);
+
+    // Verify payment function
+    const verifyPayment = useCallback(async (orderId: string, isPolling = false): Promise<'COMPLETED' | 'FAILED' | 'PENDING' | 'ERROR'> => {
+        try {
+            const cloudFunctionsUrl = process.env.NEXT_PUBLIC_CLOUD_FUNCTIONS_URL;
+            
+            if (!cloudFunctionsUrl) {
+                throw new Error('Cloud Functions URL not configured');
+            }
+
+            const response = await fetch(`${cloudFunctionsUrl}/verifyPayment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ merchantOrderId: orderId }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to verify payment');
+            }
+
+            const data = await response.json();
+            
+            if (data.success) {
+                const status = data.state || 'UNKNOWN';
+                setPaymentData({
+                    status,
+                    registration: data.registration,
+                    transaction: data.transaction
+                });
+                
+                if (!isPolling) {
+                    setLoading(false);
+                }
+                
+                return status;
+            } else {
+                setError(data.error || 'Payment verification failed');
+                setLoading(false);
+                return 'ERROR';
+            }
+        } catch (err) {
+            console.error('Error verifying payment:', err);
+            if (!isPolling) {
+                setError('Failed to verify payment status');
+                setLoading(false);
+            }
+            return 'ERROR';
+        }
+    }, []);
 
     useEffect(() => {
-        // New API uses orderId (merchantOrderId) instead of transactionId
         const orderId = searchParams.get('orderId') || searchParams.get('transactionId');
         
         if (!orderId) {
@@ -28,49 +101,54 @@ function PaymentStatusContent() {
             return;
         }
 
-        // Verify payment status via Cloud Function
-        const verifyPayment = async () => {
-            try {
-                const cloudFunctionsUrl = process.env.NEXT_PUBLIC_CLOUD_FUNCTIONS_URL;
+        // Initial verification
+        const initVerification = async () => {
+            const status = await verifyPayment(orderId);
+            
+            // If PENDING, start polling with limits
+            if (status === 'PENDING' && !isPollingRef.current) {
+                isPollingRef.current = true;
+                pollStartTimeRef.current = Date.now();
+                setPollCount(1);
                 
-                if (!cloudFunctionsUrl) {
-                    throw new Error('Cloud Functions URL not configured');
-                }
-
-                // Verify payment with Cloud Function (v2 API uses merchantOrderId)
-                const response = await fetch(`${cloudFunctionsUrl}/verifyPayment`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ merchantOrderId: orderId }),
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to verify payment');
-                }
-
-                const data = await response.json();
-                
-                if (data.success) {
-                    setPaymentData({
-                        status: data.state || 'UNKNOWN',
-                        registration: data.registration,
-                        transaction: data.transaction
+                pollIntervalRef.current = setInterval(async () => {
+                    const elapsedTime = Date.now() - pollStartTimeRef.current;
+                    
+                    setPollCount(prev => {
+                        const newCount = prev + 1;
+                        
+                        // Check if we've exceeded limits
+                        if (newCount > POLLING_CONFIG.MAX_ATTEMPTS || elapsedTime > POLLING_CONFIG.MAX_DURATION_MS) {
+                            stopPolling();
+                            setPollingTimedOut(true);
+                            setLoading(false);
+                            return prev;
+                        }
+                        
+                        return newCount;
                     });
-                } else {
-                    setError(data.error || 'Payment verification failed');
-                }
-            } catch (err) {
-                console.error('Error verifying payment:', err);
-                setError('Failed to verify payment status');
-            } finally {
-                setLoading(false);
+                    
+                    // Don't continue if we've stopped polling
+                    if (!isPollingRef.current) return;
+                    
+                    const pollStatus = await verifyPayment(orderId, true);
+                    
+                    // Stop polling if status is final
+                    if (pollStatus === 'COMPLETED' || pollStatus === 'FAILED' || pollStatus === 'ERROR') {
+                        stopPolling();
+                        setLoading(false);
+                    }
+                }, POLLING_CONFIG.INTERVAL_MS);
             }
         };
 
-        verifyPayment();
-    }, [searchParams]);
+        initVerification();
+
+        // Cleanup on unmount
+        return () => {
+            stopPolling();
+        };
+    }, [searchParams, verifyPayment, stopPolling]);
 
     if (loading) {
         return (
@@ -125,13 +203,14 @@ function PaymentStatusContent() {
                 <h1>
                     {isSuccess && 'Payment Successful!'}
                     {isFailed && 'Payment Failed'}
-                    {isPending && 'Payment Pending'}
+                    {isPending && (pollingTimedOut ? 'Payment Status Unknown' : 'Payment Pending')}
                 </h1>
 
                 <p className={styles.message}>
                     {isSuccess && 'Thank you for registering! Your payment has been confirmed.'}
                     {isFailed && 'Your payment could not be processed. Please try again.'}
-                    {isPending && 'Your payment is being processed. Please wait...'}
+                    {isPending && !pollingTimedOut && `Checking payment status... (${pollCount}/${POLLING_CONFIG.MAX_ATTEMPTS})`}
+                    {isPending && pollingTimedOut && 'Payment verification is taking longer than expected. If money was deducted, your registration will be confirmed once we receive payment confirmation from PhonePe, or it will be refunded within 5-7 business days.'}
                 </p>
 
                 <div className={styles.details}>
@@ -192,13 +271,27 @@ function PaymentStatusContent() {
                             Try Again
                         </Button>
                     )}
-                    {isPending && (
-                        <Button 
-                            onClick={() => window.location.reload()}
-                            variant="secondary"
-                        >
-                            Refresh Status
-                        </Button>
+                    {isPending && !pollingTimedOut && (
+                        <p style={{ fontSize: '0.9rem', color: '#64748b' }}>
+                            Auto-checking every 3 seconds...
+                        </p>
+                    )}
+                    {isPending && pollingTimedOut && (
+                        <>
+                            <Button 
+                                onClick={() => window.location.reload()}
+                                variant="secondary"
+                            >
+                                Check Again
+                            </Button>
+                            <Button 
+                                onClick={() => router.push('/')}
+                                variant="outline"
+                                style={{ marginTop: '0.5rem' }}
+                            >
+                                Back to Home
+                            </Button>
+                        </>
                     )}
                 </div>
             </motion.div>

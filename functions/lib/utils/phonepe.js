@@ -241,6 +241,11 @@ async function checkOrderStatus(config, merchantOrderId, options) {
             state: responseData.state,
         });
         if (!response.ok) {
+            // Handle PhonePe sandbox errors specially
+            if (response.status === 500 && config.environment === 'SANDBOX') {
+                console.warn('PhonePe sandbox error - this is a known sandbox issue');
+                throw new Error('PhonePe sandbox is temporarily unavailable. Please try again in a moment or contact support.');
+            }
             throw new Error(responseData.message || `Status check failed: ${response.status}`);
         }
         return responseData;

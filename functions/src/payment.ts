@@ -478,9 +478,15 @@ export const checkStatus = functions.https.onRequest(async (req, res) => {
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Status check failed';
     console.error('Status check error:', error);
+    
+    // Provide user-friendly error message
+    const userMessage = errorMessage.includes('sandbox') 
+      ? 'The payment gateway is temporarily unavailable. Your payment may still be processing. Please wait a moment and check your email, or contact support.'
+      : errorMessage;
+    
     res.status(500).json({
       success: false,
-      error: errorMessage
+      error: userMessage
     });
   }
 });
@@ -706,9 +712,16 @@ export const verifyPayment = functions.https.onRequest(async (req, res) => {
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Verification failed';
     console.error('Payment verification error:', error);
+    
+    // Provide user-friendly error message
+    const userMessage = errorMessage.includes('sandbox') 
+      ? 'The payment gateway is temporarily unavailable. Your payment may still be processing. Please wait a moment and refresh, or contact support with your order ID.'
+      : 'Failed to verify payment. Please try again or contact support if the issue persists.';
+    
     res.status(500).json({
       success: false,
-      error: errorMessage
+      error: userMessage,
+      debug: process.env.NODE_ENV === 'development' ? errorMessage : undefined
     });
   }
 });

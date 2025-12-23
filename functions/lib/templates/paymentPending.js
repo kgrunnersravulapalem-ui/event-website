@@ -2,185 +2,52 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generatePaymentPendingEmail = generatePaymentPendingEmail;
 const emailConfig_1 = require("../config/emailConfig");
+const emailComponents_1 = require("./emailComponents");
 function generatePaymentPendingEmail(data) {
-    const { event, colors, social, support, footer } = emailConfig_1.EMAIL_CONFIG;
-    return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment Pending</title>
-</head>
-<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: ${colors.light};">
-  <table role="presentation" style="width: 100%; border-collapse: collapse;">
+    const { colors } = emailConfig_1.EMAIL_CONFIG;
+    const emailContent = `
+    ${(0, emailComponents_1.generateEmailHeader)('pending', 'Payment Pending ⏳')}
+    ${(0, emailComponents_1.generateStatusIcon)('pending', 'Payment Being Processed', `Hi <strong>${data.participantName}</strong>,<br>Your payment is currently being processed by the payment gateway. This usually takes a few minutes.`)}
+    ${(0, emailComponents_1.generateDetailsSection)('Transaction Details', colors.warning, (0, emailComponents_1.generateParticipantDetailsTable)(data, data, colors.warning, colors.warning))}
+    
+    <!-- What Happens Next -->
     <tr>
-      <td style="padding: 40px 20px;">
-        <table role="presentation" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-          
-          <!-- Header -->
-          <tr>
-            <td style="background: linear-gradient(135deg, ${colors.warning} 0%, #F97316 100%); padding: 40px 30px; text-align: center;">
-              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold;">
-                ${event.name}
-              </h1>
-              <p style="margin: 10px 0 0; color: #ffffff; font-size: 16px; opacity: 0.95;">
-                Payment Pending ⏳
-              </p>
-            </td>
-          </tr>
-
-          <!-- Pending Message -->
-          <tr>
-            <td style="padding: 40px 30px; text-align: center;">
-              <div style="width: 80px; height: 80px; margin: 0 auto 20px; background-color: ${colors.warning}; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"/>
-                  <path d="M12 6v6l4 2" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-              </div>
-              <h2 style="margin: 0 0 15px; color: ${colors.dark}; font-size: 24px;">
-                Payment Being Processed
-              </h2>
-              <p style="margin: 0; color: #6B7280; font-size: 16px; line-height: 1.6;">
-                Hi <strong>${data.participantName}</strong>,<br>
-                Your payment is currently being processed by the payment gateway. This usually takes a few minutes.
-              </p>
-            </td>
-          </tr>
-
-          <!-- Transaction Details -->
-          <tr>
-            <td style="padding: 0 30px 30px;">
-              <div style="background-color: ${colors.light}; border-radius: 8px; padding: 25px; margin-bottom: 20px;">
-                <h3 style="margin: 0 0 20px; color: ${colors.dark}; font-size: 18px; border-bottom: 2px solid ${colors.warning}; padding-bottom: 10px;">
-                  Transaction Details
-                </h3>
-                <table role="presentation" style="width: 100%; border-collapse: collapse;">
-                  <tr>
-                    <td style="padding: 8px 0; color: #6B7280; font-size: 14px;">Participant</td>
-                    <td style="padding: 8px 0; color: ${colors.dark}; font-size: 14px; font-weight: bold; text-align: right;">
-                      ${data.participantName}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 8px 0; color: #6B7280; font-size: 14px;">Race Category</td>
-                    <td style="padding: 8px 0; color: ${colors.dark}; font-size: 14px; font-weight: bold; text-align: right;">
-                      ${data.raceCategory}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 8px 0; color: #6B7280; font-size: 14px;">Amount</td>
-                    <td style="padding: 8px 0; color: ${colors.warning}; font-size: 16px; font-weight: bold; text-align: right;">
-                      ₹${data.amount}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 8px 0; color: #6B7280; font-size: 14px;">Transaction ID</td>
-                    <td style="padding: 8px 0; color: ${colors.dark}; font-size: 12px; font-family: monospace; text-align: right;">
-                      ${data.transactionId}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 8px 0; color: #6B7280; font-size: 14px;">Initiated On</td>
-                    <td style="padding: 8px 0; color: ${colors.dark}; font-size: 14px; text-align: right;">
-                      ${data.paymentDate}
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </td>
-          </tr>
-
-          <!-- What Happens Next -->
-          <tr>
-            <td style="padding: 0 30px 30px;">
-              <div style="background-color: #FEF3C7; border-left: 4px solid ${colors.warning}; padding: 20px; border-radius: 4px;">
-                <h3 style="margin: 0 0 15px; color: ${colors.dark}; font-size: 18px;">
-                  ⏰ What Happens Next?
-                </h3>
-                <ul style="margin: 0; padding-left: 20px; color: #6B7280; font-size: 14px; line-height: 1.8;">
-                  <li>Your payment is being verified by the bank</li>
-                  <li>This process usually takes 5-10 minutes</li>
-                  <li>You'll receive a confirmation email once the payment is successful</li>
-                  <li>If the payment fails, the amount will be automatically refunded to your account within 3-5 business days</li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Action Required -->
-          <tr>
-            <td style="padding: 0 30px 30px;">
-              <div style="border: 2px solid ${colors.warning}; border-radius: 8px; padding: 20px; background-color: #FFFBEB;">
-                <h3 style="margin: 0 0 15px; color: ${colors.dark}; font-size: 18px;">
-                  ℹ️ Important Notice
-                </h3>
-                <p style="margin: 0 0 10px; color: #6B7280; font-size: 14px; line-height: 1.6;">
-                  <strong>Do not close the payment window</strong> if you're still on the payment page. Wait for the final confirmation.
-                </p>
-                <p style="margin: 0; color: #6B7280; font-size: 14px; line-height: 1.6;">
-                  If you don't receive a confirmation email within 30 minutes, please check your spam folder or contact our support team.
-                </p>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Event Information -->
-          <tr>
-            <td style="padding: 0 30px 30px;">
-              <div style="background-color: ${colors.light}; padding: 20px; border-radius: 8px;">
-                <h3 style="margin: 0 0 15px; color: ${colors.dark}; font-size: 18px;">
-                  📅 Event Information
-                </h3>
-                <p style="margin: 0 0 10px; color: ${colors.dark}; font-size: 15px;">
-                  <strong>Date:</strong> ${event.date}
-                </p>
-                <p style="margin: 0 0 10px; color: ${colors.dark}; font-size: 15px;">
-                  <strong>Venue:</strong> ${event.venue}
-                </p>
-                <p style="margin: 0; color: ${colors.dark}; font-size: 15px;">
-                  <strong>Reporting Time:</strong> ${event.reportingTime}
-                </p>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Social Media -->
-          <tr>
-            <td style="padding: 0 30px 30px; text-align: center;">
-              <p style="margin: 0 0 15px; color: ${colors.dark}; font-size: 16px; font-weight: bold;">
-                ${footer.message}
-              </p>
-              <div style="margin-bottom: 20px;">
-                <a href="${social.instagram}" style="display: inline-block; margin: 0 10px; padding: 12px 24px; background-color: ${colors.primary}; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: bold;">
-                  📷 Instagram
-                </a>
-                <a href="${social.facebook}" style="display: inline-block; margin: 0 10px; padding: 12px 24px; background-color: ${colors.secondary}; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: bold;">
-                  👍 Facebook
-                </a>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Footer -->
-          <tr>
-            <td style="background-color: ${colors.dark}; padding: 30px; text-align: center;">
-              <p style="margin: 0 0 10px; color: #9CA3AF; font-size: 14px;">
-                Need help? Contact us at <a href="mailto:${support.email}" style="color: ${colors.primary}; text-decoration: none;">${support.email}</a>
-              </p>
-              <p style="margin: 0; color: #6B7280; font-size: 12px;">
-                © ${footer.copyrightYear} ${footer.organizationName}. All rights reserved.
-              </p>
-            </td>
-          </tr>
-
-        </table>
+      <td style="padding: 0 30px 30px;">
+        <div style="background-color: #FEF3C7; border-left: 4px solid ${colors.warning}; padding: 20px; border-radius: 4px;">
+          <h3 style="margin: 0 0 15px; color: ${colors.dark}; font-size: 18px;">
+            ⏰ What Happens Next?
+          </h3>
+          <ul style="margin: 0; padding-left: 20px; color: #6B7280; font-size: 14px; line-height: 1.8;">
+            <li>Your payment is being verified by the bank</li>
+            <li>This process usually takes 5-10 minutes</li>
+            <li>You'll receive a confirmation email once the payment is successful</li>
+            <li>If the payment fails, the amount will be automatically refunded to your account within 3-5 business days</li>
+          </ul>
+        </div>
       </td>
     </tr>
-  </table>
-</body>
-</html>
-  `.trim();
+    
+    <!-- Action Required -->
+    <tr>
+      <td style="padding: 0 30px 30px;">
+        <div style="border: 2px solid ${colors.warning}; border-radius: 8px; padding: 20px; background-color: #FFFBEB;">
+          <h3 style="margin: 0 0 15px; color: ${colors.dark}; font-size: 18px;">
+            ℹ️ Important Notice
+          </h3>
+          <p style="margin: 0 0 10px; color: #6B7280; font-size: 14px; line-height: 1.6;">
+            <strong>Do not close the payment window</strong> if you're still on the payment page. Wait for the final confirmation.
+          </p>
+          <p style="margin: 0; color: #6B7280; font-size: 14px; line-height: 1.6;">
+            If you don't receive a confirmation email within 30 minutes, please check your spam folder or contact our support team.
+          </p>
+        </div>
+      </td>
+    </tr>
+    
+    ${(0, emailComponents_1.generateEventInfoSection)()}
+    ${(0, emailComponents_1.generateSocialMediaSection)()}
+    ${(0, emailComponents_1.generateEmailFooter)()}
+  `;
+    return (0, emailComponents_1.generateBaseEmailLayout)('Payment Pending', emailContent);
 }
 //# sourceMappingURL=paymentPending.js.map

@@ -3,8 +3,8 @@
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    border-radius: 50px;
-    /* Pill shape for modern look */
+    border-radius: 0;
+    /* Sharp edges for modern look */
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     border: 2px solid transparent;

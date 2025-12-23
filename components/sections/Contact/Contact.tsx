@@ -24,19 +24,21 @@ const Contact = () => {
         };
 
         try {
-            const response = await fetch('/api/contact', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_CLOUD_FUNCTIONS_URL}/contact`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
             });
 
-            if (response.ok) {
+            const result = await response.json();
+
+            if (response.ok && result.success) {
                 setSubmitted(true);
             } else {
-                throw new Error('Failed to send message');
+                throw new Error(result.error || 'Failed to send message');
             }
         } catch (err) {
-            setError('Something went wrong. Please try again later.');
+            setError(err instanceof Error ? err.message : 'Something went wrong. Please try again later.');
             console.error(err);
         } finally {
             setLoading(false);

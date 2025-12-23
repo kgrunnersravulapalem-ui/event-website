@@ -1,6 +1,7 @@
 /**
  * Firebase Cloud Functions Entry Point
- * Export all payment-related functions
+ * Export all cloud functions
  */
 
 export { initiatePayment, paymentWebhook, checkStatus, verifyPayment } from './payment';
+export { contact } from './contact';

@@ -6,6 +6,10 @@ import {
   validateWebhookAuth,
   PhonePeConfig 
 } from './utils/phonepe';
+import { sendEmail } from './utils/email';
+import { generatePaymentSuccessEmail, PaymentSuccessEmailData } from './templates/paymentSuccess';
+import { generatePaymentPendingEmail, PaymentPendingEmailData } from './templates/paymentPending';
+import { generatePaymentFailedEmail, PaymentFailedEmailData } from './templates/paymentFailed';
 
 // Initialize Firebase Admin
 admin.initializeApp();
@@ -260,9 +264,11 @@ export const paymentWebhook = functions.https.onRequest(async (req, res) => {
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
-    // Update registration status
+    // Update registration status and send email
     if (transactionData?.registrationId) {
       const registrationRef = db.collection('registrations').doc(transactionData.registrationId);
+      const registrationDoc = await registrationRef.get();
+      const registrationData = registrationDoc.exists ? registrationDoc.data() : null;
       
       if (state === 'COMPLETED') {
         await registrationRef.update({
@@ -271,6 +277,34 @@ export const paymentWebhook = functions.https.onRequest(async (req, res) => {
           paymentCompletedAt: admin.firestore.FieldValue.serverTimestamp(),
           updatedAt: admin.firestore.FieldValue.serverTimestamp()
         });
+
+        // Send success email
+        if (registrationData && !transactionData.emailSent) {
+          const emailData: PaymentSuccessEmailData = {
+            participantName: registrationData.name || 'Participant',
+            participantEmail: registrationData.email || '',
+            raceCategory: registrationData.raceCategory || 'N/A',
+            amount: transactionData.amount || 0,
+            transactionId: payload.orderId || merchantOrderId,
+            paymentDate: new Date().toLocaleString('en-IN', { 
+              day: '2-digit', 
+              month: 'short', 
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true
+            }),
+          };
+
+          await sendEmail({
+            to: registrationData.email,
+            subject: 'Payment Successful - Ravulapalem Run 2025 Registration Confirmed',
+            html: generatePaymentSuccessEmail(emailData),
+          });
+
+          // Mark email as sent
+          await transactionRef.update({ emailSent: true });
+        }
       } else if (state === 'FAILED') {
         await registrationRef.update({
           status: 'PAYMENT_FAILED',
@@ -278,6 +312,35 @@ export const paymentWebhook = functions.https.onRequest(async (req, res) => {
           errorCode: payload.errorCode || null,
           updatedAt: admin.firestore.FieldValue.serverTimestamp()
         });
+
+        // Send failure email
+        if (registrationData && !transactionData.emailSent) {
+          const emailData: PaymentFailedEmailData = {
+            participantName: registrationData.name || 'Participant',
+            participantEmail: registrationData.email || '',
+            raceCategory: registrationData.raceCategory || 'N/A',
+            amount: transactionData.amount || 0,
+            transactionId: payload.orderId || merchantOrderId,
+            paymentDate: new Date().toLocaleString('en-IN', { 
+              day: '2-digit', 
+              month: 'short', 
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true
+            }),
+            failureReason: payload.errorCode || 'Payment declined',
+          };
+
+          await sendEmail({
+            to: registrationData.email,
+            subject: 'Payment Failed - Ravulapalem Run 2025 Registration',
+            html: generatePaymentFailedEmail(emailData),
+          });
+
+          // Mark email as sent
+          await transactionRef.update({ emailSent: true });
+        }
       }
     }
 
@@ -477,6 +540,34 @@ export const verifyPayment = functions.https.onRequest(async (req, res) => {
             registrationData.status = 'CONFIRMED';
             registrationData.paymentStatus = 'SUCCESS';
           }
+
+          // Send success email (fallback if webhook didn't trigger)
+          if (registrationData && !transactionData.emailSent) {
+            const emailData: PaymentSuccessEmailData = {
+              participantName: registrationData.name || 'Participant',
+              participantEmail: registrationData.email || '',
+              raceCategory: registrationData.raceCategory || 'N/A',
+              amount: statusResponse.amount || 0,
+              transactionId: statusResponse.orderId || merchantOrderId,
+              paymentDate: new Date().toLocaleString('en-IN', { 
+                day: '2-digit', 
+                month: 'short', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+              }),
+            };
+
+            await sendEmail({
+              to: registrationData.email,
+              subject: 'Payment Successful - Ravulapalem Run 2025 Registration Confirmed',
+              html: generatePaymentSuccessEmail(emailData),
+            });
+
+            // Mark email as sent
+            await transactionRef.update({ emailSent: true });
+          }
         } else if (statusResponse.state === 'FAILED') {
           await db.collection('registrations').doc(transactionData.registrationId).update({
             status: 'PAYMENT_FAILED',
@@ -486,6 +577,63 @@ export const verifyPayment = functions.https.onRequest(async (req, res) => {
           if (registrationData) {
             registrationData.status = 'PAYMENT_FAILED';
             registrationData.paymentStatus = 'FAILED';
+          }
+
+          // Send failure email (fallback if webhook didn't trigger)
+          if (registrationData && !transactionData.emailSent) {
+            const emailData: PaymentFailedEmailData = {
+              participantName: registrationData.name || 'Participant',
+              participantEmail: registrationData.email || '',
+              raceCategory: registrationData.raceCategory || 'N/A',
+              amount: statusResponse.amount || 0,
+              transactionId: statusResponse.orderId || merchantOrderId,
+              paymentDate: new Date().toLocaleString('en-IN', { 
+                day: '2-digit', 
+                month: 'short', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+              }),
+              failureReason: statusResponse.errorCode || 'Payment declined',
+            };
+
+            await sendEmail({
+              to: registrationData.email,
+              subject: 'Payment Failed - Ravulapalem Run 2025 Registration',
+              html: generatePaymentFailedEmail(emailData),
+            });
+
+            // Mark email as sent
+            await transactionRef.update({ emailSent: true });
+          }
+        } else if (statusResponse.state === 'PENDING') {
+          // Send pending email for long-running transactions
+          if (registrationData && !transactionData.emailSent) {
+            const emailData: PaymentPendingEmailData = {
+              participantName: registrationData.name || 'Participant',
+              participantEmail: registrationData.email || '',
+              raceCategory: registrationData.raceCategory || 'N/A',
+              amount: statusResponse.amount || 0,
+              transactionId: statusResponse.orderId || merchantOrderId,
+              paymentDate: new Date().toLocaleString('en-IN', { 
+                day: '2-digit', 
+                month: 'short', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+              }),
+            };
+
+            await sendEmail({
+              to: registrationData.email,
+              subject: 'Payment Pending - Ravulapalem Run 2025 Registration',
+              html: generatePaymentPendingEmail(emailData),
+            });
+
+            // Mark email as sent
+            await transactionRef.update({ emailSent: true });
           }
         }
       }

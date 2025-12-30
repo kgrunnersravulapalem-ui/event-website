@@ -42,13 +42,13 @@ function RegisterForm() {
     const router = useRouter();
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [formData, setFormData] = useState<FormData>({
-        fullName: 'kiran',
-        gender: 'Male',
-        mobileNumber: '8686868686',
-        dateOfBirth: '1995-08-14',
-        tshirtSize: 'XL',
-        bloodGroup: 'O+',
-        email: 'mail2me.krishkiran@gmail.com',
+        fullName: '',
+        gender: '',
+        mobileNumber: '',
+        dateOfBirth: '',
+        tshirtSize: '',
+        bloodGroup: '',
+        email: '',
         emergencyContact: '',
         acceptedTerms: false,
         acceptedRefundPolicy: false,

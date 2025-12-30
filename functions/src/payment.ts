@@ -610,66 +610,11 @@ export const verifyPayment = functions.https.onRequest(async (req, res) => {
 
     const transactionData = transactionDoc.data();
 
-    // Check if webhook already processed this payment successfully
-    // This handles cases where PhonePe status API returns 500 but webhook already confirmed payment
-    if (transactionData?.status === 'COMPLETED' || transactionData?.status === 'CONFIRMED') {
-      console.log('Payment already confirmed via webhook, skipping PhonePe API call');
-      
-      // Get registration data
-      let registrationData = null;
-      if (transactionData?.registrationId) {
-        const registrationDoc = await db.collection(getCollectionName('registrations', config.environment)).doc(transactionData.registrationId).get();
-        if (registrationDoc.exists) {
-          registrationData = registrationDoc.data();
-        }
-      }
-
-      res.status(200).json({
-        success: true,
-        data: {
-          status: 'COMPLETED',
-          orderId: transactionData.phonePeOrderId || merchantOrderId,
-          amount: transactionData.amount,
-          registration: registrationData ? {
-            name: registrationData.name,
-            email: registrationData.email,
-            raceCategory: registrationData.raceCategory,
-            status: registrationData.status,
-          } : null,
-          message: 'Payment verified successfully'
-        }
-      });
-      return;
-    }
-
-    // Verify with PhonePe API (only if not already confirmed)
-    let statusResponse;
-    try {
-      statusResponse = await checkOrderStatus(config, merchantOrderId, {
-        details: true,
-        errorContext: true,
-      });
-    } catch (phonepeError: any) {
-      console.error('PhonePe status check failed:', phonepeError.message);
-      
-      // If PhonePe API fails but we have a pending transaction, return current state
-      // User can try again or wait for webhook
-      if (transactionData?.status === 'PENDING') {
-        res.status(200).json({
-          success: true,
-          data: {
-            status: 'PENDING',
-            orderId: merchantOrderId,
-            amount: transactionData.amount,
-            message: 'Payment is being processed. You will receive a confirmation email once completed.',
-            retryable: true
-          }
-        });
-        return;
-      }
-      
-      throw phonepeError;
-    }
+    // Verify with PhonePe
+    const statusResponse = await checkOrderStatus(config, merchantOrderId, {
+      details: true,
+      errorContext: true,
+    });
 
     // Update transaction status
     await transactionRef.update({

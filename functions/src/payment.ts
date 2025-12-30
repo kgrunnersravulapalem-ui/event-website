@@ -34,6 +34,72 @@ const getCollectionName = (baseName: string, environment: 'SANDBOX' | 'PRODUCTIO
   return environment === 'PRODUCTION' ? baseName : `${baseName}-sandbox`;
 };
 
+/**
+ * Add confirmed participant to the 'participants' collection
+ * This collection is used for event-day operations (kit distribution, etc.)
+ * Uses phone number as document ID to prevent duplicates
+ */
+const addConfirmedParticipant = async (
+  registrationData: any,
+  transactionData: any,
+  environment: 'SANDBOX' | 'PRODUCTION'
+): Promise<void> => {
+  try {
+    const participantsCollection = getCollectionName('participants', environment);
+    const phone = registrationData.phone || registrationData.mobileNumber || '';
+    
+    if (!phone) {
+      console.warn('Cannot add participant without phone number');
+      return;
+    }
+
+    // Use phone number as document ID to prevent duplicates
+    const participantRef = db.collection(participantsCollection).doc(phone);
+    
+    // Check if participant already exists
+    const existingDoc = await participantRef.get();
+    if (existingDoc.exists) {
+      console.log(`Participant ${phone} already exists in ${participantsCollection}, updating...`);
+      await participantRef.update({
+        isPaid: true,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      });
+      return;
+    }
+
+    // Format date of birth to DD/MM/YYYY if available
+    let formattedDob = registrationData.dateOfBirth || '';
+    if (formattedDob && formattedDob.includes('-')) {
+      const [year, month, day] = formattedDob.split('-');
+      formattedDob = `${day}/${month}/${year}`;
+    }
+
+    const participantData = {
+      name: registrationData.name || '',
+      email: registrationData.email || '',
+      mobileNumber: phone,
+      gender: registrationData.gender || '',
+      dateOfBirth: formattedDob,
+      bloodGroup: registrationData.bloodGroup || '',
+      size: registrationData.tshirtSize || '',
+      category: registrationData.raceCategory || '',
+      emergencyContact: registrationData.emergencyContact || '',
+      organization: 'online-phonepe',
+      isPaid: true,
+      swagKitGiven: false,
+      orderId: transactionData?.merchantOrderId || '',
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    };
+
+    await participantRef.set(participantData);
+    console.log(`Participant added to ${participantsCollection}:`, phone);
+  } catch (error) {
+    console.error('Error adding confirmed participant:', error);
+    // Don't throw - this is a non-critical operation
+  }
+};
+
 // Webhook credentials
 const getWebhookCredentials = () => {
   const config = functions.config().webhook;
@@ -286,6 +352,9 @@ export const paymentWebhook = functions.https.onRequest(async (req, res) => {
           paymentCompletedAt: admin.firestore.FieldValue.serverTimestamp(),
           updatedAt: admin.firestore.FieldValue.serverTimestamp()
         });
+
+        // Add to participants collection for event-day operations
+        await addConfirmedParticipant(registrationData, transactionData, config.environment);
 
         // Send success email
         if (registrationData && !transactionData.emailSent) {
@@ -574,6 +643,9 @@ export const verifyPayment = functions.https.onRequest(async (req, res) => {
             registrationData.status = 'CONFIRMED';
             registrationData.paymentStatus = 'SUCCESS';
           }
+
+          // Add to participants collection for event-day operations (fallback if webhook didn't trigger)
+          await addConfirmedParticipant(registrationData, transactionData, config.environment);
 
           // Send success email (fallback if webhook didn't trigger)
           if (registrationData && !transactionData.emailSent) {

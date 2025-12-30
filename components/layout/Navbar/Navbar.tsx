@@ -75,7 +75,7 @@ const Navbar = () => {
             <div className={styles.container}>
                 <div className={styles.logo}>
                     <Link href="/">
-                        RUN<span className={styles.logoHighlight}>EVENT</span>
+                        KG <span className={styles.logoHighlight}>Runners</span>
                     </Link>
                 </div>
 

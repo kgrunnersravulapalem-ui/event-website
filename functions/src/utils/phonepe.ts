@@ -142,7 +142,13 @@ export async function generateAccessToken(config: PhonePeConfig): Promise<string
     params.append('client_secret', config.clientSecret);
     params.append('grant_type', 'client_credentials');
 
-    console.log('Generating PhonePe access token...');
+    console.log('Generating PhonePe access token:', {
+      environment: config.environment,
+      endpoint: urls.auth,
+      client_id: config.clientId,
+      client_version: config.clientVersion,
+      // Don't log client_secret for security
+    });
     
     const response = await fetchWithTimeout(urls.auth, {
       method: 'POST',
@@ -154,7 +160,11 @@ export async function generateAccessToken(config: PhonePeConfig): Promise<string
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Token generation failed:', errorText);
+      console.error('Token generation failed:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorText,
+      });
       throw new Error(`Failed to generate access token: ${response.status} - ${errorText}`);
     }
 

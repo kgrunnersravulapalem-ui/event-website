@@ -32,7 +32,6 @@ export function generatePaymentSuccessEmail(data: PaymentSuccessEmailData): stri
           </h3>
           <ul style="margin: 0; padding-left: 20px; color: #6B7280; font-size: 14px; line-height: 1.8;">
             <li>Please arrive at least 30 minutes before the reporting time</li>
-            <li>Bring a valid ID proof for verification</li>
             <li>Wear comfortable running shoes and sportswear</li>
             <li>Stay hydrated before and during the event</li>
             <li>Follow all safety instructions from organizers</li>

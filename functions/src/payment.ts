@@ -37,7 +37,11 @@ const getCollectionName = (baseName: string, environment: 'SANDBOX' | 'PRODUCTIO
 /**
  * Add confirmed participant to the 'participants' collection
  * This collection is used for event-day operations (kit distribution, etc.)
- * Uses phone number as document ID to prevent duplicates
+ * Uses orderId as document ID to ensure unique entries per transaction
+ * 
+ * Collection naming:
+ * - PRODUCTION: 'participants' (real paid registrations)
+ * - SANDBOX: 'participants-sandbox' (test registrations)
  */
 const addConfirmedParticipant = async (
   registrationData: any,
@@ -46,24 +50,21 @@ const addConfirmedParticipant = async (
 ): Promise<void> => {
   try {
     const participantsCollection = getCollectionName('participants', environment);
+    const orderId = transactionData?.merchantOrderId || '';
     const phone = registrationData.phone || registrationData.mobileNumber || '';
     
-    if (!phone) {
-      console.warn('Cannot add participant without phone number');
+    if (!orderId) {
+      console.warn('Cannot add participant without orderId');
       return;
     }
 
-    // Use phone number as document ID to prevent duplicates
-    const participantRef = db.collection(participantsCollection).doc(phone);
+    // Use orderId as document ID - ensures one participant entry per successful transaction
+    const participantRef = db.collection(participantsCollection).doc(orderId);
     
-    // Check if participant already exists
+    // Check if already exists (avoid duplicates from webhook + status check both triggering)
     const existingDoc = await participantRef.get();
     if (existingDoc.exists) {
-      console.log(`Participant ${phone} already exists in ${participantsCollection}, updating...`);
-      await participantRef.update({
-        isPaid: true,
-        updatedAt: admin.firestore.FieldValue.serverTimestamp()
-      });
+      console.log(`Participant for order ${orderId} already exists in ${participantsCollection}`);
       return;
     }
 
@@ -87,13 +88,12 @@ const addConfirmedParticipant = async (
       organization: 'online-phonepe',
       isPaid: true,
       swagKitGiven: false,
-      orderId: transactionData?.merchantOrderId || '',
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     };
 
     await participantRef.set(participantData);
-    console.log(`Participant added to ${participantsCollection}:`, phone);
+    console.log(`Participant added to ${participantsCollection} with orderId:`, orderId);
   } catch (error) {
     console.error('Error adding confirmed participant:', error);
     // Don't throw - this is a non-critical operation

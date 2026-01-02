@@ -10,17 +10,81 @@
     color: white;
 }
 
+/* Carousel Container */
+.carouselContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.carouselSlide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.carouselSlide.active {
+    opacity: 1;
+}
+
+.carouselImage {
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Gradient Overlay - now layered over images */
 .background {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    /* Abstract gradient background */
-    background: radial-gradient(circle at top right, rgba(204, 255, 0, 0.2), transparent 40%),
-        radial-gradient(circle at bottom left, rgba(0, 102, 204, 0.3), transparent 40%),
-        linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    /* Darker overlay to ensure text readability and maintain brand aesthetic */
+    background: 
+        linear-gradient(180deg, rgba(15, 23, 42, 0.4) 0%, rgba(15, 23, 42, 0.75) 100%),
+        radial-gradient(circle at top right, rgba(204, 255, 0, 0.15), transparent 50%),
+        radial-gradient(circle at bottom left, rgba(0, 102, 204, 0.25), transparent 50%);
     z-index: 1;
+}
+
+/* Carousel Indicators */
+.carouselIndicators {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.75rem;
+    z-index: 15;
+}
+
+.indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.indicator:hover {
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(1.2);
+}
+
+.activeIndicator {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    transform: scale(1.1);
 }
 
 .overlay {

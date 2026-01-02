@@ -7,6 +7,7 @@ import Input from '@/components/ui/Input/Input';
 import Select from '@/components/ui/Select/Select';
 import RadioGroup from '@/components/ui/RadioGroup/RadioGroup';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { eventConfig } from '@/lib/eventConfig';
 import type { RegistrationData } from '@/lib/types/payment';
 
@@ -170,9 +171,18 @@ function RegisterForm() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.2 }}
                 >
-                    <div className={styles.posterPlaceholder}>
-                        EVENT POSTER
-                    </div>
+                        <div className={styles.posterPlaceholder}>
+                            <div className={styles.posterImageWrapper}>
+                                <Image
+                                    src="/images/run_2.jpeg"
+                                    alt="Event poster"
+                                    fill
+                                    priority
+                                    className={styles.posterPlaceholderImage}
+                                    sizes="(max-width: 768px) 100vw, 40vw"
+                                />
+                            </div>
+                        </div>
                     <div className={styles.posterInfo}>
                         <h3>Event Details</h3>
                         <p><strong>Location:</strong> {eventConfig.location}</p>

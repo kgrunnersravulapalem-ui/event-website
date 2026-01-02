@@ -52,12 +52,20 @@
 .posterPlaceholder {
     background-color: #e2e8f0;
     height: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #94a3b8;
-    font-weight: 700;
-    font-size: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    display: block;
+}
+
+.posterImageWrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.posterPlaceholderImage {
+    object-fit: cover;
+    object-position: center;
 }
 
 .posterInfo {

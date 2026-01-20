@@ -385,7 +385,7 @@ export const paymentWebhook = functions.https.onRequest(async (req, res) => {
 
           await sendEmail({
             to: registrationData.email,
-            subject: 'Payment Successful - Ravulapalem Run 2025 Registration Confirmed',
+            subject: 'Payment Successful - Ravulapalem Run 2026 Registration Confirmed',
             html: generatePaymentSuccessEmail(emailData),
           });
 
@@ -430,7 +430,7 @@ export const paymentWebhook = functions.https.onRequest(async (req, res) => {
 
           await sendEmail({
             to: registrationData.email,
-            subject: 'Payment Failed - Ravulapalem Run 2025 Registration',
+            subject: 'Payment Failed - Ravulapalem Run 2026 Registration',
             html: generatePaymentFailedEmail(emailData),
           });
 
@@ -676,7 +676,7 @@ export const verifyPayment = functions.https.onRequest(async (req, res) => {
 
             await sendEmail({
               to: registrationData.email,
-              subject: 'Payment Successful - Ravulapalem Run 2025 Registration Confirmed',
+              subject: 'Payment Successful - Ravulapalem Run 2026 Registration Confirmed',
               html: generatePaymentSuccessEmail(emailData),
             });
 
@@ -724,7 +724,7 @@ export const verifyPayment = functions.https.onRequest(async (req, res) => {
 
             await sendEmail({
               to: registrationData.email,
-              subject: 'Payment Failed - Ravulapalem Run 2025 Registration',
+              subject: 'Payment Failed - Ravulapalem Run 2026 Registration',
               html: generatePaymentFailedEmail(emailData),
             });
 
@@ -761,7 +761,7 @@ export const verifyPayment = functions.https.onRequest(async (req, res) => {
 
             await sendEmail({
               to: registrationData.email,
-              subject: 'Payment Pending - Ravulapalem Run 2025 Registration',
+              subject: 'Payment Pending - Ravulapalem Run 2026 Registration',
               html: generatePaymentPendingEmail(emailData),
             });
 

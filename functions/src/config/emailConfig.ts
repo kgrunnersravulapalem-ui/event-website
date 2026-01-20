@@ -6,8 +6,8 @@
 export const EMAIL_CONFIG = {
   // Event Details
   event: {
-    name: 'Ravulapalem Run 2025',
-    date: 'Feb 08, 2025',
+    name: 'Ravulapalem Run 2026',
+    date: 'Feb 08, 2026',
     venue: 'Ravulapalem',
     reportingTime: '5:00 AM',
   },
@@ -27,7 +27,7 @@ export const EMAIL_CONFIG = {
   // Support Contact
   support: {
     email: 'kgrunnersravulapalem@gmail.com',
-    phone: '+91 XXXXXXXXXX', // Update with actual support phone
+    phone: '+91 9494847967', // Update with actual support phone
   },
 
   // Brand Colors (for email styling)

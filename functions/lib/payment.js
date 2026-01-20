@@ -350,7 +350,7 @@ exports.paymentWebhook = functions.https.onRequest(async (req, res) => {
                     };
                     await (0, email_1.sendEmail)({
                         to: registrationData.email,
-                        subject: 'Payment Successful - Ravulapalem Run 2025 Registration Confirmed',
+                        subject: 'Payment Successful - Ravulapalem Run 2026 Registration Confirmed',
                         html: (0, paymentSuccess_1.generatePaymentSuccessEmail)(emailData),
                     });
                     // Mark email as sent
@@ -393,7 +393,7 @@ exports.paymentWebhook = functions.https.onRequest(async (req, res) => {
                     };
                     await (0, email_1.sendEmail)({
                         to: registrationData.email,
-                        subject: 'Payment Failed - Ravulapalem Run 2025 Registration',
+                        subject: 'Payment Failed - Ravulapalem Run 2026 Registration',
                         html: (0, paymentFailed_1.generatePaymentFailedEmail)(emailData),
                     });
                     // Mark email as sent
@@ -609,7 +609,7 @@ exports.verifyPayment = functions.https.onRequest(async (req, res) => {
                         };
                         await (0, email_1.sendEmail)({
                             to: registrationData.email,
-                            subject: 'Payment Successful - Ravulapalem Run 2025 Registration Confirmed',
+                            subject: 'Payment Successful - Ravulapalem Run 2026 Registration Confirmed',
                             html: (0, paymentSuccess_1.generatePaymentSuccessEmail)(emailData),
                         });
                         // Mark email as sent
@@ -655,7 +655,7 @@ exports.verifyPayment = functions.https.onRequest(async (req, res) => {
                         };
                         await (0, email_1.sendEmail)({
                             to: registrationData.email,
-                            subject: 'Payment Failed - Ravulapalem Run 2025 Registration',
+                            subject: 'Payment Failed - Ravulapalem Run 2026 Registration',
                             html: (0, paymentFailed_1.generatePaymentFailedEmail)(emailData),
                         });
                         // Mark email as sent
@@ -691,7 +691,7 @@ exports.verifyPayment = functions.https.onRequest(async (req, res) => {
                         };
                         await (0, email_1.sendEmail)({
                             to: registrationData.email,
-                            subject: 'Payment Pending - Ravulapalem Run 2025 Registration',
+                            subject: 'Payment Pending - Ravulapalem Run 2026 Registration',
                             html: (0, paymentPending_1.generatePaymentPendingEmail)(emailData),
                         });
                         // Mark email as sent

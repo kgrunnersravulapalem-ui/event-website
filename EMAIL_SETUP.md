@@ -68,8 +68,8 @@ Edit [functions/src/config/emailConfig.ts](functions/src/config/emailConfig.ts) 
 ```typescript
 export const EMAIL_CONFIG = {
   event: {
-    name: 'Ravulapalem Run 2025',      // Update event name
-    date: 'Feb 08, 2025',               // Update event date
+    name: 'Ravulapalem Run 2026',      // Update event name
+    date: 'Feb 08, 2026',               // Update event date
     venue: 'Ravulapalem',               // Update venue
     reportingTime: '5:00 AM',           // Update reporting time
   },
@@ -103,7 +103,7 @@ firebase deploy --only functions:verifyPayment
 ## Email Templates
 
 ### 1. Payment Success Email
-**Subject**: "Payment Successful - Ravulapalem Run 2025 Registration Confirmed"
+**Subject**: "Payment Successful - Ravulapalem Run 2026 Registration Confirmed"
 
 Features:
 - Professional gradient header
@@ -115,7 +115,7 @@ Features:
 - Clean footer with support contact
 
 ### 2. Payment Pending Email
-**Subject**: "Payment Pending - Ravulapalem Run 2025 Registration"
+**Subject**: "Payment Pending - Ravulapalem Run 2026 Registration"
 
 Features:
 - Warning color scheme
@@ -126,7 +126,7 @@ Features:
 - Auto-refund information
 
 ### 3. Payment Failed Email
-**Subject**: "Payment Failed - Ravulapalem Run 2025 Registration"
+**Subject**: "Payment Failed - Ravulapalem Run 2026 Registration"
 
 Features:
 - Error color scheme

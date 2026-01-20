@@ -55,7 +55,7 @@
 
 .container {
     max-width: 1400px;
-    margin: -2rem auto 0;
+    margin: 0rem auto 0;
     padding: 0 1.5rem;
     position: relative;
     z-index: 10;
@@ -274,26 +274,52 @@
 }
 
 .closeButton {
-    position: absolute;
-    top: -40px;
-    right: 0;
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
     background: white;
     border: none;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
 }
 
 .closeButton:hover {
     background-color: #f1f5f9;
-    transform: rotate(90deg) scale(1.1);
+    transform: rotate(90deg) scale(1.15);
+}
+
+.closeButton:active {
+    transform: rotate(90deg) scale(0.95);
+}
+
+/* Mobile Responsive Close Button */
+@media (max-width: 768px) {
+    .closeButton {
+        top: 1rem;
+        right: 1rem;
+        width: 45px;
+        height: 45px;
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .closeButton {
+        top: 0.75rem;
+        right: 0.75rem;
+        width: 40px;
+        height: 40px;
+        font-size: 1.25rem;
+    }
 }
 
 .loadMoreWrapper {

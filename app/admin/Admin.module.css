@@ -128,6 +128,101 @@
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
+/* File Input Styles */
+.fileInput {
+    padding: 0.75rem;
+    border: 2px dashed #e2e8f0;
+    border-radius: var(--radius-md);
+    background-color: #f8fafc;
+    cursor: pointer;
+    width: 100%;
+}
+
+.fileInput:hover {
+    border-color: var(--primary);
+    background-color: #f1f5f9;
+}
+
+.selectedFiles {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: var(--radius-md);
+    border: 1px solid #e2e8f0;
+}
+
+.fileCount {
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 0.75rem;
+}
+
+.fileList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.fileItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    background: white;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    border: 1px solid #e2e8f0;
+}
+
+.fileItem span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+}
+
+.removeFileBtn {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+    border-radius: var(--radius-sm);
+}
+
+.removeFileBtn:hover {
+    background: #fee2e2;
+}
+
+/* Progress Bar */
+.progressBar {
+    height: 24px;
+    background: #e2e8f0;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    position: relative;
+}
+
+.progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), #a855f7);
+    transition: width 0.3s ease;
+}
+
+.progressText {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--foreground);
+}
+
 .uploadControls {
     display: flex;
     gap: 1rem;
@@ -168,6 +263,13 @@
     gap: 1rem;
 }
 
+.headerControls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
 .filterGroup {
     display: flex;
     align-items: center;
@@ -179,6 +281,116 @@
     font-weight: 500;
     color: var(--foreground);
     white-space: nowrap;
+}
+
+.reorderHint {
+    background: #dbeafe;
+    border: 1px solid #3b82f6;
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+    color: #1e40af;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Drag and Drop Styles */
+.reorderGrid {
+    gap: 1rem !important;
+}
+
+.draggableCard {
+    cursor: grab;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    border: 2px solid transparent;
+}
+
+.draggableCard:hover {
+    transform: scale(1.02);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+}
+
+.draggableCard:active {
+    cursor: grabbing;
+}
+
+.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+
+.dragOver {
+    border: 2px dashed var(--primary) !important;
+    background: #f0f9ff;
+    transform: scale(1.02);
+}
+
+.dragHandle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    background: linear-gradient(135deg, var(--primary), #8b5cf6);
+    color: white;
+    cursor: grab;
+    user-select: none;
+}
+
+.dragHandle:active {
+    cursor: grabbing;
+}
+
+.dragIcon {
+    font-size: 1.25rem;
+    letter-spacing: 2px;
+    opacity: 0.9;
+}
+
+.orderNumber {
+    font-size: 0.875rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+}
+
+.reorderControls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: #f1f5f9;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.reorderBtn {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-sm);
+    background: white;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.reorderBtn:hover:not(:disabled) {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.reorderBtn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
 }
 
 .grid {

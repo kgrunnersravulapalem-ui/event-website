@@ -1,5 +1,5 @@
 import { ref, uploadBytes, getDownloadURL, listAll, deleteObject } from "firebase/storage";
-import { collection, addDoc, getDocs, deleteDoc, doc, query, where, orderBy, Timestamp, limit, startAfter, getCountFromServer, DocumentSnapshot, QueryDocumentSnapshot } from "firebase/firestore";
+import { collection, addDoc, getDocs, deleteDoc, doc, query, where, orderBy, Timestamp, limit, startAfter, getCountFromServer, DocumentSnapshot, QueryDocumentSnapshot, updateDoc, writeBatch } from "firebase/firestore";
 import { storage, db } from "./firebase";
 import { ImageMetadata, ImageItem } from "./types/images";
 
@@ -32,6 +32,20 @@ export const uploadImage = async (
         const snapshot = await uploadBytes(storageRef, file);
         const downloadURL = await getDownloadURL(snapshot.ref);
         
+        // Get current max order for category
+        const orderQuery = query(
+            collection(db, 'image_metadata'),
+            where('category', '==', category),
+            orderBy('order', 'desc'),
+            limit(1)
+        );
+        const orderSnapshot = await getDocs(orderQuery);
+        let maxOrder = 0;
+        orderSnapshot.forEach((doc) => {
+            const data = doc.data();
+            maxOrder = data.order || 0;
+        });
+        
         // Save metadata to Firestore (filter out undefined values)
         const metadata: Record<string, unknown> = {
             fileName: snapshot.ref.name,
@@ -39,6 +53,7 @@ export const uploadImage = async (
             category,
             uploadedAt: Timestamp.fromDate(new Date()),
             size: file.size,
+            order: maxOrder + 1,
             tags: tags || []
         };
         
@@ -89,14 +104,15 @@ export const fetchImages = async (
         const countSnapshot = await getCountFromServer(countQuery);
         const totalCount = countSnapshot.data().count;
         
-        // Build paginated query
+        // Build paginated query - use order for category views, uploadedAt for all
         let q;
         if (category) {
+            // For category views, sort by order (ascending)
             if (lastDocument) {
                 q = query(
                     imagesCollection,
                     where('category', '==', category),
-                    orderBy('uploadedAt', 'desc'),
+                    orderBy('order', 'asc'),
                     startAfter(lastDocument),
                     limit(pageSize)
                 );
@@ -104,11 +120,12 @@ export const fetchImages = async (
                 q = query(
                     imagesCollection,
                     where('category', '==', category),
-                    orderBy('uploadedAt', 'desc'),
+                    orderBy('order', 'asc'),
                     limit(pageSize)
                 );
             }
         } else {
+            // For all images view, sort by upload date (newest first)
             if (lastDocument) {
                 q = query(
                     imagesCollection,
@@ -136,7 +153,8 @@ export const fetchImages = async (
                 name: data.fileName,
                 url: data.url,
                 category: data.category,
-                uploadedAt: data.uploadedAt?.toDate()
+                uploadedAt: data.uploadedAt?.toDate(),
+                order: data.order || 0
             });
             lastDoc = doc;
         });
@@ -196,6 +214,78 @@ export const deleteImage = async (imageId: string, imageName: string, category: 
         return { success: true };
     } catch (error) {
         console.error("Error deleting image: ", error);
+        return { success: false, error };
+    }
+};
+
+/**
+ * Update image order - swap two images' positions
+ */
+export const swapImageOrder = async (
+    imageId1: string, 
+    order1: number, 
+    imageId2: string, 
+    order2: number
+) => {
+    if (!db) {
+        return { success: false, error: "Firebase not initialized" };
+    }
+
+    try {
+        const batch = writeBatch(db);
+        
+        batch.update(doc(db, 'image_metadata', imageId1), { order: order2 });
+        batch.update(doc(db, 'image_metadata', imageId2), { order: order1 });
+        
+        await batch.commit();
+        
+        return { success: true };
+    } catch (error) {
+        console.error("Error swapping image order: ", error);
+        return { success: false, error };
+    }
+};
+
+/**
+ * Batch update image orders after drag-and-drop reordering
+ */
+export const batchUpdateImageOrder = async (
+    imageOrders: { id: string; order: number }[]
+) => {
+    if (!db) {
+        return { success: false, error: "Firebase not initialized" };
+    }
+
+    try {
+        const firestore = db; // Store reference for TypeScript narrowing
+        const batch = writeBatch(firestore);
+        
+        imageOrders.forEach(({ id, order }) => {
+            batch.update(doc(firestore, 'image_metadata', id), { order });
+        });
+        
+        await batch.commit();
+        
+        return { success: true };
+    } catch (error) {
+        console.error("Error batch updating image order: ", error);
+        return { success: false, error };
+    }
+};
+
+/**
+ * Move image to a specific position (reorder)
+ */
+export const updateImageOrder = async (imageId: string, newOrder: number) => {
+    if (!db) {
+        return { success: false, error: "Firebase not initialized" };
+    }
+
+    try {
+        await updateDoc(doc(db, 'image_metadata', imageId), { order: newOrder });
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating image order: ", error);
         return { success: false, error };
     }
 };

@@ -5,6 +5,7 @@ export interface ImageMetadata {
     category: string;
     uploadedAt: Date;
     size: number;
+    order: number;
     description?: string;
     tags?: string[];
 }
@@ -15,6 +16,7 @@ export interface ImageItem {
     category?: string;
     uploadedAt?: Date;
     id?: string;
+    order?: number;
 }
 
 export const DEFAULT_CATEGORIES = [

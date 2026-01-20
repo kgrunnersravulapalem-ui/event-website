@@ -3,7 +3,7 @@ import { useState, useEffect, ChangeEvent } from 'react';
 import styles from './Admin.module.css';
 import Button from '@/components/ui/Button/Button';
 import Input from '@/components/ui/Input/Input';
-import { uploadImage, fetchImages, deleteImage, fetchCategories, PaginatedResult } from '@/lib/firebaseUtils';
+import { uploadImage, fetchImages, deleteImage, fetchCategories, batchUpdateImageOrder, PaginatedResult } from '@/lib/firebaseUtils';
 import { ImageItem, DEFAULT_CATEGORIES } from '@/lib/types/images';
 import { QueryDocumentSnapshot } from 'firebase/firestore';
 
@@ -20,7 +20,7 @@ export default function AdminPage() {
     const [loginError, setLoginError] = useState('');
     const [uploading, setUploading] = useState(false);
     const [images, setImages] = useState<ImageItem[]>([]);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [feedback, setFeedback] = useState<string>('');
     const [selectedCategory, setSelectedCategory] = useState<string>('gallery');
     const [customCategory, setCustomCategory] = useState<string>('');
@@ -32,6 +32,11 @@ export default function AdminPage() {
     const [hasMore, setHasMore] = useState<boolean>(false);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [loadingMore, setLoadingMore] = useState<boolean>(false);
+    const [uploadProgress, setUploadProgress] = useState<{ current: number; total: number } | null>(null);
+    const [reorderMode, setReorderMode] = useState<boolean>(false);
+    const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+    const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+    const [isSavingOrder, setIsSavingOrder] = useState<boolean>(false);
     const IMAGES_PER_PAGE = 12;
 
     useEffect(() => {
@@ -110,9 +115,13 @@ export default function AdminPage() {
     };
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setSelectedFile(e.target.files[0]);
+        if (e.target.files && e.target.files.length > 0) {
+            setSelectedFiles(Array.from(e.target.files));
         }
+    };
+
+    const removeSelectedFile = (index: number) => {
+        setSelectedFiles(prev => prev.filter((_, i) => i !== index));
     };
 
     const compressImage = (file: File): Promise<File> => {
@@ -163,7 +172,7 @@ export default function AdminPage() {
     };
 
     const handleUpload = async () => {
-        if (!selectedFile) return;
+        if (selectedFiles.length === 0) return;
 
         const categoryToUse = isCustomCategory ? customCategory.trim().toLowerCase() : selectedCategory;
         
@@ -173,36 +182,52 @@ export default function AdminPage() {
         }
 
         setUploading(true);
-        setFeedback('Compressing and uploading...');
+        setUploadProgress({ current: 0, total: selectedFiles.length });
+        
+        let successCount = 0;
+        let failCount = 0;
 
         try {
-            // Compress image before uploading
-            const compressedFile = await compressImage(selectedFile);
-            const result = await uploadImage(
-                compressedFile, 
-                categoryToUse,
-                description || undefined
-            );
+            for (let i = 0; i < selectedFiles.length; i++) {
+                setUploadProgress({ current: i + 1, total: selectedFiles.length });
+                setFeedback(`Compressing and uploading image ${i + 1} of ${selectedFiles.length}...`);
+                
+                // Compress image before uploading
+                const compressedFile = await compressImage(selectedFiles[i]);
+                const result = await uploadImage(
+                    compressedFile, 
+                    categoryToUse,
+                    description || undefined
+                );
 
-            if (result.success) {
-                setFeedback(`Upload successful to "${categoryToUse}" category!`);
-                setSelectedFile(null);
-                setDescription('');
-                setCustomCategory('');
-                setLastDoc(null); // Reset pagination
-                loadImages(filterCategory);
-                loadCategories();
-                const fileInput = document.getElementById('file-upload') as HTMLInputElement;
-                if (fileInput) fileInput.value = '';
-            } else {
-                setFeedback('Upload failed. Check console/config.');
+                if (result.success) {
+                    successCount++;
+                } else {
+                    failCount++;
+                }
             }
+
+            if (failCount === 0) {
+                setFeedback(`✅ All ${successCount} images uploaded successfully to "${categoryToUse}"!`);
+            } else {
+                setFeedback(`⚠️ ${successCount} uploaded, ${failCount} failed. Check console for errors.`);
+            }
+            
+            setSelectedFiles([]);
+            setDescription('');
+            setCustomCategory('');
+            setLastDoc(null); // Reset pagination
+            loadImages(filterCategory);
+            loadCategories();
+            const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+            if (fileInput) fileInput.value = '';
         } catch (error) {
             console.error('Upload error:', error);
             setFeedback('Upload failed.');
         }
 
         setUploading(false);
+        setUploadProgress(null);
     };
 
     const handleDelete = async (imageId: string, imageName: string, category: string) => {
@@ -218,6 +243,76 @@ export default function AdminPage() {
             loadCategories();
         } else {
             setFeedback('Failed to delete image.');
+        }
+    };
+
+    // Drag and Drop Handlers
+    const handleDragStart = (e: React.DragEvent, index: number) => {
+        setDraggedIndex(index);
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', index.toString());
+        // Add a slight delay to show the dragging state
+        setTimeout(() => {
+            const target = e.target as HTMLElement;
+            target.style.opacity = '0.5';
+        }, 0);
+    };
+
+    const handleDragEnd = (e: React.DragEvent) => {
+        const target = e.target as HTMLElement;
+        target.style.opacity = '1';
+        setDraggedIndex(null);
+        setDragOverIndex(null);
+    };
+
+    const handleDragOver = (e: React.DragEvent, index: number) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        if (draggedIndex !== null && draggedIndex !== index) {
+            setDragOverIndex(index);
+        }
+    };
+
+    const handleDragLeave = () => {
+        setDragOverIndex(null);
+    };
+
+    const handleDrop = async (e: React.DragEvent, dropIndex: number) => {
+        e.preventDefault();
+        
+        if (draggedIndex === null || draggedIndex === dropIndex) {
+            setDraggedIndex(null);
+            setDragOverIndex(null);
+            return;
+        }
+
+        // Reorder images locally first for instant feedback
+        const newImages = [...images];
+        const [draggedItem] = newImages.splice(draggedIndex, 1);
+        newImages.splice(dropIndex, 0, draggedItem);
+        setImages(newImages);
+        
+        setDraggedIndex(null);
+        setDragOverIndex(null);
+        setFeedback('Saving new order...');
+        setIsSavingOrder(true);
+
+        // Update order values for all affected images
+        const imageOrders = newImages.map((img, idx) => ({
+            id: img.id!,
+            order: idx + 1
+        }));
+
+        const result = await batchUpdateImageOrder(imageOrders);
+        
+        setIsSavingOrder(false);
+        if (result.success) {
+            setFeedback('✓ Order saved!');
+            setTimeout(() => setFeedback(''), 2000);
+        } else {
+            setFeedback('Failed to save order. Please try again.');
+            // Reload images to restore correct order
+            loadImages(filterCategory);
         }
     };
 
@@ -314,35 +409,67 @@ export default function AdminPage() {
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label htmlFor="description">Description (Optional)</label>
+                            <label htmlFor="description">Description (Optional - applies to all)</label>
                             <Input
                                 id="description"
                                 type="text"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                                placeholder="Add a description for this image"
+                                placeholder="Add a description for these images"
                             />
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label htmlFor="file-upload">Select Image</label>
-                            <Input
+                            <label htmlFor="file-upload">Select Images (Multiple allowed)</label>
+                            <input
                                 id="file-upload"
                                 type="file"
                                 accept="image/*"
+                                multiple
                                 onChange={handleFileChange}
+                                className={styles.fileInput}
                             />
-                            {selectedFile && (
-                                <p className={styles.fileName}>Selected: {selectedFile.name}</p>
+                            {selectedFiles.length > 0 && (
+                                <div className={styles.selectedFiles}>
+                                    <p className={styles.fileCount}>{selectedFiles.length} file(s) selected</p>
+                                    <div className={styles.fileList}>
+                                        {selectedFiles.map((file, index) => (
+                                            <div key={index} className={styles.fileItem}>
+                                                <span>{file.name}</span>
+                                                <button 
+                                                    type="button"
+                                                    onClick={() => removeSelectedFile(index)}
+                                                    className={styles.removeFileBtn}
+                                                >
+                                                    ✕
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
                             )}
                         </div>
 
+                        {uploadProgress && (
+                            <div className={styles.progressBar}>
+                                <div 
+                                    className={styles.progressFill}
+                                    style={{ width: `${(uploadProgress.current / uploadProgress.total) * 100}%` }}
+                                />
+                                <span className={styles.progressText}>
+                                    {uploadProgress.current} / {uploadProgress.total}
+                                </span>
+                            </div>
+                        )}
+
                         <Button
                             onClick={handleUpload}
-                            disabled={!selectedFile || uploading}
+                            disabled={selectedFiles.length === 0 || uploading}
                             fullWidth
                         >
-                            {uploading ? 'Uploading...' : 'Upload Image'}
+                            {uploading 
+                                ? `Uploading ${uploadProgress?.current || 0}/${uploadProgress?.total || 0}...` 
+                                : `Upload ${selectedFiles.length || ''} Image${selectedFiles.length !== 1 ? 's' : ''}`}
                         </Button>
                     </div>
                     {feedback && <p className={styles.feedback}>{feedback}</p>}
@@ -351,23 +478,41 @@ export default function AdminPage() {
                 <section className={styles.gallerySection}>
                     <div className={styles.galleryHeader}>
                         <h2>Media Library ({images.length} of {totalCount} images)</h2>
-                        <div className={styles.filterGroup}>
-                            <label htmlFor="filter-category">Filter by Category:</label>
-                            <select
-                                id="filter-category"
-                                value={filterCategory}
-                                onChange={(e) => setFilterCategory(e.target.value)}
-                                className={styles.selectInput}
-                            >
-                                <option value="all">All Categories</option>
-                                {allCategories.map((cat) => (
-                                    <option key={cat} value={cat}>
-                                        {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                                    </option>
-                                ))}
-                            </select>
+                        <div className={styles.headerControls}>
+                            <div className={styles.filterGroup}>
+                                <label htmlFor="filter-category">Filter:</label>
+                                <select
+                                    id="filter-category"
+                                    value={filterCategory}
+                                    onChange={(e) => setFilterCategory(e.target.value)}
+                                    className={styles.selectInput}
+                                    disabled={reorderMode}
+                                >
+                                    <option value="all">All Categories</option>
+                                    {allCategories.map((cat) => (
+                                        <option key={cat} value={cat}>
+                                            {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            {filterCategory !== 'all' && (
+                                <Button 
+                                    variant={reorderMode ? "primary" : "outline"} 
+                                    size="sm"
+                                    onClick={() => setReorderMode(!reorderMode)}
+                                    disabled={isSavingOrder}
+                                >
+                                    {reorderMode ? '✓ Done' : '↕ Reorder'}
+                                </Button>
+                            )}
                         </div>
                     </div>
+                    {reorderMode && (
+                        <div className={styles.reorderHint}>
+                            🖱️ Drag and drop images to reorder them. Changes are saved automatically.
+                        </div>
+                    )}
                     {images.length === 0 ? (
                         <div className={styles.emptyState}>
                             {filterCategory === 'all' 
@@ -377,39 +522,60 @@ export default function AdminPage() {
                             <small>(Make sure Firebase Storage rules allow read/write)</small>
                         </div>
                     ) : (
-                        <div className={styles.grid}>
-                            {images.map((img) => (
-                                <div key={img.id || img.name} className={styles.card}>
+                        <div className={`${styles.grid} ${reorderMode ? styles.reorderGrid : ''}`}>
+                            {images.map((img, index) => (
+                                <div 
+                                    key={img.id || img.name} 
+                                    className={`${styles.card} ${reorderMode ? styles.draggableCard : ''} ${dragOverIndex === index ? styles.dragOver : ''} ${draggedIndex === index ? styles.dragging : ''}`}
+                                    draggable={reorderMode}
+                                    onDragStart={(e) => reorderMode && handleDragStart(e, index)}
+                                    onDragEnd={handleDragEnd}
+                                    onDragOver={(e) => reorderMode && handleDragOver(e, index)}
+                                    onDragLeave={handleDragLeave}
+                                    onDrop={(e) => reorderMode && handleDrop(e, index)}
+                                >
+                                    {reorderMode && (
+                                        <div className={styles.dragHandle}>
+                                            <span className={styles.dragIcon}>⋮⋮</span>
+                                            <span className={styles.orderNumber}>{index + 1}</span>
+                                        </div>
+                                    )}
                                     <div 
                                         className={styles.imageWrapper}
                                         onClick={() => {
-                                            navigator.clipboard.writeText(img.url);
-                                            setFeedback(`URL copied to clipboard!`);
-                                            setTimeout(() => setFeedback(''), 2000);
+                                            if (!reorderMode) {
+                                                navigator.clipboard.writeText(img.url);
+                                                setFeedback(`URL copied to clipboard!`);
+                                                setTimeout(() => setFeedback(''), 2000);
+                                            }
                                         }}
-                                        title="Click to copy URL"
+                                        title={reorderMode ? "Drag to reorder" : "Click to copy URL"}
                                     >
                                         <img src={img.url} alt={img.name} className={styles.image} />
-                                        <div className={styles.copyOverlay}>
-                                            <span>📋 Click to copy URL</span>
-                                        </div>
-                                        {img.category && (
+                                        {!reorderMode && (
+                                            <div className={styles.copyOverlay}>
+                                                <span>📋 Click to copy URL</span>
+                                            </div>
+                                        )}
+                                        {img.category && !reorderMode && (
                                             <span className={styles.categoryBadge}>
                                                 {img.category}
                                             </span>
                                         )}
                                     </div>
-                                    <div className={styles.cardFooter}>
-                                        <span className={styles.imageName} title={img.name}>{img.name}</span>
-                                        <div className={styles.cardActions}>
-                                            <Button size="sm" variant="outline" onClick={() => navigator.clipboard.writeText(img.url)}>
-                                                Copy URL
-                                            </Button>
-                                            <Button size="sm" variant="outline" onClick={() => handleDelete(img.id!, img.name, img.category!)}>
-                                                Delete
-                                            </Button>
+                                    {!reorderMode && (
+                                        <div className={styles.cardFooter}>
+                                            <span className={styles.imageName} title={img.name}>{img.name}</span>
+                                            <div className={styles.cardActions}>
+                                                <Button size="sm" variant="outline" onClick={() => navigator.clipboard.writeText(img.url)}>
+                                                    Copy URL
+                                                </Button>
+                                                <Button size="sm" variant="outline" onClick={() => handleDelete(img.id!, img.name, img.category!)}>
+                                                    Delete
+                                                </Button>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
                             ))}
                         </div>

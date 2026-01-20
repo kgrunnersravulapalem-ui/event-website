@@ -26,17 +26,37 @@
 }
 
 .logo {
-    font-size: 1.5rem;
     font-weight: 900;
-    letter-spacing: -0.02em;
     color: var(--foreground);
 }
 
+.logoText {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.logoLine1 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--primary);
+}
+
+.logoLine2 {
+    font-size: 0.95rem;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    color: var(--foreground);
+    text-align: center;
+}
+
 .logoHighlight {
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    background: linear-gradient(135deg, #22c55e, #16a34a);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    font-weight: 900;
 }
 
 .desktopMenu {
@@ -125,9 +145,23 @@
     padding-top: 1.5rem;
 }
 
+@media (max-width: 768px) {
+    .logoLine1 {
+        font-size: 0.75rem;
+    }
+    
+    .logoLine2 {
+        font-size: 0.9rem;
+    }
+}
+
 @media (max-width: 480px) {
-    .logo {
-        font-size: 1.25rem;
+    .logoLine1 {
+        font-size: 0.7rem;
+    }
+    
+    .logoLine2 {
+        font-size: 0.85rem;
     }
 
     .mobileNavLink {

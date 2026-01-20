@@ -80,6 +80,7 @@ const Hero = () => {
                     <h1 className={styles.headline}>
                         {eventConfig.eventName} <br />
                     </h1>
+                    <div className={styles.tagline}>RUN GREEN - BREATH CLEAN</div>
 
                     <Countdown />
 

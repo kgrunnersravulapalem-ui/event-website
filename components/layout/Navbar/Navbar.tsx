@@ -50,6 +50,7 @@ const Navbar = () => {
         { name: 'About', href: '/#about' },
         { name: 'Race Info', href: '/#race-categories' },
         { name: 'Venue', href: '/#venue' },
+        { name: 'Gallery', href: '/gallery' },
         { name: 'Prize Money', href: '/prizes' },
         { name: 'Contact', href: '/contact' },
     ];
@@ -75,7 +76,10 @@ const Navbar = () => {
             <div className={styles.container}>
                 <div className={styles.logo}>
                     <Link href="/">
-                        KG <span className={styles.logoHighlight}>Runners</span>
+                        <div className={styles.logoText}>
+                            <div className={styles.logoLine1}>Konaseema Godavari</div>
+                            <div className={styles.logoLine2}>Runners <span className={styles.logoHighlight}>Society</span></div>
+                        </div>
                     </Link>
                 </div>
 

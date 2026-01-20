@@ -145,23 +145,32 @@
     padding-top: 1.5rem;
 }
 
-@media (max-width: 768px) {
-    .logoLine1 {
-        font-size: 0.75rem;
-    }
-    
-    .logoLine2 {
-        font-size: 0.9rem;
+/* Tablet Styles */
+@media (max-width: 1024px) {
+    .navbar {
+        padding: 0.9rem 0;
     }
 }
 
-@media (max-width: 480px) {
-    .logoLine1 {
-        font-size: 0.7rem;
+/* Mobile Landscape / Small Tablet */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0.75rem 0;
     }
-    
-    .logoLine2 {
-        font-size: 0.85rem;
+
+    .container {
+        padding: 0 1rem;
+    }
+}
+
+/* Mobile Portrait */
+@media (max-width: 480px) {
+    .navbar {
+        padding: 0.5rem 0;
+    }
+
+    .container {
+        padding: 0 0.75rem;
     }
 
     .mobileNavLink {

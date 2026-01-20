@@ -2,6 +2,13 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Image metadata - public read, authenticated write
+    match /image_metadata/{imageId} {
+      allow read: if true;
+      allow write: if true; // Replace with proper authentication
+    }
+    
+    // Allow all other documents (existing functionality)
     match /{document=**} {
       allow read, write: if true;
     }

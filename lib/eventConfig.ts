@@ -51,7 +51,7 @@ export const eventConfig = {
 
     // Registration & Prize Information
     registration: {
-        deadline: "10 JAN 2026",
+        deadline: "31 JAN 2026",
         entryFee: 300,
         prizeMoney: {
             total: 60000,

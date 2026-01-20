@@ -84,7 +84,7 @@ const Hero = () => {
                     <Countdown />
 
                     <div className={styles.deadlineInfo}>
-                        Last Date for Registration: <strong>10 JAN 2026</strong>
+                        Last Date for Registration: <strong>{eventConfig.registration.deadline}</strong>
                     </div>
 
                     <p className={styles.subhead}>

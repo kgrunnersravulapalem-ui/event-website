@@ -1,27 +1,43 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { fetchImages } from '@/lib/firebaseUtils';
+import { ImageItem } from '@/lib/types/images';
+import { QueryDocumentSnapshot } from 'firebase/firestore';
 import styles from './Gallery.module.css';
 
-interface ImageItem {
-    name: string;
-    url: string;
-}
+const IMAGES_PER_PAGE = 12;
 
 export default function GalleryPage() {
     const [images, setImages] = useState<ImageItem[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [lastDoc, setLastDoc] = useState<QueryDocumentSnapshot | null>(null);
+    const [hasMore, setHasMore] = useState(false);
 
     useEffect(() => {
         loadImages();
     }, []);
 
-    const loadImages = async () => {
-        setLoading(true);
-        const imgs = await fetchImages('gallery');
-        setImages(imgs);
+    const loadImages = async (loadMore: boolean = false) => {
+        if (loadMore) {
+            setLoadingMore(true);
+        } else {
+            setLoading(true);
+        }
+        
+        const result = await fetchImages('gallery', IMAGES_PER_PAGE, loadMore ? lastDoc : null);
+        
+        if (loadMore) {
+            setImages(prev => [...prev, ...result.images]);
+        } else {
+            setImages(result.images);
+        }
+        
+        setLastDoc(result.lastDoc);
+        setHasMore(result.hasMore);
         setLoading(false);
+        setLoadingMore(false);
     };
 
     return (
@@ -47,7 +63,7 @@ export default function GalleryPage() {
                     <div className={styles.gallery}>
                         {images.map((img) => (
                             <div 
-                                key={img.name} 
+                                key={img.id || img.name} 
                                 className={styles.galleryItem}
                                 onClick={() => setSelectedImage(img.url)}
                             >
@@ -57,6 +73,18 @@ export default function GalleryPage() {
                                 </div>
                             </div>
                         ))}
+                    </div>
+                )}
+                
+                {hasMore && !loading && (
+                    <div className={styles.loadMoreWrapper}>
+                        <button 
+                            className={styles.loadMoreButton}
+                            onClick={() => loadImages(true)}
+                            disabled={loadingMore}
+                        >
+                            {loadingMore ? 'Loading...' : 'Load More Images'}
+                        </button>
                     </div>
                 )}
             </div>

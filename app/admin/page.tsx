@@ -3,12 +3,9 @@ import { useState, useEffect, ChangeEvent } from 'react';
 import styles from './Admin.module.css';
 import Button from '@/components/ui/Button/Button';
 import Input from '@/components/ui/Input/Input';
-import { uploadImage, fetchImages, deleteImage } from '@/lib/firebaseUtils';
-
-interface ImageItem {
-    name: string;
-    url: string;
-}
+import { uploadImage, fetchImages, deleteImage, fetchCategories, PaginatedResult } from '@/lib/firebaseUtils';
+import { ImageItem, DEFAULT_CATEGORIES } from '@/lib/types/images';
+import { QueryDocumentSnapshot } from 'firebase/firestore';
 
 // Dummy credentials - Replace with proper authentication later
 const ADMIN_CREDENTIALS = {
@@ -25,6 +22,17 @@ export default function AdminPage() {
     const [images, setImages] = useState<ImageItem[]>([]);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [feedback, setFeedback] = useState<string>('');
+    const [selectedCategory, setSelectedCategory] = useState<string>('gallery');
+    const [customCategory, setCustomCategory] = useState<string>('');
+    const [isCustomCategory, setIsCustomCategory] = useState(false);
+    const [filterCategory, setFilterCategory] = useState<string>('all');
+    const [allCategories, setAllCategories] = useState<string[]>([...DEFAULT_CATEGORIES]);
+    const [description, setDescription] = useState<string>('');
+    const [lastDoc, setLastDoc] = useState<QueryDocumentSnapshot | null>(null);
+    const [hasMore, setHasMore] = useState<boolean>(false);
+    const [totalCount, setTotalCount] = useState<number>(0);
+    const [loadingMore, setLoadingMore] = useState<boolean>(false);
+    const IMAGES_PER_PAGE = 12;
 
     useEffect(() => {
         // Check if user is already authenticated in session
@@ -37,9 +45,17 @@ export default function AdminPage() {
 
     useEffect(() => {
         if (isAuthenticated) {
-            loadImages();
+            loadCategories();
+            loadImages(filterCategory);
         }
     }, [isAuthenticated]);
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            setLastDoc(null); // Reset pagination when filter changes
+            loadImages(filterCategory);
+        }
+    }, [filterCategory]);
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
@@ -60,9 +76,37 @@ export default function AdminPage() {
         setPassword('');
     };
 
-    const loadImages = async () => {
-        const imgs = await fetchImages();
-        setImages(imgs);
+    const loadImages = async (category?: string, loadMore: boolean = false) => {
+        if (loadMore) {
+            setLoadingMore(true);
+        }
+        
+        const result = await fetchImages(
+            category === 'all' ? undefined : category,
+            IMAGES_PER_PAGE,
+            loadMore ? lastDoc : null
+        );
+        
+        if (loadMore) {
+            setImages(prev => [...prev, ...result.images]);
+        } else {
+            setImages(result.images);
+        }
+        
+        setLastDoc(result.lastDoc);
+        setHasMore(result.hasMore);
+        setTotalCount(result.totalCount);
+        setLoadingMore(false);
+    };
+
+    const handleLoadMore = () => {
+        loadImages(filterCategory, true);
+    };
+
+    const loadCategories = async () => {
+        const cats = await fetchCategories();
+        const uniqueCategories = Array.from(new Set([...DEFAULT_CATEGORIES, ...cats]));
+        setAllCategories(uniqueCategories);
     };
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -121,18 +165,33 @@ export default function AdminPage() {
     const handleUpload = async () => {
         if (!selectedFile) return;
 
+        const categoryToUse = isCustomCategory ? customCategory.trim().toLowerCase() : selectedCategory;
+        
+        if (!categoryToUse) {
+            setFeedback('Please select or enter a category');
+            return;
+        }
+
         setUploading(true);
         setFeedback('Compressing and uploading...');
 
         try {
             // Compress image before uploading
             const compressedFile = await compressImage(selectedFile);
-            const result = await uploadImage(compressedFile, 'gallery');
+            const result = await uploadImage(
+                compressedFile, 
+                categoryToUse,
+                description || undefined
+            );
 
             if (result.success) {
-                setFeedback('Upload successful!');
+                setFeedback(`Upload successful to "${categoryToUse}" category!`);
                 setSelectedFile(null);
-                loadImages();
+                setDescription('');
+                setCustomCategory('');
+                setLastDoc(null); // Reset pagination
+                loadImages(filterCategory);
+                loadCategories();
                 const fileInput = document.getElementById('file-upload') as HTMLInputElement;
                 if (fileInput) fileInput.value = '';
             } else {
@@ -146,15 +205,17 @@ export default function AdminPage() {
         setUploading(false);
     };
 
-    const handleDelete = async (imageName: string) => {
+    const handleDelete = async (imageId: string, imageName: string, category: string) => {
         if (!confirm('Are you sure you want to delete this image?')) return;
 
         setFeedback('Deleting...');
-        const result = await deleteImage(imageName, 'gallery');
+        const result = await deleteImage(imageId, imageName, category);
 
         if (result.success) {
             setFeedback('Image deleted successfully!');
-            loadImages();
+            setLastDoc(null); // Reset pagination
+            loadImages(filterCategory);
+            loadCategories();
         } else {
             setFeedback('Failed to delete image.');
         }
@@ -211,8 +272,60 @@ export default function AdminPage() {
             <div className={styles.content}>
                 <section className={styles.uploadSection}>
                     <h2>Upload New Image</h2>
-                    <div className={styles.uploadControls}>
-                        <div className={styles.fileInputWrapper}>
+                    <div className={styles.uploadForm}>
+                        <div className={styles.formRow}>
+                            <div className={styles.formGroup}>
+                                <label htmlFor="category-select">Category</label>
+                                <select
+                                    id="category-select"
+                                    value={isCustomCategory ? 'custom' : selectedCategory}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (value === 'custom') {
+                                            setIsCustomCategory(true);
+                                        } else {
+                                            setIsCustomCategory(false);
+                                            setSelectedCategory(value);
+                                        }
+                                    }}
+                                    className={styles.selectInput}
+                                >
+                                    {allCategories.map((cat) => (
+                                        <option key={cat} value={cat}>
+                                            {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                                        </option>
+                                    ))}
+                                    <option value="custom">+ Custom Category</option>
+                                </select>
+                            </div>
+                            
+                            {isCustomCategory && (
+                                <div className={styles.formGroup}>
+                                    <label htmlFor="custom-category">Custom Category Name</label>
+                                    <Input
+                                        id="custom-category"
+                                        type="text"
+                                        value={customCategory}
+                                        onChange={(e) => setCustomCategory(e.target.value)}
+                                        placeholder="e.g., team-photos"
+                                    />
+                                </div>
+                            )}
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label htmlFor="description">Description (Optional)</label>
+                            <Input
+                                id="description"
+                                type="text"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                placeholder="Add a description for this image"
+                            />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label htmlFor="file-upload">Select Image</label>
                             <Input
                                 id="file-upload"
                                 type="file"
@@ -223,9 +336,11 @@ export default function AdminPage() {
                                 <p className={styles.fileName}>Selected: {selectedFile.name}</p>
                             )}
                         </div>
+
                         <Button
                             onClick={handleUpload}
                             disabled={!selectedFile || uploading}
+                            fullWidth
                         >
                             {uploading ? 'Uploading...' : 'Upload Image'}
                         </Button>
@@ -234,19 +349,55 @@ export default function AdminPage() {
                 </section>
 
                 <section className={styles.gallerySection}>
-                    <h2>Media Library ({images.length} images)</h2>
+                    <div className={styles.galleryHeader}>
+                        <h2>Media Library ({images.length} of {totalCount} images)</h2>
+                        <div className={styles.filterGroup}>
+                            <label htmlFor="filter-category">Filter by Category:</label>
+                            <select
+                                id="filter-category"
+                                value={filterCategory}
+                                onChange={(e) => setFilterCategory(e.target.value)}
+                                className={styles.selectInput}
+                            >
+                                <option value="all">All Categories</option>
+                                {allCategories.map((cat) => (
+                                    <option key={cat} value={cat}>
+                                        {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
                     {images.length === 0 ? (
                         <div className={styles.emptyState}>
-                            No images found. Upload some to get started.
+                            {filterCategory === 'all' 
+                                ? 'No images found. Upload some to get started.'
+                                : `No images found in "${filterCategory}" category.`}
                             <br />
                             <small>(Make sure Firebase Storage rules allow read/write)</small>
                         </div>
                     ) : (
                         <div className={styles.grid}>
                             {images.map((img) => (
-                                <div key={img.name} className={styles.card}>
-                                    <div className={styles.imageWrapper}>
+                                <div key={img.id || img.name} className={styles.card}>
+                                    <div 
+                                        className={styles.imageWrapper}
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(img.url);
+                                            setFeedback(`URL copied to clipboard!`);
+                                            setTimeout(() => setFeedback(''), 2000);
+                                        }}
+                                        title="Click to copy URL"
+                                    >
                                         <img src={img.url} alt={img.name} className={styles.image} />
+                                        <div className={styles.copyOverlay}>
+                                            <span>📋 Click to copy URL</span>
+                                        </div>
+                                        {img.category && (
+                                            <span className={styles.categoryBadge}>
+                                                {img.category}
+                                            </span>
+                                        )}
                                     </div>
                                     <div className={styles.cardFooter}>
                                         <span className={styles.imageName} title={img.name}>{img.name}</span>
@@ -254,13 +405,25 @@ export default function AdminPage() {
                                             <Button size="sm" variant="outline" onClick={() => navigator.clipboard.writeText(img.url)}>
                                                 Copy URL
                                             </Button>
-                                            <Button size="sm" variant="outline" onClick={() => handleDelete(img.name)}>
+                                            <Button size="sm" variant="outline" onClick={() => handleDelete(img.id!, img.name, img.category!)}>
                                                 Delete
                                             </Button>
                                         </div>
                                     </div>
                                 </div>
                             ))}
+                        </div>
+                    )}
+                    
+                    {hasMore && (
+                        <div className={styles.loadMoreWrapper}>
+                            <Button 
+                                onClick={handleLoadMore} 
+                                disabled={loadingMore}
+                                variant="outline"
+                            >
+                                {loadingMore ? 'Loading...' : `Load More (${totalCount - images.length} remaining)`}
+                            </Button>
                         </div>
                     )}
                 </section>

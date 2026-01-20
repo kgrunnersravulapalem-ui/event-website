@@ -88,6 +88,46 @@
     color: var(--foreground);
 }
 
+.uploadForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.formRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.formGroup label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--foreground);
+}
+
+.selectInput {
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    background-color: white;
+    transition: border-color 0.2s;
+    width: 100%;
+}
+
+.selectInput:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
 .uploadControls {
     display: flex;
     gap: 1rem;
@@ -110,6 +150,35 @@
     margin-top: 1rem;
     font-weight: 500;
     color: var(--primary);
+}
+
+.gallerySection {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.galleryHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.filterGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.filterGroup label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--foreground);
+    white-space: nowrap;
 }
 
 .grid {
@@ -136,12 +205,58 @@
     aspect-ratio: 16 / 9;
     background-color: #f1f5f9;
     overflow: hidden;
+    position: relative;
+    cursor: pointer;
+}
+
+.imageWrapper:hover .copyOverlay {
+    opacity: 1;
 }
 
 .image {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.2s;
+}
+
+.imageWrapper:hover .image {
+    transform: scale(1.05);
+}
+
+.copyOverlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.copyOverlay span {
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: var(--radius-md);
+}
+
+.categoryBadge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background-color: var(--primary);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .cardFooter {
@@ -172,4 +287,42 @@
     border-radius: var(--radius-lg);
     color: #64748b;
     border: 2px dashed #e2e8f0;
+}
+
+.loadMoreWrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .formRow {
+        grid-template-columns: 1fr;
+    }
+
+    .galleryHeader {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .filterGroup {
+        width: 100%;
+    }
+
+    .filterGroup select {
+        flex: 1;
+    }
+
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
 }

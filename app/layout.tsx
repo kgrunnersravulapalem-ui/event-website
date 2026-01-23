@@ -19,6 +19,9 @@ export const metadata: Metadata = {
   },
   description: "Join the most anticipated running event in Ravulapalem! KONASEEMA RUN 2026 offering 3K, 5K, and 10K categories. Register now to experience health and community.",
   keywords: ["Konaseema Run", "Ravulapalem Marathon", "Andhra Pradesh Run", "10K Run Konaseema", "5K Run Ravulapalem", "Our Health Our Village", "Konaseema Godavari Runners"],
+  icons: {
+    icon: "/icon.png",
+  },
 };
 
 export default function RootLayout({

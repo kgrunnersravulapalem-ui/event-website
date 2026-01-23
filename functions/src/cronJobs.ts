@@ -166,7 +166,7 @@ const processPendingTransaction = async (
                                 minute: '2-digit',
                                 hour12: true
                             })
-                            : new Date().toLocaleString('en-IN', {
+                            : (transactionData.createdAt?.toDate ? transactionData.createdAt.toDate() : new Date()).toLocaleString('en-IN', {
                                 timeZone: 'Asia/Kolkata',
                                 day: '2-digit',
                                 month: 'short',
@@ -221,7 +221,7 @@ const processPendingTransaction = async (
                                 minute: '2-digit',
                                 hour12: true
                             })
-                            : new Date().toLocaleString('en-IN', {
+                            : (transactionData.createdAt?.toDate ? transactionData.createdAt.toDate() : new Date()).toLocaleString('en-IN', {
                                 timeZone: 'Asia/Kolkata',
                                 day: '2-digit',
                                 month: 'short',
@@ -290,10 +290,10 @@ export const checkPendingPayments = functions
 
             console.log(`Starting pending payments check for environment: ${config.environment}`);
 
-            // Calculate cutoff time (15 minutes ago)
+            // Calculate cutoff time (30 minutes ago)
             // This ensures payments have enough time to process before being checked
-            // Matches the cron job interval of 15 minutes
-            const cutoffTime = new Date(Date.now() - 15 * 60 * 1000);
+            // Matches the cron job interval of 30 minutes
+            const cutoffTime = new Date(Date.now() - 30 * 60 * 1000);
 
             // Query for pending transactions older than 15 minutes
             const pendingTransactionsSnapshot = await db
@@ -409,7 +409,7 @@ export const scheduledCheckPendingPayments = functions
 
             console.log(`[SCHEDULED] Starting pending payments check for environment: ${config.environment}`);
 
-            const cutoffTime = new Date(Date.now() - 15 * 60 * 1000);
+            const cutoffTime = new Date(Date.now() - 30 * 60 * 1000);
 
             const pendingTransactionsSnapshot = await db
                 .collection(transactionsCollection)

@@ -164,7 +164,7 @@ const processPendingTransaction = async (
                                 minute: '2-digit',
                                 hour12: true
                             })
-                            : new Date().toLocaleString('en-IN', {
+                            : (transactionData.createdAt?.toDate ? transactionData.createdAt.toDate() : new Date()).toLocaleString('en-IN', {
                                 timeZone: 'Asia/Kolkata',
                                 day: '2-digit',
                                 month: 'short',
@@ -219,7 +219,7 @@ const processPendingTransaction = async (
                                 minute: '2-digit',
                                 hour12: true
                             })
-                            : new Date().toLocaleString('en-IN', {
+                            : (transactionData.createdAt?.toDate ? transactionData.createdAt.toDate() : new Date()).toLocaleString('en-IN', {
                                 timeZone: 'Asia/Kolkata',
                                 day: '2-digit',
                                 month: 'short',

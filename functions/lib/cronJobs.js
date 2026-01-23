@@ -111,7 +111,7 @@ const addConfirmedParticipant = async (registrationData, transactionData, enviro
  * Returns true if transaction was updated, false otherwise
  */
 const processPendingTransaction = async (merchantOrderId, transactionData, registrationData, config) => {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e, _f;
     try {
         console.log(`Processing pending transaction: ${merchantOrderId}`);
         // Check status with PhonePe
@@ -173,7 +173,7 @@ const processPendingTransaction = async (merchantOrderId, transactionData, regis
                                 minute: '2-digit',
                                 hour12: true
                             })
-                            : new Date().toLocaleString('en-IN', {
+                            : (((_c = transactionData.createdAt) === null || _c === void 0 ? void 0 : _c.toDate) ? transactionData.createdAt.toDate() : new Date()).toLocaleString('en-IN', {
                                 timeZone: 'Asia/Kolkata',
                                 day: '2-digit',
                                 month: 'short',
@@ -216,7 +216,7 @@ const processPendingTransaction = async (merchantOrderId, transactionData, regis
                         amount: transactionData.amount || 0,
                         orderId: merchantOrderId,
                         transactionId: statusResponse.orderId || merchantOrderId,
-                        paymentDate: ((_d = (_c = statusResponse.paymentDetails) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.timestamp)
+                        paymentDate: ((_e = (_d = statusResponse.paymentDetails) === null || _d === void 0 ? void 0 : _d[0]) === null || _e === void 0 ? void 0 : _e.timestamp)
                             ? new Date(statusResponse.paymentDetails[0].timestamp).toLocaleString('en-IN', {
                                 timeZone: 'Asia/Kolkata',
                                 day: '2-digit',
@@ -226,7 +226,7 @@ const processPendingTransaction = async (merchantOrderId, transactionData, regis
                                 minute: '2-digit',
                                 hour12: true
                             })
-                            : new Date().toLocaleString('en-IN', {
+                            : (((_f = transactionData.createdAt) === null || _f === void 0 ? void 0 : _f.toDate) ? transactionData.createdAt.toDate() : new Date()).toLocaleString('en-IN', {
                                 timeZone: 'Asia/Kolkata',
                                 day: '2-digit',
                                 month: 'short',
@@ -288,10 +288,10 @@ exports.checkPendingPayments = functions
         const transactionsCollection = getCollectionName('transactions', config.environment);
         const registrationsCollection = getCollectionName('registrations', config.environment);
         console.log(`Starting pending payments check for environment: ${config.environment}`);
-        // Calculate cutoff time (15 minutes ago)
+        // Calculate cutoff time (30 minutes ago)
         // This ensures payments have enough time to process before being checked
-        // Matches the cron job interval of 15 minutes
-        const cutoffTime = new Date(Date.now() - 15 * 60 * 1000);
+        // Matches the cron job interval of 30 minutes
+        const cutoffTime = new Date(Date.now() - 30 * 60 * 1000);
         // Query for pending transactions older than 15 minutes
         const pendingTransactionsSnapshot = await db
             .collection(transactionsCollection)
@@ -386,7 +386,7 @@ exports.scheduledCheckPendingPayments = functions
         const transactionsCollection = getCollectionName('transactions', config.environment);
         const registrationsCollection = getCollectionName('registrations', config.environment);
         console.log(`[SCHEDULED] Starting pending payments check for environment: ${config.environment}`);
-        const cutoffTime = new Date(Date.now() - 15 * 60 * 1000);
+        const cutoffTime = new Date(Date.now() - 30 * 60 * 1000);
         const pendingTransactionsSnapshot = await db
             .collection(transactionsCollection)
             .where('status', '==', 'PENDING')

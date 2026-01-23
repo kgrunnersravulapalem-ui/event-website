@@ -47,7 +47,7 @@
     width: 100%;
     height: 100%;
     /* Darker overlay to ensure text readability and maintain brand aesthetic */
-    background: 
+    background:
         linear-gradient(180deg, rgba(15, 23, 42, 0.4) 0%, rgba(15, 23, 42, 0.75) 100%),
         radial-gradient(circle at top right, rgba(204, 255, 0, 0.15), transparent 50%),
         radial-gradient(circle at bottom left, rgba(0, 102, 204, 0.25), transparent 50%);
@@ -131,7 +131,6 @@
 .deadlineInfo {
     font-size: 1.25rem;
     color: rgba(255, 255, 255, 0.9);
-    margin: 1.5rem 0;
     padding: 1rem;
     background: rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-md);
@@ -181,17 +180,45 @@
 @keyframes glowPulse {
     0% {
         text-shadow: 0 2px 10px rgba(34, 197, 94, 0.3),
-                    0 0 20px rgba(34, 197, 94, 0);
+            0 0 20px rgba(34, 197, 94, 0);
         opacity: 1;
     }
+
     50% {
         text-shadow: 0 2px 10px rgba(34, 197, 94, 0.5),
-                    0 0 30px rgba(34, 197, 94, 0.4);
+            0 0 30px rgba(34, 197, 94, 0.4);
     }
+
     100% {
         text-shadow: 0 2px 10px rgba(34, 197, 94, 0.3),
-                    0 0 20px rgba(34, 197, 94, 0);
+            0 0 20px rgba(34, 197, 94, 0);
         opacity: 1;
+    }
+}
+
+.poweredBy {
+    font-size: 1.3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #0bbe7c, #169670);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 2rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-shadow: 0 2px 20px rgba(34, 197, 94, 0.3);
+    animation: subtleGlow 3s ease-in-out infinite;
+}
+
+@keyframes subtleGlow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.4));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 15px rgba(34, 197, 94, 0.6));
     }
 }
 
@@ -288,6 +315,11 @@
     .deadlineInfo {
         font-size: 1rem;
         width: 100%;
+    }
+
+    .poweredBy {
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
     }
 }
 

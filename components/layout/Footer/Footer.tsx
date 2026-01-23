@@ -46,7 +46,6 @@ const Footer = () => {
                             <div className={styles.icons}>
                                 <a href="#" className={styles.icon} aria-label="Facebook"><FaFacebook /></a>
                                 <a href="#" className={styles.icon} aria-label="Instagram"><FaInstagram /></a>
-                                <a href="#" className={styles.icon} aria-label="Twitter"><FaTwitter /></a>
                             </div>
                         </div>
                     </div>

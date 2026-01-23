@@ -8,7 +8,7 @@
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid #e2e8f0;
-    padding: 1rem 0;
+    /* padding: 1rem 0; */
     transition: all 0.3s ease;
 }
 
@@ -17,7 +17,7 @@
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 0 1.5rem;
     display: flex;
@@ -28,6 +28,21 @@
 .logo {
     font-weight: 900;
     color: var(--foreground);
+}
+
+.logoContainer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.logoContainer:hover {
+    transform: scale(1.02);
+}
+
+.logoImage {
+    object-fit: contain;
 }
 
 .logoText {
@@ -161,6 +176,19 @@
     .container {
         padding: 0 1rem;
     }
+
+    .logoImage {
+        width: 120px !important;
+        height: 120px !important;
+    }
+
+    .logoLine1 {
+        font-size: 0.95rem;
+    }
+
+    .logoLine2 {
+        font-size: 0.85rem;
+    }
 }
 
 /* Mobile Portrait */
@@ -176,6 +204,19 @@
     .mobileNavLink {
         font-size: 1rem;
         padding: 0.875rem 0;
+    }
+
+    .logoImage {
+        width: 80px !important;
+        height: 80px !important;
+    }
+
+    .logoLine1 {
+        font-size: 0.85rem;
+    }
+
+    .logoLine2 {
+        font-size: 0.75rem;
     }
 }
 

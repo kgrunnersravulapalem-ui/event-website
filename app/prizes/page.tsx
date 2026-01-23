@@ -43,6 +43,19 @@ const prizeStructure = [
                 color: "#f97316"
             }
         ]
+    },
+    {
+        id: 'below13',
+        title: "Below 13 years (Kids Run)",
+        criteria: "DOB ON OR AFTER: 08/02/2013",
+        categories: [
+            {
+                name: "3K RUN",
+                male: [2000, 1500, 1000],
+                female: [2000, 1500, 1000],
+                color: "#10b981"
+            }
+        ]
     }
 ];
 

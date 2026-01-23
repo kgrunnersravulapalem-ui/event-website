@@ -19,7 +19,7 @@ const Hero = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setCurrentImageIndex((prevIndex) => 
+            setCurrentImageIndex((prevIndex) =>
                 (prevIndex + 1) % carouselImages.length
             );
         }, 5000); // Change image every 5 seconds
@@ -34,9 +34,8 @@ const Hero = () => {
                 {carouselImages.map((image, index) => (
                     <div
                         key={image}
-                        className={`${styles.carouselSlide} ${
-                            index === currentImageIndex ? styles.active : ''
-                        }`}
+                        className={`${styles.carouselSlide} ${index === currentImageIndex ? styles.active : ''
+                            }`}
                     >
                         <Image
                             src={image}
@@ -60,9 +59,8 @@ const Hero = () => {
                 {carouselImages.map((_, index) => (
                     <button
                         key={index}
-                        className={`${styles.indicator} ${
-                            index === currentImageIndex ? styles.activeIndicator : ''
-                        }`}
+                        className={`${styles.indicator} ${index === currentImageIndex ? styles.activeIndicator : ''
+                            }`}
                         onClick={() => setCurrentImageIndex(index)}
                         aria-label={`Go to slide ${index + 1}`}
                     />
@@ -81,6 +79,7 @@ const Hero = () => {
                         {eventConfig.eventName} <br />
                     </h1>
                     <div className={styles.tagline}>RUN GREEN - BREATH CLEAN</div>
+                    {/* <div className={styles.poweredBy}>Powered by Konaseema Godavari Runners Association</div> */}
 
                     <Countdown />
 

@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { HiMenu, HiX } from 'react-icons/hi';
 import clsx from 'clsx';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -76,9 +77,19 @@ const Navbar = () => {
             <div className={styles.container}>
                 <div className={styles.logo}>
                     <Link href="/">
-                        <div className={styles.logoText}>
-                            <div className={styles.logoLine1}>Konaseema Godavari</div>
-                            <div className={styles.logoLine2}>Runners <span className={styles.logoHighlight}>Association</span></div>
+                        <div className={styles.logoContainer}>
+                            <Image
+                                src="/images/logo.png"
+                                alt="Konaseema Godavari Runners Association Logo"
+                                width={100}
+                                height={100}
+                                className={styles.logoImage}
+                                priority
+                            />
+                            <div className={styles.logoText}>
+                                <div className={styles.logoLine1}>Konaseema Godavari</div>
+                                <div className={styles.logoLine2}>Runners <span className={styles.logoHighlight}>Association</span></div>
+                            </div>
                         </div>
                     </Link>
                 </div>

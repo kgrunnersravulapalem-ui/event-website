@@ -111,6 +111,7 @@ const addConfirmedParticipant = async (registrationData, transactionData, enviro
  * Returns true if transaction was updated, false otherwise
  */
 const processPendingTransaction = async (merchantOrderId, transactionData, registrationData, config) => {
+    var _a, _b, _c, _d;
     try {
         console.log(`Processing pending transaction: ${merchantOrderId}`);
         // Check status with PhonePe
@@ -162,15 +163,25 @@ const processPendingTransaction = async (merchantOrderId, transactionData, regis
                         amount: transactionData.amount || 0,
                         orderId: merchantOrderId,
                         transactionId: statusResponse.orderId || merchantOrderId,
-                        paymentDate: new Date().toLocaleString('en-IN', {
-                            timeZone: 'Asia/Kolkata',
-                            day: '2-digit',
-                            month: 'short',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: true
-                        }),
+                        paymentDate: ((_b = (_a = statusResponse.paymentDetails) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.timestamp)
+                            ? new Date(statusResponse.paymentDetails[0].timestamp).toLocaleString('en-IN', {
+                                timeZone: 'Asia/Kolkata',
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                            })
+                            : new Date().toLocaleString('en-IN', {
+                                timeZone: 'Asia/Kolkata',
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                            }),
                     };
                     await (0, email_1.sendEmail)({
                         to: registrationData.email,
@@ -205,15 +216,25 @@ const processPendingTransaction = async (merchantOrderId, transactionData, regis
                         amount: transactionData.amount || 0,
                         orderId: merchantOrderId,
                         transactionId: statusResponse.orderId || merchantOrderId,
-                        paymentDate: new Date().toLocaleString('en-IN', {
-                            timeZone: 'Asia/Kolkata',
-                            day: '2-digit',
-                            month: 'short',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: true
-                        }),
+                        paymentDate: ((_d = (_c = statusResponse.paymentDetails) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.timestamp)
+                            ? new Date(statusResponse.paymentDetails[0].timestamp).toLocaleString('en-IN', {
+                                timeZone: 'Asia/Kolkata',
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                            })
+                            : new Date().toLocaleString('en-IN', {
+                                timeZone: 'Asia/Kolkata',
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                            }),
                         failureReason: statusResponse.errorCode || 'Payment declined',
                     };
                     await (0, email_1.sendEmail)({

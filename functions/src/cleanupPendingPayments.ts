@@ -154,15 +154,25 @@ const processPendingTransaction = async (
                         amount: transactionData.amount || 0,
                         orderId: merchantOrderId,
                         transactionId: statusResponse.orderId || merchantOrderId,
-                        paymentDate: new Date().toLocaleString('en-IN', {
-                            timeZone: 'Asia/Kolkata',
-                            day: '2-digit',
-                            month: 'short',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: true
-                        }),
+                        paymentDate: statusResponse.paymentDetails?.[0]?.timestamp
+                            ? new Date(statusResponse.paymentDetails[0].timestamp).toLocaleString('en-IN', {
+                                timeZone: 'Asia/Kolkata',
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                            })
+                            : new Date().toLocaleString('en-IN', {
+                                timeZone: 'Asia/Kolkata',
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                            }),
                     };
 
                     await sendEmail({
@@ -199,15 +209,25 @@ const processPendingTransaction = async (
                         amount: transactionData.amount || 0,
                         orderId: merchantOrderId,
                         transactionId: statusResponse.orderId || merchantOrderId,
-                        paymentDate: new Date().toLocaleString('en-IN', {
-                            timeZone: 'Asia/Kolkata',
-                            day: '2-digit',
-                            month: 'short',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: true
-                        }),
+                        paymentDate: statusResponse.paymentDetails?.[0]?.timestamp
+                            ? new Date(statusResponse.paymentDetails[0].timestamp).toLocaleString('en-IN', {
+                                timeZone: 'Asia/Kolkata',
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                            })
+                            : new Date().toLocaleString('en-IN', {
+                                timeZone: 'Asia/Kolkata',
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                            }),
                         failureReason: statusResponse.errorCode || 'Payment declined',
                     };
 

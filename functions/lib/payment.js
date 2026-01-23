@@ -521,7 +521,7 @@ exports.checkStatus = functions.https.onRequest(async (req, res) => {
  * Cloud Function endpoint: /verifyPayment
  */
 exports.verifyPayment = functions.https.onRequest(async (req, res) => {
-    var _a;
+    var _a, _b, _c, _d, _e;
     // Enable CORS
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -594,18 +594,28 @@ exports.verifyPayment = functions.https.onRequest(async (req, res) => {
                             tshirtSize: registrationData.tshirtSize,
                             bloodGroup: registrationData.bloodGroup,
                             raceCategory: registrationData.raceCategory || 'N/A',
-                            amount: statusResponse.amount || 0,
+                            amount: transactionData.amount || 0, // Use stored amount (Rupees)
                             orderId: merchantOrderId,
                             transactionId: statusResponse.orderId || merchantOrderId,
-                            paymentDate: new Date().toLocaleString('en-IN', {
-                                timeZone: 'Asia/Kolkata',
-                                day: '2-digit',
-                                month: 'short',
-                                year: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: true
-                            }),
+                            paymentDate: ((_b = (_a = statusResponse.paymentDetails) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.timestamp)
+                                ? new Date(statusResponse.paymentDetails[0].timestamp).toLocaleString('en-IN', {
+                                    timeZone: 'Asia/Kolkata',
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: true
+                                })
+                                : new Date().toLocaleString('en-IN', {
+                                    timeZone: 'Asia/Kolkata',
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: true
+                                }),
                         };
                         await (0, email_1.sendEmail)({
                             to: registrationData.email,
@@ -639,18 +649,28 @@ exports.verifyPayment = functions.https.onRequest(async (req, res) => {
                             tshirtSize: registrationData.tshirtSize,
                             bloodGroup: registrationData.bloodGroup,
                             raceCategory: registrationData.raceCategory || 'N/A',
-                            amount: statusResponse.amount || 0,
+                            amount: transactionData.amount || 0, // Use stored amount (Rupees)
                             orderId: merchantOrderId,
                             transactionId: statusResponse.orderId || merchantOrderId,
-                            paymentDate: new Date().toLocaleString('en-IN', {
-                                timeZone: 'Asia/Kolkata',
-                                day: '2-digit',
-                                month: 'short',
-                                year: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: true
-                            }),
+                            paymentDate: ((_d = (_c = statusResponse.paymentDetails) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.timestamp)
+                                ? new Date(statusResponse.paymentDetails[0].timestamp).toLocaleString('en-IN', {
+                                    timeZone: 'Asia/Kolkata',
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: true
+                                })
+                                : new Date().toLocaleString('en-IN', {
+                                    timeZone: 'Asia/Kolkata',
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: true
+                                }),
                             failureReason: statusResponse.errorCode || 'Payment declined',
                         };
                         await (0, email_1.sendEmail)({
@@ -676,7 +696,7 @@ exports.verifyPayment = functions.https.onRequest(async (req, res) => {
                             tshirtSize: registrationData.tshirtSize,
                             bloodGroup: registrationData.bloodGroup,
                             raceCategory: registrationData.raceCategory || 'N/A',
-                            amount: statusResponse.amount || 0,
+                            amount: transactionData.amount || 0, // Use stored amount (Rupees)
                             orderId: merchantOrderId,
                             transactionId: statusResponse.orderId || merchantOrderId,
                             paymentDate: new Date().toLocaleString('en-IN', {
@@ -701,7 +721,7 @@ exports.verifyPayment = functions.https.onRequest(async (req, res) => {
             }
         }
         const isCompleted = statusResponse.state === 'COMPLETED';
-        const paymentDetails = (_a = statusResponse.paymentDetails) === null || _a === void 0 ? void 0 : _a[0];
+        const paymentDetails = (_e = statusResponse.paymentDetails) === null || _e === void 0 ? void 0 : _e[0];
         res.status(200).json({
             success: true,
             verified: isCompleted,

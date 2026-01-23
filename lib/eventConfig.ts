@@ -18,7 +18,7 @@ export const eventConfig = {
     about: {
         title: "About The Run",
         paragraphs: [
-            'Join us for the most anticipated running event of the year! The "KONASEEMA RUN" is not just a race; it\'s a celebration of health, community, and the human spirit. Organized by running enthusiasts for running enthusiasts. Powered by "Konaseema Godavari Runners Society - Ravulapalem"',
+            'Join us for the most anticipated running event of the year! The "KONASEEMA RUN" is not just a race; it\'s a celebration of health, community, and the human spirit. Organized by running enthusiasts for running enthusiasts. Powered by "Konaseema Godavari Runners Association - Ravulapalem"',
             'Our motto "Health is Wealth" embodies our belief that running connects us all. Whether you are aiming for a personal best or just here for the fun, we have a spot for you.',
         ],
         motto: "Health is Wealth",

@@ -186,7 +186,7 @@ function RegisterForm() {
                     <div className={styles.posterInfo}>
                         <h3>Event Details</h3>
                         <p><strong>Location:</strong> {eventConfig.location}</p>
-                        <p><strong>Organizer:</strong> Konaseema Godavari Runners Society - Ravulapalem</p>
+                        <p><strong>Organizer:</strong> Konaseema Godavari Runners Association - Ravulapalem</p>
                         <p className={styles.note}>
                             Prices are inclusive of taxes.
                         </p>

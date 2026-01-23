@@ -78,7 +78,7 @@ const Navbar = () => {
                     <Link href="/">
                         <div className={styles.logoText}>
                             <div className={styles.logoLine1}>Konaseema Godavari</div>
-                            <div className={styles.logoLine2}>Runners <span className={styles.logoHighlight}>Society</span></div>
+                            <div className={styles.logoLine2}>Runners <span className={styles.logoHighlight}>Association</span></div>
                         </div>
                     </Link>
                 </div>

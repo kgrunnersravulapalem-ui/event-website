@@ -1,0 +1,310 @@
+{
+    "success": true,
+    "message": "One-time cleanup completed",
+    "timestamp": "2026-01-23T02:33:39.017Z",
+    "environment": "PRODUCTION",
+    "processed": 37,
+    "updated": 37,
+    "succeeded": 2,
+    "failed": 35,
+    "stillPending": 0,
+    "errors": 0,
+    "details": [
+        {
+            "orderId": "ORDER_1767093758914",
+            "ageInMinutes": 34028,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "kiran"
+        },
+        {
+            "orderId": "ORDER_1767332197598",
+            "ageInMinutes": 30054,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Devi tanala"
+        },
+        {
+            "orderId": "ORDER_1767413571592",
+            "ageInMinutes": 28698,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Jaya Kameswari "
+        },
+        {
+            "orderId": "ORDER_1767413858232",
+            "ageInMinutes": 28693,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Jaya Kameswari "
+        },
+        {
+            "orderId": "ORDER_1767425950304",
+            "ageInMinutes": 28492,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Jaya Kameswari "
+        },
+        {
+            "orderId": "ORDER_1767595931278",
+            "ageInMinutes": 25659,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Jaya Kameswari "
+        },
+        {
+            "orderId": "ORDER_1767596128426",
+            "ageInMinutes": 25656,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Jaya Kameswari "
+        },
+        {
+            "orderId": "ORDER_1767596398697",
+            "ageInMinutes": 25651,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Jaya Kameswari "
+        },
+        {
+            "orderId": "ORDER_1767596556551",
+            "ageInMinutes": 25649,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Jaya Kameswari "
+        },
+        {
+            "orderId": "ORDER_1768133300651",
+            "ageInMinutes": 16703,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Bhavani "
+        },
+        {
+            "orderId": "ORDER_1768232911944",
+            "ageInMinutes": 15043,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Vinitha"
+        },
+        {
+            "orderId": "ORDER_1768891269471",
+            "ageInMinutes": 4070,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Kiran pulidindi"
+        },
+        {
+            "orderId": "ORDER_1768894873601",
+            "ageInMinutes": 4010,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Busi kamalakar "
+        },
+        {
+            "orderId": "ORDER_1768897919575",
+            "ageInMinutes": 3960,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Dharmarao Kandiboina "
+        },
+        {
+            "orderId": "ORDER_1768898453472",
+            "ageInMinutes": 3951,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "KONALA RAJKUMAR "
+        },
+        {
+            "orderId": "ORDER_1768898999998",
+            "ageInMinutes": 3942,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Suvarna Reddy"
+        },
+        {
+            "orderId": "ORDER_1768912694060",
+            "ageInMinutes": 3714,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "MATTA MANIKANTA"
+        },
+        {
+            "orderId": "ORDER_1768916428497",
+            "ageInMinutes": 3651,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Seelaboyina satya"
+        },
+        {
+            "orderId": "ORDER_1768966636865",
+            "ageInMinutes": 2815,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Bhavani.D"
+        },
+        {
+            "orderId": "ORDER_1768966678837",
+            "ageInMinutes": 2814,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Bhavani.D"
+        },
+        {
+            "orderId": "ORDER_1768966966350",
+            "ageInMinutes": 2809,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Bhavani.D"
+        },
+        {
+            "orderId": "ORDER_1768997998071",
+            "ageInMinutes": 2292,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "kiran"
+        },
+        {
+            "orderId": "ORDER_1769006778298",
+            "ageInMinutes": 2146,
+            "oldStatus": "PENDING",
+            "newStatus": "COMPLETED",
+            "updated": true,
+            "participantName": "Snvssaireddy "
+        },
+        {
+            "orderId": "ORDER_1769014731718",
+            "ageInMinutes": 2013,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "ESWARA RAO KANDANALA"
+        },
+        {
+            "orderId": "ORDER_1769041520389",
+            "ageInMinutes": 1567,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "ADIVARAPUPETA VENKATESWARA RAO "
+        },
+        {
+            "orderId": "ORDER_1769058682065",
+            "ageInMinutes": 1281,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Goli Indra "
+        },
+        {
+            "orderId": "ORDER_1769063698728",
+            "ageInMinutes": 1197,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "V.SANDEESH.SAMAYAMANTHULA"
+        },
+        {
+            "orderId": "ORDER_1769064509098",
+            "ageInMinutes": 1184,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Jagadeesh Vadaparthi "
+        },
+        {
+            "orderId": "ORDER_1769070895025",
+            "ageInMinutes": 1078,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Geddam Suresh babu"
+        },
+        {
+            "orderId": "ORDER_1769080694763",
+            "ageInMinutes": 914,
+            "oldStatus": "PENDING",
+            "newStatus": "COMPLETED",
+            "updated": true,
+            "participantName": "Dr.B. Harinath Reddy "
+        },
+        {
+            "orderId": "ORDER_1769088501736",
+            "ageInMinutes": 784,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Chirra yaswanth "
+        },
+        {
+            "orderId": "ORDER_1769091326626",
+            "ageInMinutes": 737,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Tekimudi naga venkata Santosh Kumar "
+        },
+        {
+            "orderId": "ORDER_1769095909809",
+            "ageInMinutes": 661,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Sunkara ganapathi "
+        },
+        {
+            "orderId": "ORDER_1769095973431",
+            "ageInMinutes": 660,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Sunkara ganapathi "
+        },
+        {
+            "orderId": "ORDER_1769097932521",
+            "ageInMinutes": 627,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Nallamilli Suneeta"
+        },
+        {
+            "orderId": "ORDER_1769100652927",
+            "ageInMinutes": 582,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Mallisettiharsha raju"
+        },
+        {
+            "orderId": "ORDER_1769100900505",
+            "ageInMinutes": 578,
+            "oldStatus": "PENDING",
+            "newStatus": "FAILED",
+            "updated": true,
+            "participantName": "Thadala hari charan"
+        }
+    ]
+}

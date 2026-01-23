@@ -12,7 +12,7 @@ import {
   PaymentData,
 } from './emailComponents';
 
-export interface PaymentPendingEmailData extends ParticipantData, PaymentData {}
+export interface PaymentPendingEmailData extends ParticipantData, PaymentData { }
 
 export function generatePaymentPendingEmail(data: PaymentPendingEmailData): string {
   const { colors } = EMAIL_CONFIG;
@@ -31,9 +31,9 @@ export function generatePaymentPendingEmail(data: PaymentPendingEmailData): stri
           </h3>
           <ul style="margin: 0; padding-left: 20px; color: #6B7280; font-size: 14px; line-height: 1.8;">
             <li>Your payment is being verified by the bank</li>
-            <li>This process usually takes 5-10 minutes</li>
-            <li>You'll receive a confirmation email once the payment is successful</li>
-            <li>If the payment fails, the amount will be automatically refunded to your account within 3-5 business days</li>
+            <li>Our system automatically checks payment status every 15 minutes</li>
+            <li>You'll receive a confirmation email within 15 minutes once the payment is verified</li>
+            <li>If the payment fails, the amount will be automatically refunded to your account within 5-7 business days</li>
           </ul>
         </div>
       </td>
@@ -47,10 +47,10 @@ export function generatePaymentPendingEmail(data: PaymentPendingEmailData): stri
             ℹ️ Important Notice
           </h3>
           <p style="margin: 0 0 10px; color: #6B7280; font-size: 14px; line-height: 1.6;">
-            <strong>Do not close the payment window</strong> if you're still on the payment page. Wait for the final confirmation.
+            <strong>Please wait for 15 minutes</strong> for automatic payment verification. Our system will check your payment status and send you a confirmation email.
           </p>
           <p style="margin: 0; color: #6B7280; font-size: 14px; line-height: 1.6;">
-            If you don't receive a confirmation email within 30 minutes, please check your spam folder or contact our support team.
+            If you don't receive a confirmation email within 30 minutes, please check your spam folder or contact our support team at <strong>8686144086</strong>.
           </p>
         </div>
       </td>
@@ -60,6 +60,6 @@ export function generatePaymentPendingEmail(data: PaymentPendingEmailData): stri
     ${generateSocialMediaSection()}
     ${generateEmailFooter()}
   `;
-  
+
   return generateBaseEmailLayout('Payment Pending', emailContent);
 }

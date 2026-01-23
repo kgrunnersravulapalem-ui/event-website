@@ -107,7 +107,7 @@ function RegisterForm() {
 
             // Get Cloud Functions URL from environment
             const cloudFunctionsUrl = process.env.NEXT_PUBLIC_CLOUD_FUNCTIONS_URL;
-            
+
             if (!cloudFunctionsUrl) {
                 throw new Error('Cloud Functions URL not configured');
             }
@@ -130,7 +130,7 @@ function RegisterForm() {
             // Get the redirect URL from response (v2 API returns redirectUrl directly)
             const checkoutUrl = data.data?.redirectUrl;
             const orderId = data.data?.merchantOrderId;
-            
+
             if (!checkoutUrl) {
                 throw new Error('No checkout URL received');
             }
@@ -171,18 +171,18 @@ function RegisterForm() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.2 }}
                 >
-                        <div className={styles.posterPlaceholder}>
-                            <div className={styles.posterImageWrapper}>
-                                <Image
-                                    src="/images/run_2.jpeg"
-                                    alt="Event poster"
-                                    fill
-                                    priority
-                                    className={styles.posterPlaceholderImage}
-                                    sizes="(max-width: 768px) 100vw, 40vw"
-                                />
-                            </div>
+                    <div className={styles.posterPlaceholder}>
+                        <div className={styles.posterImageWrapper}>
+                            <Image
+                                src="/images/run_2.jpeg"
+                                alt="Event poster"
+                                fill
+                                priority
+                                className={styles.posterPlaceholderImage}
+                                sizes="(max-width: 768px) 100vw, 40vw"
+                            />
                         </div>
+                    </div>
                     <div className={styles.posterInfo}>
                         <h3>Event Details</h3>
                         <p><strong>Location:</strong> {eventConfig.location}</p>
@@ -238,6 +238,16 @@ function RegisterForm() {
                                 </div>
                             </div>
                         ))}
+                    </div>
+
+                    {/* Contact Support Section */}
+                    <div className={styles.supportSection}>
+                        <p className={styles.supportText}>
+                            Need help? Contact us at{' '}
+                            <a href="tel:+918686144086" className={styles.supportPhone}>
+                                8686144086
+                            </a>
+                        </p>
                     </div>
 
                     {selectedCategory && (

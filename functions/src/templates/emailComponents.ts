@@ -31,13 +31,13 @@ export interface PaymentData {
  */
 export function generateEmailHeader(type: 'success' | 'pending' | 'failed', subtitle: string): string {
   const { event, colors } = EMAIL_CONFIG;
-  
+
   const headerColors = {
     success: `linear-gradient(135deg, ${colors.success} 0%, ${colors.primary} 100%)`,
     pending: `linear-gradient(135deg, ${colors.warning} 0%, #D97706 100%)`,
     failed: `linear-gradient(135deg, ${colors.danger} 0%, #DC2626 100%)`
   };
-  
+
   return `
     <tr>
       <td style="background: ${headerColors[type]}; padding: 40px 30px; text-align: center;">
@@ -57,7 +57,7 @@ export function generateEmailHeader(type: 'success' | 'pending' | 'failed', subt
  */
 export function generateStatusIcon(type: 'success' | 'pending' | 'failed', heading: string, message: string): string {
   const { colors } = EMAIL_CONFIG;
-  
+
   const icons = {
     success: {
       color: colors.success,
@@ -75,9 +75,9 @@ export function generateStatusIcon(type: 'success' | 'pending' | 'failed', headi
       fontSize: '48px'
     }
   };
-  
+
   const icon = icons[type];
-  
+
   return `
     <tr>
       <td style="padding: 40px 30px; text-align: center;">
@@ -110,7 +110,7 @@ export function generateParticipantDetailsTable(
   failureReason?: string
 ): string {
   const { colors } = EMAIL_CONFIG;
-  
+
   return `
     <table role="presentation" style="width: 100%; border-collapse: collapse;">
       <tr>
@@ -189,7 +189,7 @@ export function generateParticipantDetailsTable(
       <tr>
         <td style="padding: 8px 0; color: #6B7280; font-size: 14px;">Amount</td>
         <td style="padding: 8px 0; color: ${amountColor}; font-size: 16px; font-weight: bold; text-align: right;">
-          ₹${(payment.amount / 100).toFixed(2)}
+          ₹${payment.amount.toFixed(2)}
         </td>
       </tr>
       <tr>
@@ -227,7 +227,7 @@ export function generateParticipantDetailsTable(
  */
 export function generateDetailsSection(title: string, borderColor: string, content: string): string {
   const { colors } = EMAIL_CONFIG;
-  
+
   return `
     <tr>
       <td style="padding: 0 30px 30px;">
@@ -247,7 +247,7 @@ export function generateDetailsSection(title: string, borderColor: string, conte
  */
 export function generateEventInfoSection(): string {
   const { event, colors } = EMAIL_CONFIG;
-  
+
   return `
     <tr>
       <td style="padding: 0 30px 30px;">
@@ -275,7 +275,7 @@ export function generateEventInfoSection(): string {
  */
 export function generateSocialMediaSection(): string {
   const { social, colors, footer } = EMAIL_CONFIG;
-  
+
   return `
     <tr>
       <td style="padding: 0 30px 30px; text-align: center;">
@@ -300,7 +300,7 @@ export function generateSocialMediaSection(): string {
  */
 export function generateEmailFooter(): string {
   const { support, colors, footer } = EMAIL_CONFIG;
-  
+
   return `
     <tr>
       <td style="background-color: ${colors.dark}; padding: 30px; text-align: center;">
@@ -320,7 +320,7 @@ export function generateEmailFooter(): string {
  */
 export function generateBaseEmailLayout(title: string, content: string): string {
   const { colors } = EMAIL_CONFIG;
-  
+
   return `
 <!DOCTYPE html>
 <html lang="en">

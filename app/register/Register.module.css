@@ -171,6 +171,41 @@
     background-color: var(--primary);
 }
 
+/* Support Section Styling */
+.supportSection {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-radius: var(--radius-md);
+    border: 1px solid #bae6fd;
+    text-align: center;
+}
+
+.supportText {
+    margin: 0;
+    color: #0c4a6e;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.supportPhone {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.supportPhone:hover {
+    color: #004d99;
+    background-color: rgba(0, 102, 204, 0.1);
+    transform: scale(1.05);
+}
+
+
 .registrationForm {
     margin-top: 2rem;
     border-top: 1px solid #e2e8f0;

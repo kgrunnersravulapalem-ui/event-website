@@ -1,10 +1,10 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { 
-  createPayment, 
-  checkOrderStatus, 
+import {
+  createPayment,
+  checkOrderStatus,
   validateWebhookAuth,
-  PhonePeConfig 
+  PhonePeConfig
 } from './utils/phonepe';
 import { sendEmail } from './utils/email';
 import { generatePaymentSuccessEmail, PaymentSuccessEmailData } from './templates/paymentSuccess';
@@ -52,7 +52,7 @@ const addConfirmedParticipant = async (
     const participantsCollection = getCollectionName('participants', environment);
     const orderId = transactionData?.merchantOrderId || '';
     const phone = registrationData.phone || registrationData.mobileNumber || '';
-    
+
     if (!orderId) {
       console.warn('Cannot add participant without orderId');
       return;
@@ -60,7 +60,7 @@ const addConfirmedParticipant = async (
 
     // Use orderId as document ID - ensures one participant entry per successful transaction
     const participantRef = db.collection(participantsCollection).doc(orderId);
-    
+
     // Check if already exists (avoid duplicates from webhook + status check both triggering)
     const existingDoc = await participantRef.get();
     if (existingDoc.exists) {
@@ -132,7 +132,7 @@ export const initiatePayment = functions.https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.set('Access-Control-Allow-Headers', 'Content-Type');
-  
+
   if (req.method === 'OPTIONS') {
     res.status(204).send('');
     return;
@@ -145,7 +145,7 @@ export const initiatePayment = functions.https.onRequest(async (req, res) => {
 
   try {
     const registrationData: RegistrationData = req.body;
-    
+
     // Validate required fields
     if (!registrationData.name || !registrationData.email || !registrationData.phone) {
       res.status(400).json({ success: false, error: 'Missing required fields: name, email, phone' });
@@ -158,7 +158,7 @@ export const initiatePayment = functions.https.onRequest(async (req, res) => {
     }
 
     const config = getPhonePeConfig();
-    
+
     // Generate unique order ID (merchantOrderId)
     const timestamp = Date.now();
     const merchantOrderId = `ORDER_${timestamp}`;
@@ -189,7 +189,7 @@ export const initiatePayment = functions.https.onRequest(async (req, res) => {
 
     // Get base URL for redirect
     const baseUrl = functions.config().app?.base_url || process.env.NEXT_PUBLIC_BASE_URL || 'https://yourwebsite.com';
-    
+
     // Create payment using PhonePe API v2 with comprehensive metaInfo for dashboard visibility
     let paymentResponse;
     try {
@@ -212,14 +212,14 @@ export const initiatePayment = functions.https.onRequest(async (req, res) => {
       });
     } catch (paymentError: any) {
       console.error('PhonePe API error:', paymentError);
-      
+
       // Update registration status to failed
       await registrationRef.update({
         status: 'PAYMENT_INIT_FAILED',
         error: paymentError.message,
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
       });
-      
+
       // Check if it's a timeout error
       if (paymentError.message.includes('timeout')) {
         res.status(504).json({
@@ -286,10 +286,10 @@ export const paymentWebhook = functions.https.onRequest(async (req, res) => {
     // Validate webhook authorization
     const authHeader = req.headers['authorization'] as string;
     const webhookCreds = getWebhookCredentials();
-    
+
     if (webhookCreds.username && webhookCreds.password) {
       const isValid = validateWebhookAuth(authHeader, webhookCreds.username, webhookCreds.password);
-      
+
       if (!isValid) {
         console.error('Invalid webhook authorization');
         res.status(401).json({ success: false, error: 'Unauthorized' });
@@ -299,7 +299,7 @@ export const paymentWebhook = functions.https.onRequest(async (req, res) => {
 
     // Parse webhook payload
     const { event, payload } = req.body;
-    
+
     console.log('Webhook received:', {
       event,
       merchantOrderId: payload?.merchantOrderId,
@@ -344,7 +344,7 @@ export const paymentWebhook = functions.https.onRequest(async (req, res) => {
       const registrationRef = db.collection(getCollectionName('registrations', config.environment)).doc(transactionData.registrationId);
       const registrationDoc = await registrationRef.get();
       const registrationData = registrationDoc.exists ? registrationDoc.data() : null;
-      
+
       if (state === 'COMPLETED') {
         await registrationRef.update({
           status: 'CONFIRMED',
@@ -374,8 +374,8 @@ export const paymentWebhook = functions.https.onRequest(async (req, res) => {
             transactionId: payload.orderId || merchantOrderId,
             paymentDate: new Date().toLocaleString('en-IN', {
               timeZone: 'Asia/Kolkata',
-              day: '2-digit', 
-              month: 'short', 
+              day: '2-digit',
+              month: 'short',
               year: 'numeric',
               hour: '2-digit',
               minute: '2-digit',
@@ -418,8 +418,8 @@ export const paymentWebhook = functions.https.onRequest(async (req, res) => {
             transactionId: payload.orderId || merchantOrderId,
             paymentDate: new Date().toLocaleString('en-IN', {
               timeZone: 'Asia/Kolkata',
-              day: '2-digit', 
-              month: 'short', 
+              day: '2-digit',
+              month: 'short',
               year: 'numeric',
               hour: '2-digit',
               minute: '2-digit',
@@ -467,7 +467,7 @@ export const checkStatus = functions.https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.set('Access-Control-Allow-Headers', 'Content-Type');
-  
+
   if (req.method === 'OPTIONS') {
     res.status(204).send('');
     return;
@@ -497,7 +497,7 @@ export const checkStatus = functions.https.onRequest(async (req, res) => {
       });
     } catch (statusError: any) {
       console.error('Status check error:', statusError);
-      
+
       if (statusError.message.includes('timeout')) {
         res.status(504).json({
           success: false,
@@ -556,12 +556,12 @@ export const checkStatus = functions.https.onRequest(async (req, res) => {
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Status check failed';
     console.error('Status check error:', error);
-    
+
     // Provide user-friendly error message
-    const userMessage = errorMessage.includes('sandbox') 
+    const userMessage = errorMessage.includes('sandbox')
       ? 'The payment gateway is temporarily unavailable. Your payment may still be processing. Please wait a moment and check your email, or contact support.'
       : errorMessage;
-    
+
     res.status(500).json({
       success: false,
       error: userMessage
@@ -578,7 +578,7 @@ export const verifyPayment = functions.https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.set('Access-Control-Allow-Headers', 'Content-Type');
-  
+
   if (req.method === 'OPTIONS') {
     res.status(204).send('');
     return;
@@ -631,7 +631,7 @@ export const verifyPayment = functions.https.onRequest(async (req, res) => {
       const registrationDoc = await db.collection(getCollectionName('registrations', config.environment)).doc(transactionData.registrationId).get();
       if (registrationDoc.exists) {
         registrationData = registrationDoc.data();
-        
+
         // Update registration status based on payment
         if (statusResponse.state === 'COMPLETED') {
           await db.collection(getCollectionName('registrations', config.environment)).doc(transactionData.registrationId).update({
@@ -660,18 +660,28 @@ export const verifyPayment = functions.https.onRequest(async (req, res) => {
               tshirtSize: registrationData.tshirtSize,
               bloodGroup: registrationData.bloodGroup,
               raceCategory: registrationData.raceCategory || 'N/A',
-              amount: statusResponse.amount || 0,
+              amount: transactionData.amount || 0, // Use stored amount (Rupees)
               orderId: merchantOrderId,
               transactionId: statusResponse.orderId || merchantOrderId,
-              paymentDate: new Date().toLocaleString('en-IN', { 
-                timeZone: 'Asia/Kolkata',
-                day: '2-digit', 
-                month: 'short', 
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-              }),
+              paymentDate: statusResponse.paymentDetails?.[0]?.timestamp
+                ? new Date(statusResponse.paymentDetails[0].timestamp).toLocaleString('en-IN', {
+                  timeZone: 'Asia/Kolkata',
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true
+                })
+                : new Date().toLocaleString('en-IN', {
+                  timeZone: 'Asia/Kolkata',
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true
+                }),
             };
 
             await sendEmail({
@@ -707,18 +717,28 @@ export const verifyPayment = functions.https.onRequest(async (req, res) => {
               tshirtSize: registrationData.tshirtSize,
               bloodGroup: registrationData.bloodGroup,
               raceCategory: registrationData.raceCategory || 'N/A',
-              amount: statusResponse.amount || 0,
+              amount: transactionData.amount || 0, // Use stored amount (Rupees)
               orderId: merchantOrderId,
               transactionId: statusResponse.orderId || merchantOrderId,
-              paymentDate: new Date().toLocaleString('en-IN', { 
-                timeZone: 'Asia/Kolkata',
-                day: '2-digit', 
-                month: 'short', 
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-              }),
+              paymentDate: statusResponse.paymentDetails?.[0]?.timestamp
+                ? new Date(statusResponse.paymentDetails[0].timestamp).toLocaleString('en-IN', {
+                  timeZone: 'Asia/Kolkata',
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true
+                })
+                : new Date().toLocaleString('en-IN', {
+                  timeZone: 'Asia/Kolkata',
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true
+                }),
               failureReason: statusResponse.errorCode || 'Payment declined',
             };
 
@@ -745,13 +765,13 @@ export const verifyPayment = functions.https.onRequest(async (req, res) => {
               tshirtSize: registrationData.tshirtSize,
               bloodGroup: registrationData.bloodGroup,
               raceCategory: registrationData.raceCategory || 'N/A',
-              amount: statusResponse.amount || 0,
+              amount: transactionData.amount || 0, // Use stored amount (Rupees)
               orderId: merchantOrderId,
               transactionId: statusResponse.orderId || merchantOrderId,
               paymentDate: new Date().toLocaleString('en-IN', {
                 timeZone: 'Asia/Kolkata',
-                day: '2-digit', 
-                month: 'short', 
+                day: '2-digit',
+                month: 'short',
                 year: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
@@ -794,12 +814,12 @@ export const verifyPayment = functions.https.onRequest(async (req, res) => {
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Verification failed';
     console.error('Payment verification error:', error);
-    
+
     // Provide user-friendly error message
-    const userMessage = errorMessage.includes('sandbox') 
+    const userMessage = errorMessage.includes('sandbox')
       ? 'The payment gateway is temporarily unavailable. Your payment may still be processing. Please wait a moment and refresh, or contact support with your order ID.'
       : 'Failed to verify payment. Please try again or contact support if the issue persists.';
-    
+
     res.status(500).json({
       success: false,
       error: userMessage,

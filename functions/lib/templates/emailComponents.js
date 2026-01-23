@@ -158,7 +158,7 @@ function generateParticipantDetailsTable(participant, payment, borderColor, amou
       <tr>
         <td style="padding: 8px 0; color: #6B7280; font-size: 14px;">Amount</td>
         <td style="padding: 8px 0; color: ${amountColor}; font-size: 16px; font-weight: bold; text-align: right;">
-          ₹${(payment.amount / 100).toFixed(2)}
+          ₹${payment.amount.toFixed(2)}
         </td>
       </tr>
       <tr>

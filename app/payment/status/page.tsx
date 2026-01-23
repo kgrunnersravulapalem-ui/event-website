@@ -26,7 +26,7 @@ function PaymentStatusContent() {
     const [error, setError] = useState<string | null>(null);
     const [pollCount, setPollCount] = useState(0);
     const [pollingTimedOut, setPollingTimedOut] = useState(false);
-    
+
     // Refs for cleanup
     const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
     const pollStartTimeRef = useRef<number>(0);
@@ -45,7 +45,7 @@ function PaymentStatusContent() {
     const verifyPayment = useCallback(async (orderId: string, isPolling = false): Promise<'COMPLETED' | 'FAILED' | 'PENDING' | 'ERROR'> => {
         try {
             const cloudFunctionsUrl = process.env.NEXT_PUBLIC_CLOUD_FUNCTIONS_URL;
-            
+
             if (!cloudFunctionsUrl) {
                 throw new Error('Cloud Functions URL not configured');
             }
@@ -63,7 +63,7 @@ function PaymentStatusContent() {
             }
 
             const data = await response.json();
-            
+
             if (data.success) {
                 const status = data.state || 'UNKNOWN';
                 setPaymentData({
@@ -71,11 +71,11 @@ function PaymentStatusContent() {
                     registration: data.registration,
                     transaction: data.transaction
                 });
-                
+
                 if (!isPolling) {
                     setLoading(false);
                 }
-                
+
                 return status;
             } else {
                 setError(data.error || 'Payment verification failed');
@@ -94,7 +94,7 @@ function PaymentStatusContent() {
 
     useEffect(() => {
         const orderId = searchParams.get('orderId') || searchParams.get('transactionId');
-        
+
         if (!orderId) {
             setError('Invalid payment reference');
             setLoading(false);
@@ -104,19 +104,19 @@ function PaymentStatusContent() {
         // Initial verification
         const initVerification = async () => {
             const status = await verifyPayment(orderId);
-            
+
             // If PENDING, start polling with limits
             if (status === 'PENDING' && !isPollingRef.current) {
                 isPollingRef.current = true;
                 pollStartTimeRef.current = Date.now();
                 setPollCount(1);
-                
+
                 pollIntervalRef.current = setInterval(async () => {
                     const elapsedTime = Date.now() - pollStartTimeRef.current;
-                    
+
                     setPollCount(prev => {
                         const newCount = prev + 1;
-                        
+
                         // Check if we've exceeded limits
                         if (newCount > POLLING_CONFIG.MAX_ATTEMPTS || elapsedTime > POLLING_CONFIG.MAX_DURATION_MS) {
                             stopPolling();
@@ -124,15 +124,15 @@ function PaymentStatusContent() {
                             setLoading(false);
                             return prev;
                         }
-                        
+
                         return newCount;
                     });
-                    
+
                     // Don't continue if we've stopped polling
                     if (!isPollingRef.current) return;
-                    
+
                     const pollStatus = await verifyPayment(orderId, true);
-                    
+
                     // Stop polling if status is final
                     if (pollStatus === 'COMPLETED' || pollStatus === 'FAILED' || pollStatus === 'ERROR') {
                         stopPolling();
@@ -188,9 +188,8 @@ function PaymentStatusContent() {
     return (
         <div className={styles.container}>
             <motion.div
-                className={`${styles.card} ${
-                    isSuccess ? styles.success : isFailed ? styles.failed : styles.pending
-                }`}
+                className={`${styles.card} ${isSuccess ? styles.success : isFailed ? styles.failed : styles.pending
+                    }`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
             >
@@ -210,7 +209,7 @@ function PaymentStatusContent() {
                     {isSuccess && 'Thank you for registering! Your payment has been confirmed.'}
                     {isFailed && 'Your payment could not be processed. Please try again.'}
                     {isPending && !pollingTimedOut && `Checking payment status... (${pollCount}/${POLLING_CONFIG.MAX_ATTEMPTS})`}
-                    {isPending && pollingTimedOut && 'Payment verification is taking longer than expected. If money was deducted, your registration will be confirmed once we receive payment confirmation from PhonePe, or it will be refunded within 5-7 business days.'}
+                    {isPending && pollingTimedOut && 'Payment verification is taking longer than expected. If money was deducted, you will receive a confirmation email within 15 minutes once we verify your payment with PhonePe. If not confirmed within 15 minutes, the amount will be refunded within 5-7 business days.'}
                 </p>
 
                 <div className={styles.details}>
@@ -278,13 +277,13 @@ function PaymentStatusContent() {
                     )}
                     {isPending && pollingTimedOut && (
                         <>
-                            <Button 
+                            <Button
                                 onClick={() => window.location.reload()}
                                 variant="secondary"
                             >
                                 Check Again
                             </Button>
-                            <Button 
+                            <Button
                                 onClick={() => router.push('/')}
                                 variant="outline"
                                 style={{ marginTop: '0.5rem' }}

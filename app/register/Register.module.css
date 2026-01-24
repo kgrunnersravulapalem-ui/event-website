@@ -103,19 +103,24 @@
 
 .ticketList {
     display: flex;
-    flex-direction: column;
+    flex-direction: row-reverse;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .ticketItem {
+    flex: 1;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    padding: 1rem;
+    padding: 1.25rem 1rem;
     border: 2px solid #e2e8f0;
     border-radius: var(--radius-md);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
     background: white;
+    text-align: center;
+    gap: 0.75rem;
 }
 
 .ticketItem:hover {
@@ -128,16 +133,18 @@
 }
 
 .ticketColor {
-    width: 12px;
-    height: 12px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
-    margin-right: 1rem;
+    margin-bottom: 0.25rem;
 }
 
 .ticketInfo {
     flex: 1;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    align-items: center;
 }
 
 .ticketName {

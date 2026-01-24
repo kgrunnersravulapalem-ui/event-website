@@ -290,17 +290,15 @@ export const checkPendingPayments = functions
 
             console.log(`Starting pending payments check for environment: ${config.environment}`);
 
-            // Calculate cutoff time (30 minutes ago)
-            // This ensures payments have enough time to process before being checked
-            // Matches the cron job interval of 30 minutes
-            const cutoffTime = new Date(Date.now() - 30 * 60 * 1000);
+            // Calculate cutoff time commented out
+            // const cutoffTime = new Date(Date.now() - 30 * 60 * 1000);
 
-            // Query for pending transactions older than 15 minutes
+            // Query for ALL pending transactions (no cutoff filter)
             const pendingTransactionsSnapshot = await db
                 .collection(transactionsCollection)
                 .where('status', '==', 'PENDING')
-                .where('createdAt', '<', cutoffTime)
-                .limit(50) // Process max 50 at a time to avoid timeout
+                // .where('createdAt', '<', cutoffTime)  // Temporarily removed cutoff
+                // .limit(50) // Temporarily removed limit
                 .get();
 
             console.log(`Found ${pendingTransactionsSnapshot.size} pending transactions to check`);

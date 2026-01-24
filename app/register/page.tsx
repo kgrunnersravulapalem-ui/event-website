@@ -56,6 +56,7 @@ function RegisterForm() {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [emailError, setEmailError] = useState<string | null>(null);
 
     // Pre-select category from URL parameter
     useEffect(() => {
@@ -65,8 +66,82 @@ function RegisterForm() {
         }
     }, [searchParams]);
 
+    /**
+     * Validates email and checks for common typos in email providers
+     * Returns error message if invalid, null if valid
+     */
+    const validateEmail = (email: string): string | null => {
+        // Basic email format validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return 'Please enter a valid email address';
+        }
+
+        // Extract domain from email
+        const domain = email.split('@')[1]?.toLowerCase();
+        if (!domain) {
+            return 'Please enter a valid email address';
+        }
+
+        // Common email provider typos and their corrections
+        const commonTypos: { [key: string]: string } = {
+            // Gmail typos
+            'bmail.com': 'gmail.com',
+            'gmai.com': 'gmail.com',
+            'gmial.com': 'gmail.com',
+            'gmil.com': 'gmail.com',
+            'gemail.com': 'gmail.com',
+            'gmaill.com': 'gmail.com',
+            'gmali.com': 'gmail.com',
+            'gmal.com': 'gmail.com',
+            'gnail.com': 'gmail.com',
+            'gmeil.com': 'gmail.com',
+
+            // Yahoo typos
+            'yaho.com': 'yahoo.com',
+            'yahooo.com': 'yahoo.com',
+            'yahho.com': 'yahoo.com',
+            'yahu.com': 'yahoo.com',
+            'yhoo.com': 'yahoo.com',
+            'yaoo.com': 'yahoo.com',
+
+            // Outlook/Hotmail typos
+            'hotmial.com': 'hotmail.com',
+            'hotmil.com': 'hotmail.com',
+            'hotmai.com': 'hotmail.com',
+            'hotmal.com': 'hotmail.com',
+            'outlok.com': 'outlook.com',
+            'outloo.com': 'outlook.com',
+            'outlookk.com': 'outlook.com',
+
+            // Rediff typos
+            'redif.com': 'rediffmail.com',
+            'reddiff.com': 'rediffmail.com',
+            'rediffmai.com': 'rediffmail.com',
+        };
+
+        // Check if domain is a common typo
+        if (commonTypos[domain]) {
+            const suggestion = email.split('@')[0] + '@' + commonTypos[domain];
+            return `Did you mean "${suggestion}"? Please check your email address.`;
+        }
+
+        // Check for missing common TLDs
+        if (!domain.includes('.')) {
+            return 'Please enter a complete email address (e.g., user@example.com)';
+        }
+
+        return null; // Email is valid
+    };
+
     const handleInputChange = (field: keyof FormData, value: string) => {
         setFormData(prev => ({ ...prev, [field]: value }));
+
+        // Validate email on change
+        if (field === 'email') {
+            const error = validateEmail(value);
+            setEmailError(error);
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -75,6 +150,12 @@ function RegisterForm() {
         setIsSubmitting(true);
 
         try {
+            // Validate email before submission
+            const emailValidationError = validateEmail(formData.email);
+            if (emailValidationError) {
+                throw new Error(emailValidationError);
+            }
+
             // Validate policy acceptance
             if (!formData.acceptedTerms) {
                 throw new Error('Please accept the Terms & Conditions to continue');
@@ -267,14 +348,21 @@ function RegisterForm() {
                                     required
                                 />
 
-                                <Input
-                                    label="Email"
-                                    type="email"
-                                    placeholder="john@example.com"
-                                    value={formData.email}
-                                    onChange={(e) => handleInputChange('email', e.target.value)}
-                                    required
-                                />
+                                <div>
+                                    <Input
+                                        label="Email"
+                                        type="email"
+                                        placeholder="john@example.com"
+                                        value={formData.email}
+                                        onChange={(e) => handleInputChange('email', e.target.value)}
+                                        required
+                                    />
+                                    {emailError && formData.email && (
+                                        <div className={styles.fieldError}>
+                                            {emailError}
+                                        </div>
+                                    )}
+                                </div>
 
                                 <RadioGroup
                                     label="Gender"

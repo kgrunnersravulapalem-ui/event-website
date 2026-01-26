@@ -52,6 +52,7 @@ const Footer = () => {
                 </div>
                 <div className={styles.bottom}>
                     <p>&copy; {new Date().getFullYear()} {eventConfig.eventName}. All rights reserved.</p>
+                    <p style={{ marginTop: '0.5rem' }}>Organized by KG RUNNERS</p>
                 </div>
             </div>
         </footer>

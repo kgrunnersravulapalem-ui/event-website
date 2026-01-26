@@ -57,6 +57,10 @@ const Contact = () => {
 
                         <div className={styles.details}>
                             <div className={styles.detailItem}>
+                                <strong>Organization</strong>
+                                <p>KG RUNNERS</p>
+                            </div>
+                            <div className={styles.detailItem}>
                                 <strong>Email</strong>
                                 <p>{eventConfig.contact.email}</p>
                             </div>

@@ -4,7 +4,7 @@ export const eventConfig = {
     location: "Sri Potamsetti Rami Reddy Park, Ravulapalem, Konaseema Dist, Andhra Pradesh - 533238",
     highlightText: "Registrations are now open! Secure your spot for the ultimate coastal run. Early bird prices end soon!",
     contactEmail: "kgrunnersravulapalem@gmail.com",
-    youtubeVideoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", // Replace with actual event video URL
+    youtubeVideoUrl: "https://www.youtube.com/watch?v=5W7dELeWMwo", // Replace with actual event video URL
     socials: {
         facebook: "#",
         instagram: "#",

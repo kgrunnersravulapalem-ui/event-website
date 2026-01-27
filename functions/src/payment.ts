@@ -126,156 +126,164 @@ interface RegistrationData {
 /**
  * Initiate PhonePe payment
  * Cloud Function endpoint: /initiatePayment
+ * 
+ * Performance Tip: If cold starts are still persistent, consider adding 'minInstances: 1'
+ * to the runWith configuration. This keeps one instance warm 24/7 (Blaze plan only).
  */
-export const initiatePayment = functions.https.onRequest(async (req, res) => {
-  // Enable CORS
-  res.set('Access-Control-Allow-Origin', '*');
-  res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.set('Access-Control-Allow-Headers', 'Content-Type');
+export const initiatePayment = functions
+  .runWith({
+    memory: '512MB', // Higher memory grants more CPU power, reducing cold start time
+    timeoutSeconds: 30
+  })
+  .https.onRequest(async (req, res) => {
+    // Enable CORS
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
 
-  if (req.method === 'OPTIONS') {
-    res.status(204).send('');
-    return;
-  }
-
-  if (req.method !== 'POST') {
-    res.status(405).json({ success: false, error: 'Method not allowed' });
-    return;
-  }
-
-  // Warmup check for keeping function active
-  if (req.body && req.body.warmup) {
-    res.status(200).json({ success: true, message: 'Warmup successful' });
-    return;
-  }
-
-  try {
-    const registrationData: RegistrationData = req.body;
-
-    // Validate required fields
-    if (!registrationData.name || !registrationData.email || !registrationData.phone) {
-      res.status(400).json({ success: false, error: 'Missing required fields: name, email, phone' });
+    if (req.method === 'OPTIONS') {
+      res.status(204).send('');
       return;
     }
 
-    if (!registrationData.amount || registrationData.amount <= 0) {
-      res.status(400).json({ success: false, error: 'Invalid amount' });
+    if (req.method !== 'POST') {
+      res.status(405).json({ success: false, error: 'Method not allowed' });
       return;
     }
 
-    const config = getPhonePeConfig();
+    // Warmup check for keeping function active
+    if (req.body && req.body.warmup) {
+      res.status(200).json({ success: true, message: 'Warmup successful' });
+      return;
+    }
 
-    // Generate unique order ID (merchantOrderId)
-    const timestamp = Date.now();
-    const merchantOrderId = `ORDER_${timestamp}`;
-
-    // Create registration document in Firestore (environment-specific collection)
-    const registrationRef = db.collection(getCollectionName('registrations', config.environment)).doc();
-    const registrationId = registrationRef.id;
-
-    await registrationRef.set({
-      ...registrationData,
-      merchantOrderId,
-      status: 'PENDING',
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
-    });
-
-    // Create transaction record (environment-specific collection)
-    const transactionRef = db.collection(getCollectionName('transactions', config.environment)).doc(merchantOrderId);
-    await transactionRef.set({
-      merchantOrderId,
-      registrationId,
-      amount: registrationData.amount,
-      amountInPaisa: registrationData.amount * 100,
-      status: 'PENDING',
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
-    });
-
-    // Get base URL for redirect
-    const baseUrl = functions.config().app?.base_url || process.env.NEXT_PUBLIC_BASE_URL || 'https://yourwebsite.com';
-
-    // Create payment using PhonePe API v2 with comprehensive metaInfo for dashboard visibility
-    let paymentResponse;
     try {
-      paymentResponse = await createPayment(config, {
-        merchantOrderId,
-        amount: registrationData.amount * 100, // Convert to paisa
-        redirectUrl: `${baseUrl}/payment/status?orderId=${merchantOrderId}`,
-        metaInfo: {
-          udf1: registrationData.name, // Participant Name
-          udf2: registrationData.email, // Email
-          udf3: registrationData.phone, // Mobile Number
-          udf4: registrationData.raceCategory, // Race Category (3K/5K/10K)
-          udf5: registrationData.gender, // Gender
-          udf6: registrationData.tshirtSize || 'N/A', // T-Shirt Size
-          udf7: registrationData.bloodGroup || 'N/A', // Blood Group
-          udf8: registrationData.dateOfBirth || 'N/A', // Date of Birth
-          udf9: registrationId, // Internal Registration ID
-          udf10: `Age: ${registrationData.age}`, // Age
-        },
-      });
-    } catch (paymentError: any) {
-      console.error('PhonePe API error:', paymentError);
+      const registrationData: RegistrationData = req.body;
 
-      // Update registration status to failed
-      await registrationRef.update({
-        status: 'PAYMENT_INIT_FAILED',
-        error: paymentError.message,
+      // Validate required fields
+      if (!registrationData.name || !registrationData.email || !registrationData.phone) {
+        res.status(400).json({ success: false, error: 'Missing required fields: name, email, phone' });
+        return;
+      }
+
+      if (!registrationData.amount || registrationData.amount <= 0) {
+        res.status(400).json({ success: false, error: 'Invalid amount' });
+        return;
+      }
+
+      const config = getPhonePeConfig();
+
+      // Generate unique order ID (merchantOrderId)
+      const timestamp = Date.now();
+      const merchantOrderId = `ORDER_${timestamp}`;
+
+      // Create registration and transaction records in parallel to save time
+      const registrationRef = db.collection(getCollectionName('registrations', config.environment)).doc();
+      const registrationId = registrationRef.id;
+      const transactionRef = db.collection(getCollectionName('transactions', config.environment)).doc(merchantOrderId);
+
+      await Promise.all([
+        registrationRef.set({
+          ...registrationData,
+          merchantOrderId,
+          status: 'PENDING',
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        }),
+        transactionRef.set({
+          merchantOrderId,
+          registrationId,
+          amount: registrationData.amount,
+          amountInPaisa: registrationData.amount * 100,
+          status: 'PENDING',
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        })
+      ]);
+
+      // Get base URL for redirect
+      const baseUrl = functions.config().app?.base_url || process.env.NEXT_PUBLIC_BASE_URL || 'https://yourwebsite.com';
+
+      // Create payment using PhonePe API v2 with comprehensive metaInfo for dashboard visibility
+      let paymentResponse;
+      try {
+        paymentResponse = await createPayment(config, {
+          merchantOrderId,
+          amount: registrationData.amount * 100, // Convert to paisa
+          redirectUrl: `${baseUrl}/payment/status?orderId=${merchantOrderId}`,
+          metaInfo: {
+            udf1: registrationData.name, // Participant Name
+            udf2: registrationData.email, // Email
+            udf3: registrationData.phone, // Mobile Number
+            udf4: registrationData.raceCategory, // Race Category (3K/5K/10K)
+            udf5: registrationData.gender, // Gender
+            udf6: registrationData.tshirtSize || 'N/A', // T-Shirt Size
+            udf7: registrationData.bloodGroup || 'N/A', // Blood Group
+            udf8: registrationData.dateOfBirth || 'N/A', // Date of Birth
+            udf9: registrationId, // Internal Registration ID
+            udf10: `Age: ${registrationData.age}`, // Age
+          },
+        });
+      } catch (paymentError: any) {
+        console.error('PhonePe API error:', paymentError);
+
+        // Update registration status to failed
+        await registrationRef.update({
+          status: 'PAYMENT_INIT_FAILED',
+          error: paymentError.message,
+          updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        });
+
+        // Check if it's a timeout error
+        if (paymentError.message.includes('timeout')) {
+          res.status(504).json({
+            success: false,
+            error: 'Payment gateway is taking too long to respond. Please try again.',
+            errorType: 'TIMEOUT'
+          });
+        } else {
+          res.status(500).json({
+            success: false,
+            error: 'Failed to initiate payment. Please try again.',
+            errorType: 'PAYMENT_API_ERROR'
+          });
+        }
+        return;
+      }
+
+      // Update transaction with PhonePe order ID
+      await transactionRef.update({
+        phonePeOrderId: paymentResponse.orderId,
+        expireAt: paymentResponse.expireAt,
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
       });
 
-      // Check if it's a timeout error
-      if (paymentError.message.includes('timeout')) {
-        res.status(504).json({
-          success: false,
-          error: 'Payment gateway is taking too long to respond. Please try again.',
-          errorType: 'TIMEOUT'
-        });
-      } else {
-        res.status(500).json({
-          success: false,
-          error: 'Failed to initiate payment. Please try again.',
-          errorType: 'PAYMENT_API_ERROR'
-        });
-      }
-      return;
-    }
-
-    // Update transaction with PhonePe order ID
-    await transactionRef.update({
-      phonePeOrderId: paymentResponse.orderId,
-      expireAt: paymentResponse.expireAt,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
-    });
-
-    console.log('Payment initiated successfully:', {
-      merchantOrderId,
-      phonePeOrderId: paymentResponse.orderId,
-      redirectUrl: paymentResponse.redirectUrl,
-    });
-
-    res.status(200).json({
-      success: true,
-      data: {
+      console.log('Payment initiated successfully:', {
         merchantOrderId,
-        orderId: paymentResponse.orderId,
+        phonePeOrderId: paymentResponse.orderId,
         redirectUrl: paymentResponse.redirectUrl,
-        registrationId,
-        expiresAt: paymentResponse.expireAt,
-      }
-    });
+      });
 
-  } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Failed to initiate payment';
-    console.error('Payment initiation error:', error);
-    res.status(500).json({
-      success: false,
-      error: errorMessage
-    });
-  }
-});
+      res.status(200).json({
+        success: true,
+        data: {
+          merchantOrderId,
+          orderId: paymentResponse.orderId,
+          redirectUrl: paymentResponse.redirectUrl,
+          registrationId,
+          expiresAt: paymentResponse.expireAt,
+        }
+      });
+
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to initiate payment';
+      console.error('Payment initiation error:', error);
+      res.status(500).json({
+        success: false,
+        error: errorMessage
+      });
+    }
+  });
 
 /**
  * PhonePe Webhook Handler

@@ -216,25 +216,10 @@ function RegisterForm() {
                 throw new Error('No checkout URL received');
             }
 
-            // Use PhonePe iframe mode if available (recommended), else fallback to redirect
-            if (window.PhonePeCheckout?.transact) {
-                window.PhonePeCheckout.transact({
-                    tokenUrl: checkoutUrl,
-                    type: 'IFRAME',
-                    callback: (response) => {
-                        setIsSubmitting(false);
-                        if (response === 'USER_CANCEL') {
-                            setError('Payment was cancelled. Please try again.');
-                        } else if (response === 'CONCLUDED') {
-                            // Payment concluded - redirect to status page
-                            router.push(`/payment/status?orderId=${orderId}`);
-                        }
-                    }
-                });
-            } else {
-                // Fallback to redirect mode
-                window.location.href = checkoutUrl;
-            }
+            // Direct redirect to PhonePe's secure payment page
+            // This is the most reliable method for v2 API to avoid iframe/SDK 400 errors 
+            // and ensures bank OTP pages load correctly without "blank tab" issues.
+            window.location.href = checkoutUrl;
         } catch (err) {
             console.error('Error submitting registration:', err);
             setError(err instanceof Error ? err.message : 'Failed to process registration');

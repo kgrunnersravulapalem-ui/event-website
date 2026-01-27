@@ -482,7 +482,7 @@ export const keepPaymentServiceWarm = functions
         memory: '128MB'
     })
     .pubsub
-    .schedule('every 4 minutes')
+    .schedule('every 2 minutes')
     .onRun(async (context) => {
         const projectId = process.env.GCLOUD_PROJECT;
         // Default to us-central1 unless specified otherwise

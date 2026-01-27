@@ -128,8 +128,16 @@ const getWebhookCredentials = () => {
 /**
  * Initiate PhonePe payment
  * Cloud Function endpoint: /initiatePayment
+ *
+ * Performance Tip: If cold starts are still persistent, consider adding 'minInstances: 1'
+ * to the runWith configuration. This keeps one instance warm 24/7 (Blaze plan only).
  */
-exports.initiatePayment = functions.https.onRequest(async (req, res) => {
+exports.initiatePayment = functions
+    .runWith({
+    memory: '512MB', // Higher memory grants more CPU power, reducing cold start time
+    timeoutSeconds: 30
+})
+    .https.onRequest(async (req, res) => {
     var _a;
     // Enable CORS
     res.set('Access-Control-Allow-Origin', '*');
@@ -163,21 +171,22 @@ exports.initiatePayment = functions.https.onRequest(async (req, res) => {
         // Generate unique order ID (merchantOrderId)
         const timestamp = Date.now();
         const merchantOrderId = `ORDER_${timestamp}`;
-        // Create registration document in Firestore (environment-specific collection)
+        // Create registration and transaction records in parallel to save time
         const registrationRef = db.collection(getCollectionName('registrations', config.environment)).doc();
         const registrationId = registrationRef.id;
-        await registrationRef.set(Object.assign(Object.assign({}, registrationData), { merchantOrderId, status: 'PENDING', createdAt: admin.firestore.FieldValue.serverTimestamp(), updatedAt: admin.firestore.FieldValue.serverTimestamp() }));
-        // Create transaction record (environment-specific collection)
         const transactionRef = db.collection(getCollectionName('transactions', config.environment)).doc(merchantOrderId);
-        await transactionRef.set({
-            merchantOrderId,
-            registrationId,
-            amount: registrationData.amount,
-            amountInPaisa: registrationData.amount * 100,
-            status: 'PENDING',
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
-            updatedAt: admin.firestore.FieldValue.serverTimestamp()
-        });
+        await Promise.all([
+            registrationRef.set(Object.assign(Object.assign({}, registrationData), { merchantOrderId, status: 'PENDING', createdAt: admin.firestore.FieldValue.serverTimestamp(), updatedAt: admin.firestore.FieldValue.serverTimestamp() })),
+            transactionRef.set({
+                merchantOrderId,
+                registrationId,
+                amount: registrationData.amount,
+                amountInPaisa: registrationData.amount * 100,
+                status: 'PENDING',
+                createdAt: admin.firestore.FieldValue.serverTimestamp(),
+                updatedAt: admin.firestore.FieldValue.serverTimestamp()
+            })
+        ]);
         // Get base URL for redirect
         const baseUrl = ((_a = functions.config().app) === null || _a === void 0 ? void 0 : _a.base_url) || process.env.NEXT_PUBLIC_BASE_URL || 'https://yourwebsite.com';
         // Create payment using PhonePe API v2 with comprehensive metaInfo for dashboard visibility

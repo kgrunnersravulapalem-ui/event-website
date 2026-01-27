@@ -447,7 +447,7 @@ exports.keepPaymentServiceWarm = functions
     memory: '128MB'
 })
     .pubsub
-    .schedule('every 4 minutes')
+    .schedule('every 2 minutes')
     .onRun(async (context) => {
     var _a;
     const projectId = process.env.GCLOUD_PROJECT;

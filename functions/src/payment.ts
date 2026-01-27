@@ -143,6 +143,12 @@ export const initiatePayment = functions.https.onRequest(async (req, res) => {
     return;
   }
 
+  // Warmup check for keeping function active
+  if (req.body && req.body.warmup) {
+    res.status(200).json({ success: true, message: 'Warmup successful' });
+    return;
+  }
+
   try {
     const registrationData: RegistrationData = req.body;
 

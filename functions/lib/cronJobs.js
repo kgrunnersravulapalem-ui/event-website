@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.scheduledCheckPendingPayments = exports.checkPendingPayments = void 0;
+exports.keepPaymentServiceWarm = exports.scheduledCheckPendingPayments = exports.checkPendingPayments = void 0;
 const functions = __importStar(require("firebase-functions"));
 const admin = __importStar(require("firebase-admin"));
 const phonepe_1 = require("./utils/phonepe");
@@ -442,5 +442,54 @@ exports.scheduledCheckPendingPayments = functions
         console.error('[SCHEDULED] Pending payments check error:', error);
         throw error;
     }
+});
+/**
+ * Keep Alive Cron Job
+ * Pings the initiatePayment function every 4 minutes to prevent cold starts
+ */
+exports.keepPaymentServiceWarm = functions
+    .runWith({
+    timeoutSeconds: 60,
+    memory: '128MB'
+})
+    .pubsub
+    .schedule('every 4 minutes')
+    .onRun(async (context) => {
+    var _a;
+    const projectId = process.env.GCLOUD_PROJECT;
+    // Default to us-central1 unless specified otherwise
+    const region = 'us-central1';
+    let functionUrl = `https://${region}-${projectId}.cloudfunctions.net/initiatePayment`;
+    // Check if custom URL is configured in firebase functions config
+    // usage: firebase functions:config:set app.functions_url="https://..."
+    const configUrl = (_a = functions.config().app) === null || _a === void 0 ? void 0 : _a.functions_url;
+    if (configUrl) {
+        // If the config url is the base url, append the function name
+        if (!configUrl.includes('initiatePayment')) {
+            functionUrl = `${configUrl}/initiatePayment`;
+        }
+        else {
+            functionUrl = configUrl;
+        }
+    }
+    console.log(`Pinging for warmup: ${functionUrl}`);
+    try {
+        // Function to fetch with retry logic or just simple fetch
+        const response = await fetch(functionUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ warmup: true })
+        });
+        if (response.ok) {
+            console.log('Warmup successful');
+        }
+        else {
+            console.error(`Warmup failed with status: ${response.status}`);
+        }
+    }
+    catch (error) {
+        console.error('Warmup error:', error);
+    }
+    return null;
 });
 //# sourceMappingURL=cronJobs.js.map

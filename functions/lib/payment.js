@@ -143,6 +143,11 @@ exports.initiatePayment = functions.https.onRequest(async (req, res) => {
         res.status(405).json({ success: false, error: 'Method not allowed' });
         return;
     }
+    // Warmup check for keeping function active
+    if (req.body && req.body.warmup) {
+        res.status(200).json({ success: true, message: 'Warmup successful' });
+        return;
+    }
     try {
         const registrationData = req.body;
         // Validate required fields

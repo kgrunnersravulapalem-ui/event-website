@@ -479,3 +479,54 @@ export const scheduledCheckPendingPayments = functions
             throw error;
         }
     });
+
+/**
+ * Keep Alive Cron Job
+ * Pings the initiatePayment function every 4 minutes to prevent cold starts
+ */
+export const keepPaymentServiceWarm = functions
+    .runWith({
+        timeoutSeconds: 60,
+        memory: '128MB'
+    })
+    .pubsub
+    .schedule('every 4 minutes')
+    .onRun(async (context) => {
+        const projectId = process.env.GCLOUD_PROJECT;
+        // Default to us-central1 unless specified otherwise
+        const region = 'us-central1';
+        let functionUrl = `https://${region}-${projectId}.cloudfunctions.net/initiatePayment`;
+
+        // Check if custom URL is configured in firebase functions config
+        // usage: firebase functions:config:set app.functions_url="https://..."
+        const configUrl = functions.config().app?.functions_url;
+        if (configUrl) {
+            // If the config url is the base url, append the function name
+            if (!configUrl.includes('initiatePayment')) {
+                functionUrl = `${configUrl}/initiatePayment`;
+            } else {
+                functionUrl = configUrl;
+            }
+        }
+
+        console.log(`Pinging for warmup: ${functionUrl}`);
+
+        try {
+            // Function to fetch with retry logic or just simple fetch
+            const response = await fetch(functionUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ warmup: true })
+            });
+
+            if (response.ok) {
+                console.log('Warmup successful');
+            } else {
+                console.error(`Warmup failed with status: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('Warmup error:', error);
+        }
+
+        return null;
+    });

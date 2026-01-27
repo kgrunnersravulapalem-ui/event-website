@@ -376,7 +376,7 @@ exports.scheduledCheckPendingPayments = functions
     memory: '512MB'
 })
     .pubsub
-    .schedule('*/15 * * * *') // Every 15 minutes
+    .schedule('*/5 * * * *') // Every 5 minutes
     .timeZone('Asia/Kolkata')
     .onRun(async (context) => {
     try {

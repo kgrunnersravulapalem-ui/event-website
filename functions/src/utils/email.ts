@@ -1,3 +1,4 @@
+import * as functions from 'firebase-functions';
 import * as nodemailer from 'nodemailer';
 import { EMAIL_CONFIG } from '../config/emailConfig';
 
@@ -13,12 +14,13 @@ export interface EmailOptions {
  */
 export async function sendEmail(options: EmailOptions): Promise<void> {
   try {
-    // Get credentials from environment variables
-    const emailUser = process.env.EMAIL_USER;
-    const emailPass = process.env.EMAIL_PASS;
+    // Get credentials from environment or functions:config
+    const config = functions.config().email;
+    const emailUser = config?.user || process.env.EMAIL_USER;
+    const emailPass = config?.pass || process.env.EMAIL_PASS;
 
     if (!emailUser || !emailPass) {
-      throw new Error('Email credentials not configured. Set EMAIL_USER and EMAIL_PASS environment variables.');
+      throw new Error('Email credentials not configured. Set either functions:config email.user/pass or EMAIL_USER/PASS environment variables.');
     }
 
     // Create transporter

@@ -35,6 +35,7 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendEmail = sendEmail;
 exports.isValidEmail = isValidEmail;
+const functions = __importStar(require("firebase-functions"));
 const nodemailer = __importStar(require("nodemailer"));
 const emailConfig_1 = require("../config/emailConfig");
 /**
@@ -42,11 +43,12 @@ const emailConfig_1 = require("../config/emailConfig");
  */
 async function sendEmail(options) {
     try {
-        // Get credentials from environment variables
-        const emailUser = process.env.EMAIL_USER;
-        const emailPass = process.env.EMAIL_PASS;
+        // Get credentials from environment or functions:config
+        const config = functions.config().email;
+        const emailUser = (config === null || config === void 0 ? void 0 : config.user) || process.env.EMAIL_USER;
+        const emailPass = (config === null || config === void 0 ? void 0 : config.pass) || process.env.EMAIL_PASS;
         if (!emailUser || !emailPass) {
-            throw new Error('Email credentials not configured. Set EMAIL_USER and EMAIL_PASS environment variables.');
+            throw new Error('Email credentials not configured. Set either functions:config email.user/pass or EMAIL_USER/PASS environment variables.');
         }
         // Create transporter
         const transporter = nodemailer.createTransport({

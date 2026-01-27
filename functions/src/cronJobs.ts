@@ -290,15 +290,10 @@ export const checkPendingPayments = functions
 
             console.log(`Starting pending payments check for environment: ${config.environment}`);
 
-            // Calculate cutoff time commented out
-            // const cutoffTime = new Date(Date.now() - 30 * 60 * 1000);
-
             // Query for ALL pending transactions (no cutoff filter)
             const pendingTransactionsSnapshot = await db
                 .collection(transactionsCollection)
                 .where('status', '==', 'PENDING')
-                // .where('createdAt', '<', cutoffTime)  // Temporarily removed cutoff
-                // .limit(50) // Temporarily removed limit
                 .get();
 
             console.log(`Found ${pendingTransactionsSnapshot.size} pending transactions to check`);
@@ -407,12 +402,9 @@ export const scheduledCheckPendingPayments = functions
 
             console.log(`[SCHEDULED] Starting pending payments check for environment: ${config.environment}`);
 
-            const cutoffTime = new Date(Date.now() - 30 * 60 * 1000);
-
             const pendingTransactionsSnapshot = await db
                 .collection(transactionsCollection)
                 .where('status', '==', 'PENDING')
-                .where('createdAt', '<', cutoffTime)
                 .limit(50)
                 .get();
 

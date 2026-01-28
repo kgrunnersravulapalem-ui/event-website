@@ -138,7 +138,7 @@ exports.initiatePayment = functions
     timeoutSeconds: 30
 })
     .https.onRequest(async (req, res) => {
-    var _a;
+    var _a, _b;
     // Enable CORS
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -172,10 +172,11 @@ exports.initiatePayment = functions
         const timestamp = Date.now();
         const merchantOrderId = `ORDER_${timestamp}`;
         // Create registration and transaction records in parallel to save time
+        // Create registration and transaction records and initiate payment in parallel
         const registrationRef = db.collection(getCollectionName('registrations', config.environment)).doc();
         const registrationId = registrationRef.id;
         const transactionRef = db.collection(getCollectionName('transactions', config.environment)).doc(merchantOrderId);
-        await Promise.all([
+        const dbWritesPromise = Promise.all([
             registrationRef.set(Object.assign(Object.assign({}, registrationData), { merchantOrderId, status: 'PENDING', createdAt: admin.firestore.FieldValue.serverTimestamp(), updatedAt: admin.firestore.FieldValue.serverTimestamp() })),
             transactionRef.set({
                 merchantOrderId,
@@ -189,37 +190,52 @@ exports.initiatePayment = functions
         ]);
         // Get base URL for redirect
         const baseUrl = ((_a = functions.config().app) === null || _a === void 0 ? void 0 : _a.base_url) || process.env.NEXT_PUBLIC_BASE_URL || 'https://yourwebsite.com';
-        // Create payment using PhonePe API v2 with comprehensive metaInfo for dashboard visibility
+        // Create payment using PhonePe API v2
+        // We start this immediately without waiting for DB writes
+        const paymentPromise = (0, phonepe_1.createPayment)(config, {
+            merchantOrderId,
+            amount: registrationData.amount * 100, // Convert to paisa
+            redirectUrl: `${baseUrl}/payment/status?orderId=${merchantOrderId}`,
+            metaInfo: {
+                udf1: registrationData.name, // Participant Name
+                udf2: registrationData.email, // Email
+                udf3: registrationData.phone, // Mobile Number
+                udf4: registrationData.raceCategory, // Race Category (3K/5K/10K)
+                udf5: registrationData.gender, // Gender
+                udf6: registrationData.tshirtSize || 'N/A', // T-Shirt Size
+                udf7: registrationData.bloodGroup || 'N/A', // Blood Group
+                udf8: registrationData.dateOfBirth || 'N/A', // Date of Birth
+                udf9: registrationId, // Internal Registration ID
+                udf10: `Age: ${registrationData.age}`, // Age
+            },
+        });
+        // Wait for both operations to complete
         let paymentResponse;
         try {
-            paymentResponse = await (0, phonepe_1.createPayment)(config, {
-                merchantOrderId,
-                amount: registrationData.amount * 100, // Convert to paisa
-                redirectUrl: `${baseUrl}/payment/status?orderId=${merchantOrderId}`,
-                metaInfo: {
-                    udf1: registrationData.name, // Participant Name
-                    udf2: registrationData.email, // Email
-                    udf3: registrationData.phone, // Mobile Number
-                    udf4: registrationData.raceCategory, // Race Category (3K/5K/10K)
-                    udf5: registrationData.gender, // Gender
-                    udf6: registrationData.tshirtSize || 'N/A', // T-Shirt Size
-                    udf7: registrationData.bloodGroup || 'N/A', // Blood Group
-                    udf8: registrationData.dateOfBirth || 'N/A', // Date of Birth
-                    udf9: registrationId, // Internal Registration ID
-                    udf10: `Age: ${registrationData.age}`, // Age
-                },
-            });
+            const [_, response] = await Promise.all([dbWritesPromise, paymentPromise]);
+            paymentResponse = response;
         }
-        catch (paymentError) {
-            console.error('PhonePe API error:', paymentError);
-            // Update registration status to failed
-            await registrationRef.update({
-                status: 'PAYMENT_INIT_FAILED',
-                error: paymentError.message,
-                updatedAt: admin.firestore.FieldValue.serverTimestamp()
-            });
-            // Check if it's a timeout error
-            if (paymentError.message.includes('timeout')) {
+        catch (error) {
+            // If PhonePe fails, we should update the DB record we just created (or tried to create)
+            console.error('Parallel execution error:', error);
+            // If DB write failed, we can't do much but fail. 
+            // If Payment failed, we update the record.
+            // We need to wait for DB writes to finish or fail before we can update them
+            try {
+                await dbWritesPromise;
+                // If we are here, DB writes succeeded but Payment failed
+                await registrationRef.update({
+                    status: 'PAYMENT_INIT_FAILED',
+                    error: error.message || 'Payment initiation failed',
+                    updatedAt: admin.firestore.FieldValue.serverTimestamp()
+                });
+            }
+            catch (dbError) {
+                console.error('DB Write failed during parallel execution:', dbError);
+                throw new Error('Failed to initialize registration record');
+            }
+            // Re-throw payment error to be handled by the catch block below or custom handling
+            if ((_b = error.message) === null || _b === void 0 ? void 0 : _b.includes('timeout')) {
                 res.status(504).json({
                     success: false,
                     error: 'Payment gateway is taking too long to respond. Please try again.',

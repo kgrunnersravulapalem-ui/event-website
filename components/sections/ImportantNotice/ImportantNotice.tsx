@@ -16,21 +16,15 @@ const ImportantNotice = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
-        // Check if user has already seen the notice
-        const hasSeenNotice = localStorage.getItem('hasSeenImportantNotice');
-
-        if (!hasSeenNotice) {
-            // Small delay for better UX
-            setTimeout(() => {
-                setIsOpen(true);
-            }, 500);
-        }
+        // Show modal on every visit (as per user request: "when refreshes")
+        // No localStorage check
+        setTimeout(() => {
+            setIsOpen(true);
+        }, 500);
     }, []);
 
     const handleClose = () => {
         setIsOpen(false);
-        // Mark as seen in localStorage
-        localStorage.setItem('hasSeenImportantNotice', 'true');
     };
 
     return (
@@ -59,18 +53,18 @@ const ImportantNotice = () => {
                 {/* Message */}
                 <div className={styles.message}>
                     <p className={styles.highlight}>
-                        ⚡ Only <strong>300 slots remaining!</strong>
+                        ⚡ Only <strong className={styles.redHighlight}>300 slots remaining!</strong>
                     </p>
 
                     <p className={styles.text}>
                         We are nearing our participant capacity and will be closing registrations
-                        earlier than planned on <strong>January 30, 2026</strong>.
+                        earlier than planned on <strong className={styles.redHighlight}>January 30, 2026</strong>.
                     </p>
 
                     <p className={styles.text}>
                         All registered participants will receive important updates regarding
-                        <strong> bib collection, t-shirt distribution,</strong> and other event-related
-                        information via <strong>WhatsApp</strong>.
+                        <strong className={styles.redText}> bib collection, t-shirt distribution,</strong> and other event-related
+                        information via <strong className={styles.redText}>WhatsApp</strong>.
                     </p>
 
                     <p className={styles.textSmall}>

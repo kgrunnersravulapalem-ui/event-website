@@ -452,6 +452,13 @@ function RegisterForm() {
                                     </div>
                                 </div>
 
+                                <div className={styles.upiWarning}>
+                                    <span className={styles.upiWarningIcon}>⚠️</span>
+                                    <div>
+                                        <strong>Payment Notice:</strong> Card payments and Internet Banking are currently unavailable due to technical issues. Please complete your registration using <strong>UPI payment method only</strong>.
+                                    </div>
+                                </div>
+
                                 {error && (
                                     <div className={styles.errorMessage}>
                                         {error}
@@ -460,7 +467,7 @@ function RegisterForm() {
 
                                 <div className={styles.formActions}>
                                     <Button type="submit" fullWidth disabled={isSubmitting}>
-                                        {isSubmitting ? 'Processing...' : 'Proceed to Pay'}
+                                        {isSubmitting ? 'Please wait, processing...' : 'Proceed to Pay'}
                                     </Button>
                                 </div>
                             </div>

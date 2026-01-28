@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "The official website for KONASEEMA RUN 2026. Join us on Feb 8th, 2026, for a marathon experience in Ravulapalem. Categories: 3K, 5K, 10K.",
 };
 
+import Sponsors from "@/components/sections/Sponsors/Sponsors";
+
 export default function Home() {
   return (
     <main>
@@ -17,6 +19,7 @@ export default function Home() {
 
       {/* Sections for Homepage information */}
       <About />
+      <Sponsors />
       <RaceCategories />
       <Venue />
     </main>

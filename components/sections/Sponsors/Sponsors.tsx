@@ -40,7 +40,7 @@ const Sponsors = () => {
                     {/* Manihamsa Power Projects */}
                     <div className={styles.mainSponsorItem}>
                         <Image
-                            src="/images/sponsor_logos/manihamsa_logo.png"
+                            src="/images/sponsor_logos/manihamsa_logo.jpeg"
                             alt="Manihamsa Power Projects"
                             width={280}
                             height={140}
@@ -78,6 +78,16 @@ const Sponsors = () => {
                         <Image
                             src="/images/sponsor_logos/haldi_plus_logo.png"
                             alt="Haldi Plus"
+                            width={160}
+                            height={80}
+                            className={styles.logo}
+                        />
+                    </div>
+
+                    <div className={styles.sponsorItem}>
+                        <Image
+                            src="/images/sponsor_logos/creative_logo.jpeg"
+                            alt="Creative"
                             width={160}
                             height={80}
                             className={styles.logo}

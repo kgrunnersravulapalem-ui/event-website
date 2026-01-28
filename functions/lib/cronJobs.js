@@ -110,7 +110,7 @@ const addConfirmedParticipant = async (registrationData, transactionData, enviro
  * Process a single pending transaction
  * Returns true if transaction was updated, false otherwise
  */
-const processPendingTransaction = async (merchantOrderId, transactionData, registrationData, config) => {
+const processPendingTransaction = async (merchantOrderId, transactionData, registrationData, config, sendFailureEmails = true) => {
     var _a, _b, _c, _d, _e, _f;
     try {
         console.log(`Processing pending transaction: ${merchantOrderId}`);
@@ -200,8 +200,8 @@ const processPendingTransaction = async (merchantOrderId, transactionData, regis
                     errorCode: statusResponse.errorCode || null,
                     updatedAt: admin.firestore.FieldValue.serverTimestamp()
                 });
-                // Send failure email if not already sent
-                if (registrationData && !transactionData.emailSent) {
+                // Send failure email only if enabled and not already sent
+                if (sendFailureEmails && registrationData && !transactionData.emailSent) {
                     const emailData = {
                         participantName: registrationData.name || 'Participant',
                         participantEmail: registrationData.email || '',
@@ -244,6 +244,9 @@ const processPendingTransaction = async (merchantOrderId, transactionData, regis
                     });
                     await transactionRef.update({ emailSent: true });
                     console.log(`Failure email sent for ${merchantOrderId}`);
+                }
+                else if (!sendFailureEmails) {
+                    console.log(`Skipping failure email for ${merchantOrderId} (disabled in scheduled job)`);
                 }
             }
         }
@@ -408,7 +411,8 @@ exports.scheduledCheckPendingPayments = functions
                     registrationData = regDoc.data();
                 }
             }
-            const result = await processPendingTransaction(merchantOrderId, transactionData, registrationData, config);
+            const result = await processPendingTransaction(merchantOrderId, transactionData, registrationData, config, false // Don't send failure emails in scheduled job
+            );
             results.processed++;
             if (result.updated) {
                 results.updated++;

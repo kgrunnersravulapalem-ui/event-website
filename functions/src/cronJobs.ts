@@ -95,7 +95,8 @@ const processPendingTransaction = async (
     merchantOrderId: string,
     transactionData: any,
     registrationData: any,
-    config: PhonePeConfig
+    config: PhonePeConfig,
+    sendFailureEmails: boolean = true
 ): Promise<{ updated: boolean; newStatus: string }> => {
     try {
         console.log(`Processing pending transaction: ${merchantOrderId}`);
@@ -195,8 +196,8 @@ const processPendingTransaction = async (
                     updatedAt: admin.firestore.FieldValue.serverTimestamp()
                 });
 
-                // Send failure email if not already sent
-                if (registrationData && !transactionData.emailSent) {
+                // Send failure email only if enabled and not already sent
+                if (sendFailureEmails && registrationData && !transactionData.emailSent) {
                     const emailData: PaymentFailedEmailData = {
                         participantName: registrationData.name || 'Participant',
                         participantEmail: registrationData.email || '',
@@ -241,6 +242,8 @@ const processPendingTransaction = async (
 
                     await transactionRef.update({ emailSent: true });
                     console.log(`Failure email sent for ${merchantOrderId}`);
+                } else if (!sendFailureEmails) {
+                    console.log(`Skipping failure email for ${merchantOrderId} (disabled in scheduled job)`);
                 }
             }
         }
@@ -440,7 +443,8 @@ export const scheduledCheckPendingPayments = functions
                     merchantOrderId,
                     transactionData,
                     registrationData,
-                    config
+                    config,
+                    false // Don't send failure emails in scheduled job
                 );
 
                 results.processed++;

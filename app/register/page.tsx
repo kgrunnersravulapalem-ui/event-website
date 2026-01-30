@@ -307,14 +307,14 @@ function RegisterForm() {
                     </div>
 
                     {/* Contact Support Section */}
-                    <div className={styles.supportSection}>
+                    {/* <div className={styles.supportSection}>
                         <p className={styles.supportText}>
                             Need help? Contact us at{' '}
                             <a href="tel:+918686144086" className={styles.supportPhone}>
                                 8686144086
                             </a>
                         </p>
-                    </div>
+                    </div> */}
 
                     {selectedCategory && (
                         <motion.form
@@ -322,6 +322,7 @@ function RegisterForm() {
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: 'auto' }}
                             onSubmit={handleSubmit}
+                            style={{ display: 'none' }}
                         >
                             <h3>Participant Information</h3>
                             <div className={styles.fieldGroup}>

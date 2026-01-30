@@ -223,11 +223,11 @@ export default function PrizesPage() {
                     viewport={{ once: true }}
                     transition={{ delay: 0.5 }}
                 >
-                    <h2>Ready to Join?</h2>
-                    <p>Don't miss out on the thrill and the glory. Secure your spot today!</p>
-                    <a href="/register" className={styles.ctaButton}>
-                        Register Now
-                    </a>
+                    <h2>Registrations Closed</h2>
+                    <p>Thank you for the overwhelming response. We have reached our full capacity!</p>
+                    <button className={styles.ctaButton} disabled style={{ opacity: 0.6, cursor: 'not-allowed' }}>
+                        Registrations Closed
+                    </button>
                 </motion.div>
             </div>
         </div>

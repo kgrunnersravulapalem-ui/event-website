@@ -55,15 +55,16 @@ const RaceCategories = () => {
                                 size="sm"
                                 variant="primary"
                                 fullWidth
-                                onClick={() => handleRegister(cat.id)}
+                                disabled
+                                style={{ opacity: 0.7, cursor: 'not-allowed' }}
                             >
-                                Register Now
+                                Closed
                             </Button>
                         </motion.div>
                     ))}
                 </div>
             </div>
-        </section>
+        </section >
     );
 };
 

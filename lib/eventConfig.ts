@@ -2,7 +2,7 @@ export const eventConfig = {
     eventName: "KONASEEMA RUN",
     eventDate: "2026-02-08T05:30:00", // ISO format for easy parsing
     location: "Sri Potamsetti Rami Reddy Park, Ravulapalem, Konaseema Dist, Andhra Pradesh - 533238",
-    highlightText: "Registrations are now open! Secure your spot for the ultimate coastal run. Early bird prices end soon!",
+    highlightText: "Registrations Closed! We have reached our full capacity. Thank you for the overwhelming response!",
     contactEmail: "kgrunnersravulapalem@gmail.com",
     youtubeVideoUrl: "https://www.youtube.com/watch?v=5W7dELeWMwo", // Replace with actual event video URL
     socials: {

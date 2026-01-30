@@ -32,7 +32,7 @@ const Footer = () => {
                             <ul>
                                 <li><Link href="/prizes">Prizes</Link></li>
                                 <li><Link href="/contact">Contact</Link></li>
-                                <li><Link href="/register">Register</Link></li>
+                                <li><span style={{ color: '#ccc', cursor: 'not-allowed' }}>Registration Closed</span></li>
                                 <li><Link href="/terms">Terms & Conditions</Link></li>
                                 <li><Link href="/privacy">Privacy Policy</Link></li>
                                 <li><Link href="/refund">Refund Policy</Link></li>

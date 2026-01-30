@@ -105,9 +105,7 @@ const Navbar = () => {
                             {link.name}
                         </Link>
                     ))}
-                    <Link href="/register">
-                        <Button size="sm">Register Now</Button>
-                    </Link>
+                    <Button size="sm" disabled>Registration Closed</Button>
                 </div>
 
                 {/* Mobile Toggle */}
@@ -136,11 +134,9 @@ const Navbar = () => {
                             </Link>
                         ))}
                         <div className={styles.mobileAction}>
-                            <Link href="/register" onClick={() => setIsOpen(false)}>
-                                <Button fullWidth>
-                                    Register Now
-                                </Button>
-                            </Link>
+                            <Button fullWidth disabled>
+                                Registration Closed
+                            </Button>
                         </div>
                     </motion.div>
                 )}

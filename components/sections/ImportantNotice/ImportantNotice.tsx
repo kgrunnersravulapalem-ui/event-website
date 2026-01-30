@@ -53,22 +53,21 @@ const ImportantNotice = () => {
                 {/* Message */}
                 <div className={styles.message}>
                     <p className={styles.highlight}>
-                        ⚡ Only <strong className={styles.redHighlight}>100 slots remaining!</strong>
+                        ⚡ <strong className={styles.redHighlight}>Registrations Closed!</strong>
                     </p>
 
                     <p className={styles.text}>
-                        We are nearing our participant capacity and will be closing registrations
-                        earlier than planned on <strong className={styles.redHighlight}>January 30, 2026</strong>.
+                        We have reached our full capacity. All slots are filled and <strong className={styles.redHighlight}>registrations are now closed</strong>.
                     </p>
 
                     <p className={styles.text}>
                         All registered participants will receive important updates regarding
-                        <strong className={styles.redText}> bib collection, t-shirt distribution,</strong> and other event-related
+                        <strong className={styles.redText}> Bib collection, t-shirt distribution,</strong> and other event-related
                         information via <strong className={styles.redText}>WhatsApp</strong>.
                     </p>
 
                     <p className={styles.textSmall}>
-                        Please ensure your contact details are accurate during registration.
+                        Please ensure you have provided accurate contact details for communication.
                     </p>
                 </div>
 

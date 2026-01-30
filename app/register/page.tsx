@@ -227,6 +227,7 @@ function RegisterForm() {
         }
     };
 
+    // Registrations Closed State
     return (
         <div className={styles.grid}>
             {/* Left Column: Event Details */}
@@ -249,36 +250,10 @@ function RegisterForm() {
                             />
                         </div>
                     </div>
-                    <div className={styles.posterInfo}>
-                        <h3>Event Details</h3>
-                        <p><strong>Location:</strong> {eventConfig.location}</p>
-                        <p><strong>Organizer:</strong> Konaseema Godavari Runners Association - Ravulapalem</p>
-                        <p className={styles.note}>
-                            Prices are inclusive of taxes.
-                        </p>
-                    </div>
-                </motion.div>
-
-                {/* Participant Benefits Section */}
-                <motion.div
-                    className={styles.benefitsCard}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 }}
-                >
-                    <h3>Participant Benefits</h3>
-                    <div className={styles.benefitsList}>
-                        {eventConfig.deliverables.map((item, index) => (
-                            <div key={index} className={styles.benefitItem}>
-                                <span className={styles.checkIcon}>✓</span>
-                                <span>{item}</span>
-                            </div>
-                        ))}
-                    </div>
                 </motion.div>
             </div>
 
-            {/* Right Column: Registration Form */}
+            {/* Right Column: Registrations Closed Message */}
             <div className={styles.formCol}>
                 <motion.div
                     className={styles.card}
@@ -286,194 +261,22 @@ function RegisterForm() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3 }}
                 >
-                    <h2>Select Category</h2>
-                    <div className={styles.ticketList}>
-                        {eventConfig.raceCategories.categories.map((cat) => (
-                            <div
-                                key={cat.id}
-                                className={`${styles.ticketItem} ${selectedCategory === cat.id ? styles.selected : ''}`}
-                                onClick={() => setSelectedCategory(cat.id)}
-                            >
-                                <div className={styles.ticketColor} style={{ backgroundColor: cat.color }} />
-                                <div className={styles.ticketInfo}>
-                                    <span className={styles.ticketName}>{cat.distance}</span>
-                                    <span className={styles.ticketPrice}>₹{cat.price}</span>
-                                </div>
-                                <div className={styles.radio}>
-                                    {selectedCategory === cat.id && <div className={styles.radioInner} />}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Contact Support Section */}
-                    {/* <div className={styles.supportSection}>
-                        <p className={styles.supportText}>
-                            Need help? Contact us at{' '}
-                            <a href="tel:+918686144086" className={styles.supportPhone}>
-                                8686144086
-                            </a>
+                    <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+                        <h2 style={{ color: '#ef4444', fontSize: '2rem', marginBottom: '1rem' }}>Registrations Closed</h2>
+                        <p style={{ fontSize: '1.2rem', marginBottom: '2rem', lineHeight: '1.6' }}>
+                            We have reached our full capacity for <strong>{eventConfig.eventName}</strong>.
+                            <br />
+                            Thank you for your overwhelming response!
                         </p>
-                    </div> */}
-
-                    {selectedCategory && (
-                        <motion.form
-                            className={styles.registrationForm}
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            onSubmit={handleSubmit}
-                            style={{ display: 'none' }}
-                        >
-                            <h3>Participant Information</h3>
-                            <div className={styles.fieldGroup}>
-                                <Input
-                                    label="Full Name"
-                                    placeholder="Enter your full name"
-                                    value={formData.fullName}
-                                    onChange={(e) => handleInputChange('fullName', e.target.value)}
-                                    required
-                                />
-
-                                <div>
-                                    <Input
-                                        label="Email"
-                                        type="email"
-                                        placeholder="john@example.com"
-                                        value={formData.email}
-                                        onChange={(e) => handleInputChange('email', e.target.value)}
-                                        required
-                                    />
-                                    {emailError && formData.email && (
-                                        <div className={styles.fieldError}>
-                                            {emailError}
-                                        </div>
-                                    )}
-                                </div>
-
-                                <RadioGroup
-                                    label="Gender"
-                                    name="gender"
-                                    options={eventConfig.formOptions.genders}
-                                    value={formData.gender}
-                                    onChange={(value) => handleInputChange('gender', value)}
-                                    required
-                                />
-
-                                <Input
-                                    label="Mobile Number"
-                                    type="tel"
-                                    placeholder="10 digit mobile number"
-                                    value={formData.mobileNumber}
-                                    onChange={(e) => {
-                                        const value = e.target.value.replace(/\D/g, '');
-                                        if (value.length <= 10) {
-                                            handleInputChange('mobileNumber', value);
-                                        }
-                                    }}
-                                    pattern="[0-9]{10}"
-                                    maxLength={10}
-                                    required
-                                />
-
-                                <Input
-                                    label="Date of Birth"
-                                    type="date"
-                                    value={formData.dateOfBirth}
-                                    onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
-                                    required
-                                />
-
-                                <Select
-                                    label="T-Shirt Size"
-                                    name="tshirtSize"
-                                    options={eventConfig.formOptions.tshirtSizes}
-                                    value={formData.tshirtSize}
-                                    onChange={(value) => handleInputChange('tshirtSize', value)}
-                                    placeholder="Select your size"
-                                    required
-                                />
-
-                                <RadioGroup
-                                    label="Blood Group (Optional)"
-                                    name="bloodGroup"
-                                    options={eventConfig.formOptions.bloodGroups}
-                                    value={formData.bloodGroup}
-                                    onChange={(value) => handleInputChange('bloodGroup', value)}
-                                />
-                                <Input
-                                    label="Emergency Contact (Optional)"
-                                    type="tel"
-                                    placeholder="Mobile number of emergency contact"
-                                    value={formData.emergencyContact}
-                                    onChange={(e) => {
-                                        const value = e.target.value.replace(/\D/g, '');
-                                        if (value.length <= 10) {
-                                            handleInputChange('emergencyContact', value);
-                                        }
-                                    }}
-                                    pattern="[0-9]{0,10}"
-                                    maxLength={10}
-                                />
-
-                                {/* Policy Acceptance Checkboxes */}
-                                <div className={styles.policySection}>
-                                    <div className={styles.checkboxGroup}>
-                                        <label className={styles.checkboxLabel}>
-                                            <input
-                                                type="checkbox"
-                                                checked={formData.acceptedTerms}
-                                                onChange={(e) => handleInputChange('acceptedTerms', e.target.checked as any)}
-                                                required
-                                                className={styles.checkbox}
-                                            />
-                                            <span>
-                                                I have read and agree to the{' '}
-                                                <a href="/terms" target="_blank" rel="noopener noreferrer" className={styles.policyLink}>
-                                                    Terms & Conditions
-                                                </a>
-                                            </span>
-                                        </label>
-                                    </div>
-                                    <div className={styles.checkboxGroup}>
-                                        <label className={styles.checkboxLabel}>
-                                            <input
-                                                type="checkbox"
-                                                checked={formData.acceptedRefundPolicy}
-                                                onChange={(e) => handleInputChange('acceptedRefundPolicy', e.target.checked as any)}
-                                                required
-                                                className={styles.checkbox}
-                                            />
-                                            <span>
-                                                I have read and agree to the{' '}
-                                                <a href="/refund" target="_blank" rel="noopener noreferrer" className={styles.policyLink}>
-                                                    Refund Policy
-                                                </a>
-                                            </span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div className={styles.upiWarning}>
-                                    <span className={styles.upiWarningIcon}>⚠️</span>
-                                    <div>
-                                        <strong>Payment Notice:</strong> Card payments and Internet Banking are currently unavailable due to technical issues. Please complete your registration using <strong>UPI payment method only</strong>.
-                                    </div>
-                                </div>
-
-                                {error && (
-                                    <div className={styles.errorMessage}>
-                                        {error}
-                                    </div>
-                                )}
-
-                                <div className={styles.formActions}>
-                                    <Button type="submit" fullWidth disabled={isSubmitting}>
-                                        {isSubmitting ? 'Please wait, processing...' : 'Proceed to Pay'}
-                                    </Button>
-                                </div>
-                            </div>
-                        </motion.form>
-                    )}
+                        <p style={{ color: '#666' }}>
+                            For those who have registered, important updates will be sent via WhatsApp.
+                        </p>
+                        <div style={{ marginTop: '2rem' }}>
+                            <Button onClick={() => router.push('/')} variant="primary">
+                                Back to Home
+                            </Button>
+                        </div>
+                    </div>
                 </motion.div>
             </div>
         </div>

@@ -84,7 +84,7 @@ const Hero = () => {
                     <Countdown />
 
                     <div className={styles.deadlineInfo}>
-                        Last Date for Registration: <strong>{eventConfig.registration.deadline}</strong>
+                        <strong className={styles.redHighlight}>Registrations Closed</strong>
                     </div>
 
                     <p className={styles.subhead}>
@@ -93,9 +93,7 @@ const Hero = () => {
                     </p>
 
                     <div className={styles.ctaGroup}>
-                        <Link href="/register">
-                            <Button size="lg" variant="primary">Register Now</Button>
-                        </Link>
+                        {/* <Button size="lg" variant="primary" disabled>Registrations Closed</Button> */}
                     </div>
                 </motion.div>
             </div>

@@ -53,7 +53,7 @@ const ImportantNotice = () => {
                 {/* Message */}
                 <div className={styles.message}>
                     <p className={styles.highlight}>
-                        ⚡ Only <strong className={styles.redHighlight}>300 slots remaining!</strong>
+                        ⚡ Only <strong className={styles.redHighlight}>100 slots remaining!</strong>
                     </p>
 
                     <p className={styles.text}>

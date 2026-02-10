@@ -48,26 +48,22 @@ const ImportantNotice = () => {
                 </div>
 
                 {/* Title */}
-                <h2 className={styles.title}>Important Notice</h2>
+                <h2 className={styles.title}>Thank You!</h2>
 
                 {/* Message */}
                 <div className={styles.message}>
                     <p className={styles.highlight}>
-                        ⚡ <strong className={styles.redHighlight}>Registrations Closed!</strong>
+                        🎉 <strong className={styles.redHighlight}>Thank You for the Overwhelming Response!</strong>
                     </p>
 
                     <p className={styles.text}>
-                        We have reached our full capacity. All slots are filled and <strong className={styles.redHighlight}>registrations are now closed</strong>.
+                        We are thrilled by the incredible participation and enthusiasm from our community. Your support has made Konaseema Run 2026 a huge success!
                     </p>
 
-                    <p className={styles.text}>
-                        All registered participants will receive important updates regarding
-                        <strong className={styles.redText}> Bib collection, t-shirt distribution,</strong> and other event-related
-                        information via <strong className={styles.redText}>WhatsApp</strong>.
-                    </p>
-
+                    
+                    
                     <p className={styles.textSmall}>
-                        Please ensure you have provided accurate contact details for communication.
+                        Thank you for choosing to be part of this remarkable event!
                     </p>
                 </div>
 

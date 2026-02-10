@@ -3,6 +3,7 @@ import styles from './Prizes.module.css';
 import { eventConfig } from '@/lib/eventConfig';
 import { motion } from 'framer-motion';
 import { FaTrophy, FaMedal, FaAward } from 'react-icons/fa';
+import Link from 'next/link';
 
 // Prize structure based on the image
 const prizeStructure = [
@@ -228,6 +229,23 @@ export default function PrizesPage() {
                     <button className={styles.ctaButton} disabled style={{ opacity: 0.6, cursor: 'not-allowed' }}>
                         Registrations Closed
                     </button>
+                </motion.div>
+
+                {/* Results Section */}
+                <motion.div
+                    className={styles.resultsLinkSection}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.6 }}
+                >
+                    <h2>🏃 Check Race Results</h2>
+                    <p>View the official winners and results from Konaseema Run 2026</p>
+                    <Link href="/results">
+                        <button className={styles.resultsButton}>
+                            View Results 🥇
+                        </button>
+                    </Link>
                 </motion.div>
             </div>
         </div>

@@ -52,7 +52,7 @@ const Navbar = () => {
         { name: 'Race Info', href: '/#race-categories' },
         { name: 'Venue', href: '/#venue' },
         { name: 'Gallery', href: '/gallery' },
-        { name: 'Prize Money', href: '/prizes' },
+        { name: 'Results', href: '/results' },
         { name: 'Contact', href: '/contact' },
     ];
 

@@ -1,0 +1,303 @@
+.page {
+    min-height: 100vh;
+    padding-top: 1rem;
+    background-color: #f8fafc;
+}
+
+.header {
+    background: linear-gradient(135deg, var(--primary) 0%, #0052a3 100%);
+    padding: 6rem 1.5rem 4rem;
+    text-align: center;
+    color: white;
+}
+
+.headerContent h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+}
+
+.headerContent p {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.container {
+    max-width: 1000px;
+    margin: -3rem auto 0;
+    padding: 0 1.5rem 6rem;
+    position: relative;
+    z-index: 2;
+}
+
+/* Age Group Sections */
+.ageGroupSection {
+    background: white;
+    border-radius: 12px;
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.distanceTitle {
+    font-size: 2rem;
+    font-weight: 800;
+    color: white;
+    background: linear-gradient(135deg, var(--primary) 0%, #0052a3 100%);
+    padding: 1rem 1.5rem;
+    margin: -2.5rem -2.5rem 2rem -2.5rem;
+    border-radius: 12px 12px 0 0;
+    letter-spacing: 0.5px;
+}
+
+.ageSubSection {
+    margin-bottom: 2rem;
+}
+
+.ageSubSection:last-child {
+    margin-bottom: 0;
+}
+
+.ageSubTitle {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+/* Category Section */
+.categorySection {
+    margin-bottom: 2.5rem;
+}
+
+.categorySection:last-child {
+    margin-bottom: 0;
+}
+
+.categoryName {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.categoryName::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 24px;
+    background: var(--primary);
+    border-radius: 2px;
+}
+
+/* Position Section */
+.positionSection {
+    margin-bottom: 1.75rem;
+    background: #f9fafb;
+    padding: 1.25rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary);
+}
+
+.positionHeader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.medal {
+    font-size: 1.75rem;
+}
+
+.positionTitle {
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #374151;
+    letter-spacing: 0.3px;
+}
+
+/* Winners Grid */
+.winnersGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.genderGroup {
+    background: white;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+}
+
+.genderHeader {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #374151;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e5e7eb;
+    letter-spacing: 0.2px;
+}
+
+.winnerItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 0.9rem;
+}
+
+.winnerItem:last-child {
+    border-bottom: none;
+}
+
+.winnerName {
+    font-weight: 600;
+    color: #1f2937;
+    flex: 1;
+    word-break: break-word;
+}
+
+.winnerBib {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    margin-left: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    .header {
+        padding: 4rem 1.5rem 3rem;
+    }
+
+    .headerContent h1 {
+        font-size: 2.5rem;
+    }
+
+    .container {
+        margin: -2rem auto 0;
+        padding: 0 1.5rem 4rem;
+    }
+
+    .ageGroupSection {
+        padding: 0;
+        background: transparent;
+        box-shadow: none;
+        margin-bottom: 2rem;
+    }
+
+    .distanceTitle {
+        margin: 0;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+    }
+
+    .ageSubTitle {
+        font-size: 1.15rem;
+    }
+
+    .categoryName {
+        font-size: 1.1rem;
+    }
+
+    .winnersGrid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .header {
+        padding: 3rem 1rem 2rem;
+    }
+
+    .headerContent h1 {
+        font-size: 1.75rem;
+    }
+
+    .headerContent p {
+        font-size: 1rem;
+    }
+
+    .container {
+        margin: -1.5rem auto 0;
+        padding: 0 1rem 3rem;
+    }
+
+    .ageGroupSection {
+        margin-bottom: 2rem;
+    }
+
+    .distanceTitle {
+        font-size: 1.5rem;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .ageSubTitle {
+        font-size: 1.05rem;
+        margin-bottom: 1rem;
+    }
+
+    .categoryName {
+        font-size: 1rem;
+    }
+
+    .positionSection {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .positionHeader {
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .medal {
+        font-size: 1.25rem;
+    }
+
+    .positionTitle {
+        font-size: 0.8rem;
+    }
+
+    .winnersGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .genderGroup {
+        padding: 0.6rem;
+    }
+
+    .genderHeader {
+        font-size: 0.75rem;
+    }
+
+    .winnerItem {
+        padding: 0.4rem 0;
+        font-size: 0.8rem;
+    }
+
+    .winnerName {
+        font-size: 0.8rem;
+    }
+
+    .winnerBib {
+        font-size: 0.7rem;
+    }
+}

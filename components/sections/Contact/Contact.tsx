@@ -1,9 +1,9 @@
 'use client';
-import styles from './Contact.module.css';
-import Button from '@/components/ui/Button/Button';
-import Input from '@/components/ui/Input/Input';
 import { useState } from 'react';
 import { eventConfig } from '@/lib/eventConfig';
+import RunnerFigure from '@/components/kg/RunnerFigure';
+
+const fmtPhone = (p: string) => `+91 ${p.slice(0, 5)} ${p.slice(5)}`;
 
 const Contact = () => {
     const [submitted, setSubmitted] = useState(false);
@@ -29,9 +29,7 @@ const Contact = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
             });
-
             const result = await response.json();
-
             if (response.ok && result.success) {
                 setSubmitted(true);
             } else {
@@ -45,74 +43,70 @@ const Contact = () => {
         }
     };
 
-    return (
-        <section className={styles.section} id="contact">
-            <div className={styles.container}>
-                <div className={styles.content}>
-                    <div className={styles.info}>
-                        <h2>{eventConfig.contact.heading}</h2>
-                        <p className={styles.description}>
-                            {eventConfig.contact.description}
-                        </p>
+    const { contact } = eventConfig;
 
-                        <div className={styles.details}>
-                            <div className={styles.detailItem}>
-                                <strong>Organization</strong>
-                                <p>KG RUNNERS</p>
-                            </div>
-                            <div className={styles.detailItem}>
-                                <strong>Email</strong>
-                                <p>{eventConfig.contact.email}</p>
-                            </div>
-                            <div className={styles.detailItem}>
-                                <strong>Contact</strong>
-                                {eventConfig.contact.phones.map((phone, index) => (
-                                    <p key={index}>{phone}</p>
-                                ))}
-                            </div>
-                            <div className={styles.detailItem}>
-                                <strong>Location</strong>
-                                <p>
-                                    {eventConfig.contact.location.line1}<br />
-                                    {eventConfig.contact.location.line2}
-                                </p>
-                            </div>
+    return (
+        <section className="sec light" id="contact-form">
+            <div className="wrap contact-grid">
+                <div className="stack">
+                    <div className="split mono">Reach the organisers</div>
+                    <h2 className="disp" style={{ fontSize: 'clamp(34px,4.2vw,60px)' }}>We’re here to help.</h2>
+                    <p className="lede" style={{ color: '#3B4A36' }}>
+                        Questions about registration, the route, race day or sponsorship? Send us a message or reach us directly.
+                    </p>
+                    <div className="contact-list">
+                        <div><span className="mono">Organisation</span><span>KG Runners · Konaseema Godavari Runners Association</span></div>
+                        <div><span className="mono">Email</span><a href={`mailto:${contact.email}`}>{contact.email}</a></div>
+                        <div>
+                            <span className="mono">Phone</span>
+                            <span style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                                {contact.phones.map((p) => <a key={p} href={`tel:+91${p}`}>{fmtPhone(p)}</a>)}
+                            </span>
+                        </div>
+                        <div>
+                            <span className="mono">Location</span>
+                            <span>
+                                {contact.location.line1}<br />{contact.location.line2}<br />
+                                <a href={contact.location.mapLink} target="_blank" rel="noopener noreferrer">Open in Google Maps →</a>
+                            </span>
                         </div>
                     </div>
+                </div>
 
-                    <div className={styles.formdWrapper}>
-                        {submitted ? (
-                            <div className={styles.successMessage}>
-                                <h3>Message Sent!</h3>
-                                <p>We will get back to you shortly.</p>
-                                <Button onClick={() => setSubmitted(false)} variant="outline">Send Another</Button>
+                <div className="form-card">
+                    {submitted ? (
+                        <div className="form-done" role="status">
+                            <div className="run"><RunnerFigure /></div>
+                            <h3 className="disp" style={{ fontSize: 32 }}>Message sent!</h3>
+                            <p style={{ margin: 0, color: '#3B4A36' }}>We will get back to you shortly.</p>
+                            <button type="button" className="btn btn-ink" onClick={() => setSubmitted(false)}>Send another</button>
+                        </div>
+                    ) : (
+                        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+                            <div className="form-row">
+                                <div className="field">
+                                    <label className="mono" htmlFor="c-name">Name</label>
+                                    <input id="c-name" name="name" placeholder="Your name" autoComplete="name" required />
+                                </div>
+                                <div className="field">
+                                    <label className="mono" htmlFor="c-email">Email</label>
+                                    <input id="c-email" name="email" type="email" placeholder="you@example.com" autoComplete="email" required />
+                                </div>
                             </div>
-                        ) : (
-                            <form className={styles.form} onSubmit={handleSubmit}>
-                                <div className={styles.row}>
-                                    <Input name="name" label="Name" placeholder="Your Name" required />
-                                    <Input name="email" label="Email" type="email" placeholder="john@example.com" required />
-                                </div>
-                                <Input name="subject" label="Subject" placeholder="How can we help?" required />
-
-                                <div className={styles.textareaWrapper}>
-                                    <label className={styles.label}>Message</label>
-                                    <textarea
-                                        name="message"
-                                        className={styles.textarea}
-                                        placeholder="Write your message here..."
-                                        rows={5}
-                                        required
-                                    ></textarea>
-                                </div>
-
-                                {error && <p className={styles.error}>{error}</p>}
-                                <Button type="submit" fullWidth disabled={loading}>
-                                    {loading ? 'Sending...' : 'Send Message'}
-                                </Button>
-                            </form>
-                        )}
-                    </div>
+                            <div className="field">
+                                <label className="mono" htmlFor="c-subject">Subject</label>
+                                <input id="c-subject" name="subject" placeholder="How can we help?" required />
+                            </div>
+                            <div className="field">
+                                <label className="mono" htmlFor="c-message">Message</label>
+                                <textarea id="c-message" name="message" placeholder="Write your message here…" rows={5} required />
+                            </div>
+                            {error && <p className="form-error" role="alert">{error}</p>}
+                            <button type="submit" className="btn btn-ink" disabled={loading} style={{ minHeight: 54, fontSize: 16 }}>
+                                {loading ? (<><span className="spin" aria-hidden="true" /> Sending…</>) : 'Send message'}
+                            </button>
+                        </form>
+                    )}
                 </div>
             </div>
         </section>

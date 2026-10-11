@@ -1,24 +1,34 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Outfit, Bricolage_Grotesque, Plus_Jakarta_Sans, Anek_Telugu } from "next/font/google";
 import "./globals.css";
+import "./kg.css";
 import Footer from "@/components/layout/Footer/Footer";
-import Ticker from "@/components/layout/Ticker/Ticker";
 import Navbar from "@/components/layout/Navbar/Navbar";
 import ScrollToTop from "@/components/ScrollToTop";
 
-const outfit = Outfit({
-  subsets: ["latin"],
-  variable: "--font-main",
-  weight: ["300", "400", "500", "600", "700"],
-});
+// Outfit is still used by the inner pages (register, prizes, results…)
+const outfit = Outfit({ subsets: ["latin"], variable: "--font-main", weight: ["300", "400", "500", "600", "700"] });
+// Edition 02 design fonts: Bricolage Grotesque (headlines) + Plus Jakarta Sans (menu, body, labels)
+const display = Bricolage_Grotesque({ subsets: ["latin"], variable: "--font-display", axes: ["opsz"] });
+const body = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-body" });
+const telugu = Anek_Telugu({ subsets: ["telugu"], variable: "--font-telugu", weight: ["500", "700"] });
 
 export const metadata: Metadata = {
   title: {
-    default: "KONASEEMA RUN 2026 - Ravulapalem",
-    template: "%s | KONASEEMA RUN 2026",
+    default: "Konaseema Half Marathon 2027 · 2nd Edition | Ravulapalem",
+    template: "%s | Konaseema Half Marathon 2027",
   },
-  description: "Join the most anticipated running event in Ravulapalem! KONASEEMA RUN 2026 offering 3K, 5K, and 10K categories. Register now to experience health and community.",
-  keywords: ["Konaseema Run", "Ravulapalem Marathon", "Andhra Pradesh Run", "10K Run Konaseema", "5K Run Ravulapalem", "Our Health Our Village", "Konaseema Godavari Runners"],
+  description:
+    "Konaseema Half Marathon, 2nd Edition — 31 January 2027, Ravulapalem. The first-ever half marathon in Konaseema District. Timed 5K, 10K and 21.1K, and a non-timed 3K.",
+  keywords: [
+    "Konaseema Half Marathon",
+    "Konaseema Run 2027",
+    "Ravulapalem Marathon",
+    "Half Marathon Andhra Pradesh",
+    "21.1K Konaseema",
+    "Jai Jawan Jai Kisan Run",
+    "Konaseema Godavari Runners",
+  ],
   icons: {
     icon: "/icon.png",
   },
@@ -35,11 +45,8 @@ export default function RootLayout({
         {/* PhonePe Checkout Script for iframe payment integration */}
         <script src="https://mercury.phonepe.com/web/bundle/checkout.js" defer></script>
       </head>
-      <body className={`${outfit.variable} font-sans`}>
+      <body className={`${outfit.variable} ${display.variable} ${body.variable} ${telugu.variable} font-sans`}>
         <ScrollToTop />
-        {/* className={`${outfit.variable} font-sans`}>
-        {/* Ticker and Navbar are global now, so pages don't need to import them repeatedly */}
-        <Ticker />
         <Navbar />
         {children}
         <Footer />

@@ -1,149 +1,72 @@
 'use client';
-import styles from './Navbar.module.css';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import Button from '@/components/ui/Button/Button';
-import { useState, useEffect } from 'react';
-import { HiMenu, HiX } from 'react-icons/hi';
-import clsx from 'clsx';
-import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+import { useState } from 'react';
+import { edition2 } from '@/lib/edition2';
+
+const NAV_LINKS = [
+    { name: 'Races', href: '/#races' },
+    { name: 'Route & venue', href: '/#route' },
+    { name: 'Editions', href: '/editions' },
+    { name: 'Gallery', href: '/gallery' },
+    { name: 'Contact', href: '/contact' },
+];
 
 const Navbar = () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
-    const [activeSection, setActiveSection] = useState('');
+    const [open, setOpen] = useState(false);
     const pathname = usePathname();
 
-    useEffect(() => {
-        const handleScroll = () => {
-            setScrolled(window.scrollY > 50);
-
-            // Detect active section based on scroll position
-            const sections = ['about', 'race-categories', 'venue'];
-            const scrollPosition = window.scrollY + 100;
-
-            for (const section of sections) {
-                const element = document.getElementById(section);
-                if (element) {
-                    const { offsetTop, offsetHeight } = element;
-                    if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-                        setActiveSection(`#${section}`);
-                        return;
-                    }
-                }
-            }
-
-            // If at top of page, set home as active
-            if (window.scrollY < 100) {
-                setActiveSection('');
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        handleScroll(); // Initial check
-
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    const navLinks = [
-        { name: 'Home', href: '/' },
-        { name: 'About', href: '/#about' },
-        { name: 'Race Info', href: '/#race-categories' },
-        { name: 'Venue', href: '/#venue' },
-        { name: 'Gallery', href: '/gallery' },
-        { name: 'Results', href: '/results' },
-        { name: 'Contact', href: '/contact' },
-    ];
-
-    const isActive = (href: string) => {
-        // For hash links on home page
-        if (href.includes('#')) {
-            const hash = href.split('#')[1];
-            return activeSection === `#${hash}`;
-        }
-
-        // For Home link specifically: only active if pathname is '/' AND no section is active
-        if (href === '/') {
-            return pathname === '/' && activeSection === '';
-        }
-
-        // For other pages
-        return pathname === href;
-    };
+    // Edition pages (incl. Edition 01 results) highlight "Editions"
+    const isCurrent = (href: string) =>
+        !href.includes('#') && (pathname === href || (href === '/editions' && pathname.startsWith('/editions/')));
+    const registerLabel = 'Register';
+    const registerHref = edition2.registrationOpen ? edition2.registerHref : '/#register';
 
     return (
-        <nav className={clsx(styles.navbar, { [styles.scrolled]: scrolled })}>
-            <div className={styles.container}>
-                <div className={styles.logo}>
-                    <Link href="/">
-                        <div className={styles.logoContainer}>
-                            <Image
-                                src="/images/logo.png"
-                                alt="Konaseema Godavari Runners Association Logo"
-                                width={100}
-                                height={100}
-                                className={styles.logoImage}
-                                priority
-                            />
-                            <div className={styles.logoText}>
-                                <div className={styles.logoLine1}>Konaseema Godavari</div>
-                                <div className={styles.logoLine2}>Runners <span className={styles.logoHighlight}>Association</span></div>
-                            </div>
-                        </div>
-                    </Link>
-                </div>
-
-                {/* Desktop Menu */}
-                <div className={styles.desktopMenu}>
-                    {navLinks.map((link) => (
-                        <Link
-                            key={link.name}
-                            href={link.href}
-                            className={clsx(styles.navLink, { [styles.active]: isActive(link.href) })}
-                        >
-                            {link.name}
+        <nav className="kg kg-nav" aria-label="Main">
+            <div className="wrap nav-in">
+                <Link className="logo" href="/">
+                    <Image src="/images/logo.png" alt="" width={124} height={124} priority />
+                    <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <strong>KG RUNNERS</strong>
+                        <span className="mono sub" style={{ fontSize: 10, opacity: 0.72 }}>Konaseema Half Marathon</span>
+                    </span>
+                </Link>
+                <div className="links">
+                    {NAV_LINKS.map((l) => (
+                        <Link key={l.name} href={l.href} className={isCurrent(l.href) ? 'cur' : undefined} aria-current={isCurrent(l.href) ? 'page' : undefined}>
+                            {l.name}
                         </Link>
                     ))}
-                    <Button size="sm" disabled>Registration Closed</Button>
                 </div>
-
-                {/* Mobile Toggle */}
-                <button className={styles.mobileToggle} onClick={() => setIsOpen(!isOpen)}>
-                    {isOpen ? <HiX size={24} /> : <HiMenu size={24} />}
-                </button>
-            </div>
-
-            {/* Mobile Menu */}
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className={styles.mobileMenu}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <Link className="btn btn-gold nav-cta" href={registerHref}>{registerLabel}</Link>
+                    <button
+                        type="button"
+                        className="btn btn-ghost menu-btn"
+                        aria-expanded={open}
+                        aria-label={open ? 'Close menu' : 'Open menu'}
+                        onClick={() => setOpen((o) => !o)}
                     >
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.name}
-                                href={link.href}
-                                className={clsx(styles.mobileNavLink, { [styles.active]: isActive(link.href) })}
-                                onClick={() => setIsOpen(false)}
-                            >
-                                {link.name}
-                            </Link>
-                        ))}
-                        <div className={styles.mobileAction}>
-                            <Button fullWidth disabled>
-                                Registration Closed
-                            </Button>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                        {open ? 'Close' : 'Menu'}
+                    </button>
+                </div>
+            </div>
+            {open && (
+                <div className="mpanel">
+                    {NAV_LINKS.map((l) => (
+                        <Link key={l.name} href={l.href} className={isCurrent(l.href) ? 'cur' : undefined} onClick={() => setOpen(false)}>
+                            {l.name}
+                        </Link>
+                    ))}
+                    <Link href={registerHref} onClick={() => setOpen(false)} style={{ color: '#F4B400' }}>
+                        {registerLabel}
+                    </Link>
+                </div>
+            )}
         </nav>
     );
 };
 
 export default Navbar;
-

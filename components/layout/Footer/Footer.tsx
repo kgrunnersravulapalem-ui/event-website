@@ -1,58 +1,56 @@
-import styles from './Footer.module.css';
-import { FaFacebook, FaInstagram, FaTwitter, FaEnvelope, FaPhone } from 'react-icons/fa';
 import Link from 'next/link';
-import { eventConfig } from '@/lib/eventConfig';
+import Image from 'next/image';
+import { edition2 } from '@/lib/edition2';
+
+const fmtPhone = (p: string) => `+91 ${p.slice(0, 5)} ${p.slice(5)}`;
 
 const Footer = () => {
     return (
-        <footer className={styles.footer}>
-            <div className={styles.container}>
-                <div className={styles.top}>
-                    <div className={styles.footerBlock}>
-                        <h4>Contact Us</h4>
-                        <div className={styles.contactInfo}>
-                            <div className={styles.contactItem}>
-                                <FaEnvelope className={styles.contactIcon} />
-                                <span>{eventConfig.contact.email}</span>
-                            </div>
-                            <div className={styles.contactItem}>
-                                <FaPhone className={styles.contactIcon} />
-                                <div>
-                                    {eventConfig.contact.phones.map((phone, index) => (
-                                        <div key={index}>{phone}</div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
+        <footer className="kg kg-foot" id="contact">
+            <div className="wrap">
+                <div className="foot-grid">
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                        <Link className="logo" href="/">
+                            <Image src="/images/logo.png" alt="" width={124} height={124} />
+                            <strong>KG Runners</strong>
+                        </Link>
+                        <p style={{ margin: 0, color: 'rgba(247,242,228,.72)', lineHeight: 1.55, maxWidth: '32ch' }}>
+                            Konaseema Godavari Runners Association, Ravulapalem. Organisers of the Konaseema Half Marathon.
+                        </p>
                     </div>
-
-                    <div className={styles.footerBlock}>
-                        <h4>Quick Links</h4>
-                        <div className={styles.links}>
-                            <ul>
-                                <li><Link href="/prizes">Prizes</Link></li>
-                                <li><Link href="/contact">Contact</Link></li>
-                                <li><span style={{ color: '#ccc', cursor: 'not-allowed' }}>Registration Closed</span></li>
-                                <li><Link href="/terms">Terms & Conditions</Link></li>
-                                <li><Link href="/privacy">Privacy Policy</Link></li>
-                                <li><Link href="/refund">Refund Policy</Link></li>
-                            </ul>
-                        </div>
+                    <div>
+                        <h4 className="mono">Contact</h4>
+                        <ul>
+                            <li><a href={`mailto:${edition2.contact.email}`}>{edition2.contact.email}</a></li>
+                            {edition2.contact.phones.map((p) => (
+                                <li key={p}><a href={`tel:+91${p}`}>{fmtPhone(p)}</a></li>
+                            ))}
+                        </ul>
                     </div>
-
-                    <div className={styles.footerBlock}>
-                        <h4>Follow Us</h4>
-                        <div className={styles.social}>
-                            <div className={styles.icons}>
-                                <a href="#" className={styles.icon} aria-label="Facebook"><FaFacebook /></a>
-                                <a href="#" className={styles.icon} aria-label="Instagram"><FaInstagram /></a>
-                            </div>
-                        </div>
+                    <div>
+                        <h4 className="mono">Race</h4>
+                        <ul>
+                            <li><Link href="/#races">Categories</Link></li>
+                            <li><Link href="/#route">Route &amp; venue</Link></li>
+                            <li><Link href="/prizes">Prizes</Link></li>
+                            <li><Link href="/gallery">Gallery</Link></li>
+                            <li><Link href="/editions">Editions</Link></li>
+                            <li><Link href="/editions/2026/results">Edition 01 results</Link></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 className="mono">Policies</h4>
+                        <ul>
+                            <li><Link href="/terms">Terms &amp; Conditions</Link></li>
+                            <li><Link href="/privacy">Privacy Policy</Link></li>
+                            <li><Link href="/refund">Refund Policy</Link></li>
+                            <li><Link href="/contact">Contact us</Link></li>
+                        </ul>
                     </div>
                 </div>
-                <div className={styles.bottom}>
-                    <p>&copy; {new Date().getFullYear()} {eventConfig.eventName}. All rights reserved.</p>
-                    <p style={{ marginTop: '0.5rem' }}>Organized by KG RUNNERS</p>
+                <div className="foot-base mono">
+                    <span>© {new Date().getFullYear()} Konaseema Half Marathon · Organised by KG Runners</span>
+                    <span>kgrunners.in</span>
                 </div>
             </div>
         </footer>

@@ -97,7 +97,7 @@ export default function GalleryPage() {
                 lede="Sunrise starts, finish-line smiles and everything in between. Tap any photo to see it full size."
             />
 
-            <section className="sec" style={{ paddingTop: 24, background: '#0E1A0D' }}>
+            <section className="sec" style={{ paddingTop: 24, background: '#1A2015' }}>
                 <div className="wrap">
                     {loading ? (
                         <div className="gal-grid" aria-busy="true">

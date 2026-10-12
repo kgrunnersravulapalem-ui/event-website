@@ -135,7 +135,7 @@ export default function FilmSection({ videoId }: { videoId: string }) {
                             <div className="split mono">Watch · The Konaseema Run film</div>
                             <h2 className="disp" style={{ fontSize: 'clamp(36px,4.4vw,64px)' }}>Feel race morning.</h2>
                         </div>
-                        <p className="lede" style={{ maxWidth: '40ch', color: '#3B4A36' }}>
+                        <p className="lede" style={{ maxWidth: '40ch', color: '#3E4630' }}>
                             Relive Edition 01 in Ravulapalem, then join us for the Half Marathon on 31 January 2027.
                         </p>
                     </div>

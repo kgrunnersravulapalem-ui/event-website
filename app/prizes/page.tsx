@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { eventConfig } from '@/lib/eventConfig';
+import { edition2 } from '@/lib/edition2';
 import PageHero from '@/components/kg/PageHero';
 
 // Edition 01 prize structure (Konaseema Run 2026).
@@ -67,13 +68,38 @@ export default function PrizesPage() {
             <section className="sec light" style={{ paddingTop: 64 }}>
                 <div className="wrap" style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(56px,7vw,96px)' }}>
                     <div className="notice">
-                        <span className="ic" aria-hidden="true">!</span>
+                        <span className="ic" aria-hidden="true">₹</span>
                         <div>
-                            <h2>Edition 02 prizes coming soon</h2>
+                            <h2>Edition 02: {edition2.prizeMoneyLabel} total prize money</h2>
                             <p>
-                                Prize money and the participant kit for the Konaseema Half Marathon (31 January 2027) will be announced
-                                when registration opens. Below is the Edition 01 structure for reference.
+                                The Konaseema Half Marathon on 31 January 2027 carries {edition2.prizeMoneyLabel} in prize money. The category-wise
+                                breakdown and the participant kit will be announced soon. The Edition 01 structure is below for reference.
                             </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div className="sec-head">
+                            <div className="split mono">Edition 02 · Entry fees</div>
+                            <h2 className="disp">Early bird till {edition2.earlyBirdLastDate}</h2>
+                        </div>
+                        <div className="fee-table" role="table" aria-label="Edition 02 entry fees">
+                            <div className="fee-row head mono" role="row">
+                                <span role="columnheader">Category</span>
+                                <span role="columnheader">Early bird</span>
+                                <span role="columnheader">Regular</span>
+                            </div>
+                            {[...edition2.categories].reverse().map((c) => (
+                                <div key={c.id} className="fee-row" role="row" style={{ '--cat': c.color } as React.CSSProperties}>
+                                    <span role="cell" className="fee-cat">
+                                        <i aria-hidden="true" />
+                                        <b>{c.distance}K</b>
+                                        <span className="mono">{c.timed ? 'Timed' : 'Non-timed'}</span>
+                                    </span>
+                                    <span role="cell" className="fee-eb">₹{c.earlyBird}</span>
+                                    <span role="cell" className="fee-reg">₹{c.fee}</span>
+                                </div>
+                            ))}
                         </div>
                     </div>
 

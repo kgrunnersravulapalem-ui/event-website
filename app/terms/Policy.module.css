@@ -4,9 +4,9 @@
     position: relative;
     min-height: 100vh;
     padding: clamp(56px, 8vw, 104px) clamp(18px, 5vw, 64px) clamp(64px, 8vw, 112px);
-    background: #f7f2e4;
+    background: #e6dcc1;
     font-family: var(--font-body), system-ui, sans-serif;
-    color: #0e1a0d;
+    color: #1a2015;
 }
 
 /* dark band behind the top of the card, with the tricolour edge */
@@ -17,7 +17,7 @@
     left: 0;
     right: 0;
     height: clamp(220px, 26vw, 320px);
-    background: #0e1a0d;
+    background: linear-gradient(90deg, rgba(26, 32, 21, .92), rgba(26, 32, 21, .55)), url('/images/camo-dark.svg') 0 0 / 480px;
     pointer-events: none;
 }
 
@@ -26,11 +26,11 @@
     z-index: 1;
     max-width: 880px;
     margin: 0 auto;
-    background: #ffffff;
-    border: 1.5px solid rgba(14, 26, 13, 0.12);
+    background: #f5efdf;
+    border: 1.5px solid rgba(26, 32, 21, 0.12);
     border-radius: 0;
     padding: clamp(28px, 5vw, 64px);
-    box-shadow: 0 30px 70px rgba(14, 26, 13, 0.18);
+    box-shadow: 0 30px 70px rgba(26, 32, 21, 0.18);
 }
 
 .title {
@@ -39,7 +39,7 @@
     letter-spacing: -0.035em;
     line-height: 0.95;
     font-size: clamp(36px, 5vw, 64px);
-    color: #0e1a0d;
+    color: #1a2015;
     margin: 0 0 14px;
 }
 
@@ -72,14 +72,14 @@
     letter-spacing: -0.02em;
     font-size: clamp(22px, 2.2vw, 28px);
     line-height: 1.15;
-    color: #0e1a0d;
+    color: #1a2015;
     margin: 40px 0 14px;
     padding-top: 22px;
-    border-top: 1px solid rgba(14, 26, 13, 0.12);
+    border-top: 1px solid rgba(26, 32, 21, 0.12);
 }
 
 .text {
-    color: #2b3a28;
+    color: #3e4630;
     line-height: 1.75;
     margin: 0 0 14px;
     font-size: 16px;
@@ -89,7 +89,7 @@
     list-style: none;
     margin: 0 0 14px;
     padding: 0;
-    color: #2b3a28;
+    color: #3e4630;
     line-height: 1.7;
     font-size: 16px;
 }
@@ -113,12 +113,12 @@
 }
 
 .strong {
-    color: #0e1a0d;
+    color: #1a2015;
     font-weight: 700;
 }
 
 .link {
-    color: #0e1a0d;
+    color: #1a2015;
     font-weight: 600;
     text-decoration: underline;
     text-decoration-color: #f4b400;

@@ -8,7 +8,8 @@ import Countdown from "@/components/kg/Countdown";
 import FilmSection from "@/components/kg/FilmSection";
 import RouteMap from "@/components/kg/RouteMap";
 import FinishTape from "@/components/kg/FinishTape";
-import IndianFlag, { FlagStripe } from "@/components/kg/IndianFlag";
+import IndianFlag from "@/components/kg/IndianFlag";
+import RunnerFigure from "@/components/kg/RunnerFigure";
 
 export const metadata: Metadata = {
   title: "Konaseema Half Marathon 2027 · 2nd Edition | Ravulapalem",
@@ -54,13 +55,6 @@ const CAUSE_ICONS: Record<number, React.ReactNode> = {
   ),
 };
 
-const CAUSE_TITLES: React.ReactNode[] = [
-  <>Jai Jawan<br />Jai Kisan</>,
-  <>Health is<br />Wealth</>,
-  <>Say Yes to Life,<br />No to Drugs</>,
-  <>I’m Plastic<br />Free</>,
-  <>Always Happy<br />&amp; Healthy</>,
-];
 
 export default function Home() {
   const registerHref = edition2.registrationOpen ? edition2.registerHref : "#register";
@@ -79,11 +73,13 @@ export default function Home() {
           <div className="badges">
             <span className="pill gold mono">{edition2.edition}</span>
             <span className="pill line mono">{edition2.tagline}</span>
+            <span className="pill line mono">{edition2.prizeMoneyLabel} prize money</span>
           </div>
           <h1 className="disp" style={{ marginTop: 22 }}>
             <span className="h1a">Konaseema</span>
             <span className="h1b">Half Marathon</span>
           </h1>
+          <p className="powered mono">Powered by <strong>{edition2.poweredBy}</strong></p>
           <div className="hero-row">
             <div className="date-block">
               <span className="mono" style={{ color: "rgba(247,242,228,.65)" }}>Race day · Ravulapalem</span>
@@ -99,10 +95,13 @@ export default function Home() {
             </div>
           </div>
           <div className="cats">
-            <a className="cat" href="#races"><b>3K</b><span className="mono">Non-timed</span></a>
-            <a className="cat" href="#races"><b>5K</b><span className="mono">Timed</span></a>
-            <a className="cat" href="#races"><b>10K</b><span className="mono">Timed</span></a>
-            <a className="cat hm" href="#races"><b>21.1K</b><span className="mono">Timed · Half Marathon</span></a>
+            {[...edition2.categories].reverse().map((c) => (
+              <a key={c.id} className={`cat${c.id === "r21" ? " hm" : ""}`} href="#races" style={{ "--cat": c.color } as React.CSSProperties}>
+                <i className="cat-dot" aria-hidden="true" />
+                <b>{c.distance}K</b>
+                <span className="mono">{c.timed ? (c.id === "r21" ? "Timed · Half Marathon" : "Timed") : "Non-timed"}</span>
+              </a>
+            ))}
           </div>
           <div className="cta-row">
             <Link className="btn btn-gold" href={registerHref}>{registerLabel}</Link>
@@ -143,58 +142,53 @@ export default function Home() {
         </div>
       </section>
 
-      {/* RACE CATEGORIES */}
-      <section className="sec" id="races" style={{ background: "#142412" }}>
+      {/* RACE CATEGORIES — colour-coded bibs: 3K pink, 5K blue, 10K red, 21.1K green */}
+      <section className="sec" id="races" style={{ background: "#232B1A" }}>
         <div className="wrap">
           <div className="rv row-end">
             <div className="stack">
               <div className="split mono">Race categories</div>
               <h2 className="disp h2">Choose your<br />distance.</h2>
             </div>
-            <div className="legend mono">
-              <span>
-                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-                  <circle cx="12" cy="13" r="8" style={{ fill: "none", stroke: "#F4B400", strokeWidth: 2 }} />
-                  <path d="M12 9v4l2.5 2M10 2h4" style={{ fill: "none", stroke: "#F4B400", strokeWidth: 2, strokeLinecap: "round" }} />
-                </svg>
-                Timed: 5K · 10K · 21.1K
-              </span>
-              <span>
-                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-                  <circle cx="12" cy="12" r="8" style={{ fill: "none", stroke: "#F7F2E4", strokeWidth: 2, strokeDasharray: "3 3" }} />
-                </svg>
-                Non-timed: 3K
-              </span>
+            <div className="race-meta">
+              <div><span className="mono">Total prize money</span><strong>{edition2.prizeMoneyLabel}</strong></div>
+              <div><span className="mono">Early bird ends</span><strong>{edition2.earlyBirdLastDate}</strong></div>
             </div>
           </div>
           <div className="bibs">
             {edition2.categories.map((c) => {
               const feat = c.id === "r21";
+              const fee = (
+                <div className="bib-foot">
+                  <div className="fee">
+                    <span className="mono">Early bird · till {edition2.earlyBirdShort}</span>
+                    {c.earlyBird != null ? (
+                      <span className="price">
+                        <strong>₹{c.earlyBird}</strong>
+                        {c.fee != null && <s aria-label={`Regular fee ₹${c.fee}`}>₹{c.fee}</s>}
+                      </span>
+                    ) : (
+                      <strong>{feeLabel(c.fee)}</strong>
+                    )}
+                    {c.fee != null && <span className="regular">Regular fee ₹{c.fee}</span>}
+                  </div>
+                  <Link href={registerHref}>Register <Arrow /></Link>
+                </div>
+              );
               return (
-                <article key={c.id} className={`bib rv${feat ? " feat" : ""}${c.timed ? "" : " nt"}`}>
+                <article key={c.id} className={`bib rv${feat ? " feat" : ""}`} style={{ "--cat": c.color } as React.CSSProperties}>
                   <span className="pin a" /><span className="pin b" /><span className="pin c" /><span className="pin d" />
                   <div className="bib-band mono">
-                    <span>{feat ? "Konaseema Half Marathon · Ed. 02" : "Konaseema Run"}</span>
-                    <span>{feat ? "31.01.2027" : "Ed. 02"}</span>
+                    <span>{feat ? "Konaseema Half Marathon" : "Konaseema Run"}<span className="band-ed"> · Ed. 02</span></span>
+                    <span>{c.timed ? "Timed" : "Non-timed"}</span>
                   </div>
                   <div className="disp bib-num">{c.distance}<small>K</small></div>
                   <div className="bib-body">
-                    <span className={`tag mono${c.timed ? "" : " nt"}`}>{c.timed ? (feat ? "Timed · Half Marathon" : "Timed") : "Non-timed"}</span>
                     <h3>{c.title}</h3>
                     <p>{c.desc}</p>
-                    {feat && (
-                      <div className="bib-foot">
-                        <span className="fee"><span className="mono">Entry</span><strong>{feeLabel(c.fee)}</strong></span>
-                        <Link href={registerHref}>Register <Arrow /></Link>
-                      </div>
-                    )}
+                    {feat && fee}
                   </div>
-                  {!feat && (
-                    <div className="bib-foot">
-                      <span className="fee"><span className="mono">Entry</span><strong>{feeLabel(c.fee)}</strong></span>
-                      <Link href={registerHref}>Register <Arrow /></Link>
-                    </div>
-                  )}
+                  {!feat && fee}
                 </article>
               );
             })}
@@ -202,30 +196,34 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CAUSES */}
+      {/* CAUSES — five checkpoints a runner passes through */}
       <section className="sec light" id="causes">
         <div className="wrap">
           <div className="rv row-end">
             <div className="stack">
               <div className="split mono">We run for</div>
-              <h2 className="disp h2">Five causes.<br />One start line.</h2>
+              <h2 className="disp h2">Five causes.<br />Five checkpoints.</h2>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6, maxWidth: "34ch" }}>
               <p className="te" style={{ margin: 0, fontSize: 24, fontWeight: 700, lineHeight: 1.4 }}>మన ఆరోగ్యం, మన ఊరు, మన బాధ్యత</p>
-              <p className="mono" style={{ margin: 0, color: "#4A5244" }}>Our health · Our village · Our responsibility</p>
+              <p className="mono" style={{ margin: 0, color: "#4D5039" }}>Our health · Our village · Our responsibility</p>
             </div>
           </div>
-          <div className="causes">
-            {CAUSE_TITLES.map((title, i) => (
-              <article key={i} className={`cause rv${i === 0 ? " feat" : ""}`}>
-                {i === 0 && <FlagStripe chakra={16} />}
-                <div className="top">
-                  <span className="ic">{CAUSE_ICONS[i]}</span>
-                  <span className="num mono">{String(i + 1).padStart(2, "0")}</span>
-                </div>
-                <h3>{title}</h3>
-              </article>
-            ))}
+          <div className="cp-course rv">
+            <div className="cp-track" aria-hidden="true">
+              <div className="cp-runner run"><RunnerFigure /></div>
+            </div>
+            <ol className="cp-list">
+              {edition2.causes.map((title, i) => (
+                <li key={title} className={`cp${i === 0 ? " jj-cp" : ""}`} style={{ "--i": i } as React.CSSProperties}>
+                  <span className="cp-mark">{CAUSE_ICONS[i]}</span>
+                  <div className="cp-text">
+                    <span className="mono cp-no">Checkpoint {String(i + 1).padStart(2, "0")}</span>
+                    <h3>{title}</h3>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
       </section>
@@ -302,7 +300,7 @@ export default function Home() {
           <div className="stack" style={{ gap: 20 }}>
             <div className="split mono">Partners</div>
             <h2 className="disp" style={{ fontSize: "clamp(34px,4vw,56px)" }}>Run with us<br />as a partner.</h2>
-            <p className="lede" style={{ color: "#3B4A36", maxWidth: "48ch" }}>
+            <p className="lede" style={{ color: "#3E4630", maxWidth: "48ch" }}>
               Put your brand at the start line of Konaseema’s first half marathon.
             </p>
           </div>

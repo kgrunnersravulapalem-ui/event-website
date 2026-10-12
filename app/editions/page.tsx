@@ -182,7 +182,7 @@ export default function EditionsPage() {
       </section>
 
       {/* PHOTOS */}
-      <section className="sec" id="gallery" style={{ background: "#142412" }}>
+      <section className="sec" id="gallery" style={{ background: "#232B1A" }}>
         <div className="wrap">
           <div className="row-end">
             <div className="stack" style={{ gap: 22 }}>

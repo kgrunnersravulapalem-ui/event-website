@@ -31,6 +31,19 @@ function Paddy({ side }: { side: 'lf' | 'rt' }) {
 export default function HeroScene() {
     return (
         <div className="scene" aria-hidden="true">
+            {/* camo fabric for the runners' tees */}
+            <svg width="0" height="0" style={{ position: 'absolute' }} focusable="false">
+                <defs>
+                    <pattern id="kgTeeCamo" patternUnits="userSpaceOnUse" width="26" height="26">
+                        <rect width="26" height="26" fill="#5E6A35" />
+                        <path d="M2 3c4-2 9 0 8 4s-6 4-8 2-2-5 0-6z" fill="#3E4A22" />
+                        <path d="M14 11c3-1 8 1 7 5s-5 4-8 2-2-6 1-7z" fill="#4A3826" />
+                        <path d="M4 16c3-1 5 1 4 4s-4 2-5 1-1-4 1-5z" fill="#1F2616" />
+                        <path d="M18 2c2 0 4 2 3 3s-3 2-4 0 0-3 1-3z" fill="#9C9467" />
+                        <path d="M11 21c2-1 4 0 4 2s-3 2-4 1-1-2 0-3z" fill="#9C9467" />
+                    </pattern>
+                </defs>
+            </svg>
             <div className="sky" />
             <div className="sun" />
             <div className="jets">

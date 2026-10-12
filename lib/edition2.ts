@@ -7,7 +7,9 @@ export type RaceCategory = {
     timed: boolean;
     title: string;
     desc: string;
-    fee: number | null;
+    color: string;           // bib / category colour
+    fee: number | null;      // regular entry fee (₹)
+    earlyBird: number | null; // early-bird fee (₹)
 };
 
 export const edition2 = {
@@ -28,6 +30,11 @@ export const edition2 = {
     mapsLink: 'https://maps.app.goo.gl/pKamaAwknD7Vigva8',
     youtubeId: '5W7dELeWMwo',
     poster: '/images/edition2-poster.jpg',
+    poweredBy: 'Konaseema Godavari Runners Association – Ravulapalem',
+    prizeMoneyLabel: '₹2 Lakh',
+    prizeMoney: 200000,
+    earlyBirdLastDate: '30 Nov 2026',
+    earlyBirdShort: '30 Nov',
 
     causes: [
         'Jai Jawan Jai Kisan',
@@ -37,11 +44,12 @@ export const edition2 = {
         'Always Happy & Healthy',
     ],
 
+    // Colours: 3K pink, 5K blue, 10K red, 21.1K green
     categories: [
-        { id: 'r21', distance: '21.1', timed: true, title: 'The headline race', desc: 'Konaseema’s first-ever half marathon. 21.1 km for runners ready to go the distance.', fee: null },
-        { id: 'r10', distance: '10', timed: true, title: 'The long game', desc: 'A challenging middle-distance race for runners who like to dig deep.', fee: null },
-        { id: 'r5', distance: '5', timed: true, title: 'The classic', desc: 'Fast, scenic and exhilarating. The distance everyone loves.', fee: null },
-        { id: 'r3', distance: '3', timed: false, title: 'The first step', desc: 'Short and sweet, made for beginners, families and first-timers.', fee: null },
+        { id: 'r21', distance: '21.1', timed: true, title: 'The headline race', desc: 'Konaseema’s first-ever half marathon. 21.1 km for runners ready to go the distance.', color: '#15803D', fee: 850, earlyBird: 700 },
+        { id: 'r10', distance: '10', timed: true, title: 'The long game', desc: 'A challenging middle-distance race for runners who like to dig deep.', color: '#C62828', fee: 650, earlyBird: 500 },
+        { id: 'r5', distance: '5', timed: true, title: 'The classic', desc: 'Fast, scenic and exhilarating. The distance everyone loves.', color: '#2563C9', fee: 550, earlyBird: 400 },
+        { id: 'r3', distance: '3', timed: false, title: 'The first step', desc: 'Short and sweet, made for beginners, families and first-timers.', color: '#C8326E', fee: 400, earlyBird: 300 },
     ] as RaceCategory[],
 
     contact: {

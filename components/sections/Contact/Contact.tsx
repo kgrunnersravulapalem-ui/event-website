@@ -51,7 +51,7 @@ const Contact = () => {
                 <div className="stack">
                     <div className="split mono">Reach the organisers</div>
                     <h2 className="disp" style={{ fontSize: 'clamp(34px,4.2vw,60px)' }}>We’re here to help.</h2>
-                    <p className="lede" style={{ color: '#3B4A36' }}>
+                    <p className="lede" style={{ color: '#3E4630' }}>
                         Questions about registration, the route, race day or sponsorship? Send us a message or reach us directly.
                     </p>
                     <div className="contact-list">
@@ -78,7 +78,7 @@ const Contact = () => {
                         <div className="form-done" role="status">
                             <div className="run"><RunnerFigure /></div>
                             <h3 className="disp" style={{ fontSize: 32 }}>Message sent!</h3>
-                            <p style={{ margin: 0, color: '#3B4A36' }}>We will get back to you shortly.</p>
+                            <p style={{ margin: 0, color: '#3E4630' }}>We will get back to you shortly.</p>
                             <button type="button" className="btn btn-ink" onClick={() => setSubmitted(false)}>Send another</button>
                         </div>
                     ) : (

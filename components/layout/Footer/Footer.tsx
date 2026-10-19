@@ -34,6 +34,7 @@ const Footer = () => {
                             <li><Link href="/#route">Route &amp; venue</Link></li>
                             <li><Link href="/prizes">Prizes</Link></li>
                             <li><Link href="/gallery">Gallery</Link></li>
+                            <li><Link href="/frame">Race day photo frame</Link></li>
                             <li><Link href="/editions">Editions</Link></li>
                             <li><Link href="/editions/2026/results">Edition 01 results</Link></li>
                         </ul>

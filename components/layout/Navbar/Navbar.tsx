@@ -10,6 +10,7 @@ const NAV_LINKS = [
     { name: 'Route & venue', href: '/#route' },
     { name: 'Editions', href: '/editions' },
     { name: 'Gallery', href: '/gallery' },
+    { name: 'Photo frame', href: '/frame' },
     { name: 'Contact', href: '/contact' },
 ];
 

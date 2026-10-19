@@ -668,3 +668,83 @@
 .kg .tri-chakra { position: absolute; left: 50%; top: 0; transform: translateX(-50%); display: grid; place-items: center; padding: 3px; background: #ffffff; border-radius: 50% !important; box-shadow: 0 2px 8px rgba(0, 0, 0, .25); z-index: 2; }
 .kg .tri-chakra svg { display: block; }
 .kg .cause.feat .tri-chakra { padding: 2px; }
+
+/* =========================================================
+   Edition 02 prize list — poster with a full-size viewer,
+   one table per race, and the announcement bar
+   ========================================================= */
+.kg .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+/* prizes page: intro with the poster */
+.kg .prize-intro { align-items: start; scroll-margin-top: 100px; }
+.kg .prize-poster { width: 100%; max-width: 460px; justify-self: center; }
+.kg .prize-pools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.kg .light .prize-pools a { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; background: var(--kg-card); border: 1.5px solid rgba(26, 32, 21, .14); border-left: 6px solid var(--cat); color: var(--kg-ink); text-decoration: none; transition: border-color .2s; }
+.kg .light .prize-pools a:hover { border-color: var(--kg-ink); border-left-color: var(--cat); color: var(--kg-ink); }
+.kg .prize-pools .mono { color: var(--kg-muted); font-size: 10.5px; }
+.kg .prize-pools strong { font-family: var(--font-display), sans-serif; font-weight: 800; font-size: clamp(24px, 2.4vw, 30px); line-height: 1; }
+
+/* tap-to-enlarge image and its full-size viewer */
+.kg .lb-thumb { position: relative; display: block; width: 100%; padding: clamp(8px, 1.2vw, 12px); background: #fff; border: 0; cursor: zoom-in; box-shadow: 0 24px 50px rgba(26, 32, 21, .35); transform: rotate(1deg); transition: transform .3s cubic-bezier(.2, .8, .2, 1); }
+.kg .lb-thumb:hover { transform: rotate(0) scale(1.01); }
+.kg .lb-thumb img { display: block; width: 100%; height: auto; }
+.kg .lb-thumb:focus-visible { outline: 3px solid var(--kg-ink); outline-offset: 4px; }
+.kg .lb-hint { position: absolute; right: clamp(16px, 2vw, 22px); bottom: clamp(16px, 2vw, 22px); padding: 8px 12px; background: var(--kg-ink); color: var(--kg-gold); }
+.kg .lb { width: min(100vw, 760px); max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0 auto; padding: 0; border: 0; background: transparent; color: var(--kg-paper); overflow-y: auto; overscroll-behavior: contain; }
+.kg .lb::backdrop { background: rgba(10, 13, 8, .92); }
+.kg .lb-bar { position: sticky; top: 0; z-index: 1; display: flex; justify-content: flex-end; gap: 10px; padding: 12px; background: linear-gradient(rgba(10, 13, 8, .9), rgba(10, 13, 8, 0)); }
+.kg .lb-img { display: block; width: 100%; height: auto; }
+
+/* prize tables, one per race */
+.kg .prize-races { display: flex; flex-direction: column; gap: 32px; max-width: 880px; }
+.kg .prize-race { background: var(--kg-card); border: 1.5px solid rgba(26, 32, 21, .14); border-top: 8px solid var(--cat); scroll-margin-top: 100px; }
+.kg .prize-race-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px 24px; padding: 20px 22px 16px; }
+.kg .prize-race-head h3 { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; font-family: var(--font-display), sans-serif; font-weight: 800; font-size: clamp(22px, 2.4vw, 30px); letter-spacing: -.02em; line-height: 1; }
+.kg .prize-race-head h3 b { color: var(--cat); font-size: 1.45em; }
+.kg .prize-race-pool { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.kg .prize-race-pool strong { font-size: clamp(26px, 2.6vw, 34px); line-height: 1; }
+.kg .prize-race-pool .mono { color: var(--kg-muted); font-size: 10.5px; }
+.kg .prize-race-note { margin: 0 22px 16px; padding: 10px 14px; background: rgba(26, 32, 21, .06); border-left: 4px solid var(--cat); font-weight: 600; line-height: 1.4; }
+.kg .prize-table-wrap { overflow-x: auto; }
+.kg .prize-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.kg .prize-table th, .kg .prize-table td { padding: 8px 12px; text-align: left; vertical-align: middle; }
+.kg .prize-table tr > :first-child { padding-left: 22px; }
+.kg .prize-table tr > :last-child { padding-right: 22px; }
+.kg .prize-table thead th { border-top: 2px solid var(--kg-ink); padding-top: 10px; padding-bottom: 10px; }
+.kg .prize-table .amt { text-align: right; font-weight: 700; white-space: nowrap; }
+.kg .prize-table thead .medal { display: inline-grid; width: 28px; height: 28px; font-size: 14px; }
+.kg .prize-table .grp th { padding-top: 14px; padding-bottom: 4px; border-top: 1px solid rgba(26, 32, 21, .14); font-weight: 700; line-height: 1.3; }
+.kg .prize-table .grp small { margin-left: 10px; color: var(--kg-muted); font-size: 13px; font-weight: 500; white-space: nowrap; }
+.kg .prize-table .who { color: var(--kg-muted); font-weight: 500; }
+.kg .prize-table thead .mono { color: var(--kg-muted); font-size: 10.5px; }
+.kg .prize-table .amt { width: 18%; }
+.kg .prize-table td.total { color: var(--cat); }
+.kg .prize-table tbody tr:last-child > * { padding-bottom: 14px; }
+@media (max-width: 560px) {
+  .kg .prize-pools { grid-template-columns: minmax(0, 1fr); }
+  .kg .prize-race-head, .kg .prize-race-note { padding-left: 16px; padding-right: 16px; }
+  .kg .prize-race-note { margin-left: 16px; margin-right: 16px; }
+  .kg .prize-table { font-size: 15px; }
+  .kg .prize-table th, .kg .prize-table td { padding-left: 6px; padding-right: 6px; }
+  .kg .prize-table tr > :first-child { padding-left: 16px; }
+  .kg .prize-table tr > :last-child { padding-right: 16px; }
+  .kg .prize-table .grp small { display: block; margin: 2px 0 0; font-size: 12.5px; }
+}
+
+/* homepage: prize money box links to the prize list; each bib names its race */
+.kg .race-meta > a.meta-link { display: flex; flex-direction: column; gap: 6px; padding: 14px 18px; border: 1.5px solid var(--kg-gold); background: rgba(26, 32, 21, .5); min-width: 170px; color: var(--kg-paper); text-decoration: none; transition: background .2s; }
+.kg .race-meta > a.meta-link:hover { background: rgba(244, 180, 0, .12); color: var(--kg-paper); }
+.kg .race-meta .meta-more { display: inline-flex; align-items: center; gap: 6px; color: var(--kg-gold); font-size: 13px; font-weight: 700; }
+.kg .race-meta .meta-more svg { width: 14px; height: 14px; }
+.kg .bib-race { color: var(--cat); font-size: 11px; }
+.kg .bib .bib-race a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+
+/* announcement bar under the menu */
+.kg-announce { background: var(--kg-gold); color: var(--kg-ink); border-bottom: 2px solid var(--kg-ink); }
+.kg-announce .ann-in { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 18px; min-height: 48px; padding-top: 8px; padding-bottom: 8px; padding-right: calc(var(--kg-pad) + 44px); }
+.kg-announce p { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.4; }
+.kg-announce .ann-tag { display: inline-block; margin-right: 10px; padding: 3px 8px; background: var(--kg-ink); color: var(--kg-gold); font-size: 10.5px; vertical-align: 1px; }
+.kg.kg-announce a.ann-link { color: var(--kg-ink); font-weight: 800; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+.kg.kg-announce a.ann-link:hover { color: #3a2c00; }
+.kg-announce .ann-close { position: absolute; top: 50%; right: var(--kg-pad); transform: translateY(-50%); display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; color: var(--kg-ink); cursor: pointer; }
+.kg-announce .ann-close:focus-visible, .kg.kg-announce a.ann-link:focus-visible { outline: 2px solid var(--kg-ink); outline-offset: 2px; }

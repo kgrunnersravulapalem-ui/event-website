@@ -151,13 +151,18 @@ export default function Home() {
               <h2 className="disp h2">Choose your<br />distance.</h2>
             </div>
             <div className="race-meta">
-              <div><span className="mono">Total prize money</span><strong>{edition2.prizeMoneyLabel}</strong></div>
+              <Link className="meta-link" href="/prizes#prize-list">
+                <span className="mono">Total prize money · {edition2.prizeCount} prizes</span>
+                <strong>{edition2.prizeMoneyLabel}</strong>
+                <span className="meta-more">See the prize list <Arrow /></span>
+              </Link>
               <div><span className="mono">Early bird ends</span><strong>{edition2.earlyBirdLastDate}</strong></div>
             </div>
           </div>
           <div className="bibs">
             {edition2.categories.map((c) => {
               const feat = c.id === "r21";
+              const prizes = edition2.prizes.find((r) => r.id === c.id);
               const fee = (
                 <div className="bib-foot">
                   <div className="fee">
@@ -184,6 +189,10 @@ export default function Home() {
                   </div>
                   <div className="disp bib-num">{c.distance}<small>K</small></div>
                   <div className="bib-body">
+                    <span className="mono bib-race">
+                      {c.name}
+                      {prizes && <> · <Link href={`/prizes#prizes-${c.id}`}>₹{prizes.pool.toLocaleString("en-IN")} prizes</Link></>}
+                    </span>
                     <h3>{c.title}</h3>
                     <p>{c.desc}</p>
                     {feat && fee}

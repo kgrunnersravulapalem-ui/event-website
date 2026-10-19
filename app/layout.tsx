@@ -5,6 +5,7 @@ import "./kg.css";
 import Footer from "@/components/layout/Footer/Footer";
 import Navbar from "@/components/layout/Navbar/Navbar";
 import ScrollToTop from "@/components/ScrollToTop";
+import AnnouncementBar from "@/components/kg/AnnouncementBar";
 
 // Outfit is still used by the inner pages (register, prizes, results…)
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-main", weight: ["300", "400", "500", "600", "700"] });
@@ -48,6 +49,7 @@ export default function RootLayout({
       <body className={`${outfit.variable} ${display.variable} ${body.variable} ${telugu.variable} font-sans`}>
         <ScrollToTop />
         <Navbar />
+        <AnnouncementBar />
         {children}
         <Footer />
       </body>

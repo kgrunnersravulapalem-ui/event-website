@@ -2,9 +2,11 @@ import Link from 'next/link';
 import { eventConfig } from '@/lib/eventConfig';
 import { edition2 } from '@/lib/edition2';
 import PageHero from '@/components/kg/PageHero';
+import ImageLightbox from '@/components/kg/ImageLightbox';
+import PrizeTables from '@/components/kg/PrizeTables';
 
-// Edition 01 prize structure (Konaseema Run 2026).
-// When the Edition 02 prize money is confirmed, add a new structure here and update the notice.
+// Edition 01 prize structure (Konaseema Run 2026), kept for reference.
+// The Edition 02 prize list lives in lib/edition2.ts.
 const ED1_PRIZES = [
     {
         id: 'above18',
@@ -62,20 +64,53 @@ export default function PrizesPage() {
             <PageHero
                 label="Prizes & benefits"
                 title={<>Run for the<br /><span style={{ color: '#F4B400' }}>podium.</span></>}
-                lede="Prize money for the top three in every category, and a finisher’s kit for every runner who crosses the line."
+                lede={`Total prize money, male & female: ${edition2.prizeMoneyLabel} across ${edition2.prizeCount} prizes.`}
             />
 
             <section className="sec light" style={{ paddingTop: 64 }}>
                 <div className="wrap" style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(56px,7vw,96px)' }}>
-                    <div className="notice">
-                        <span className="ic" aria-hidden="true">₹</span>
-                        <div>
-                            <h2>Edition 02: {edition2.prizeMoneyLabel} total prize money</h2>
-                            <p>
-                                The Konaseema Half Marathon on 31 January 2027 carries {edition2.prizeMoneyLabel} in prize money. The category-wise
-                                breakdown and the participant kit will be announced soon. The Edition 01 structure is below for reference.
+                    <div id="prize-list" className="two prize-intro">
+                        <div className="stack">
+                            <div className="split mono">Edition 02 · Prize list</div>
+                            <h2 className="disp h2">{edition2.prizeMoneyLabel}.<br />{edition2.prizeCount} prizes.</h2>
+                            <p className="lede">
+                                Prizes for 1st, 2nd and 3rd place in every run and age category. Tap the prize list to see it full
+                                size.
                             </p>
+                            <div className="prize-pools">
+                                {edition2.categories.map((c) => {
+                                    const race = edition2.prizes.find((r) => r.id === c.id);
+                                    return race && (
+                                        <a key={c.id} href={`#prizes-${c.id}`} style={{ '--cat': c.color } as React.CSSProperties}>
+                                            <span className="mono">{c.distance}K · {c.name}</span>
+                                            <strong>{rupees(race.pool)}</strong>
+                                        </a>
+                                    );
+                                })}
+                            </div>
+                            <div className="cta-row">
+                                <a className="btn btn-ink" href={edition2.prizeList} download="Konaseema-Half-Marathon-2027-prize-list.jpg">
+                                    Download prize list
+                                </a>
+                            </div>
                         </div>
+                        <div className="prize-poster">
+                            <ImageLightbox
+                                src={edition2.prizeList}
+                                alt="Konaseema Half Marathon 2027 prize list: Rs 2.04 Lakh in total across 21.1K Jawan Run, 10K Kisan Run, 5K Arthur Cotton Run and 3K Fun Run"
+                                width={1024}
+                                height={1536}
+                                downloadName="Konaseema-Half-Marathon-2027-prize-list.jpg"
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <div className="sec-head">
+                            <div className="split mono">Edition 02 · Prize money by race</div>
+                            <h2 className="disp">Top three, every category</h2>
+                        </div>
+                        <PrizeTables />
                     </div>
 
                     <div>
@@ -101,6 +136,16 @@ export default function PrizesPage() {
                                 </div>
                             ))}
                         </div>
+                    </div>
+
+                    <div className="two" style={{ alignItems: 'start' }}>
+                        <div className="sec-head" style={{ marginBottom: 0 }}>
+                            <div className="split mono">Good to know</div>
+                            <h2 className="disp">Important notes</h2>
+                        </div>
+                        <ul className="notes">
+                            {NOTES.map((n) => <li key={n}>{n}</li>)}
+                        </ul>
                     </div>
 
                     <div>
@@ -157,15 +202,6 @@ export default function PrizesPage() {
                         </div>
                     </div>
 
-                    <div className="two" style={{ alignItems: 'start' }}>
-                        <div className="sec-head" style={{ marginBottom: 0 }}>
-                            <div className="split mono">Good to know</div>
-                            <h2 className="disp">Important notes</h2>
-                        </div>
-                        <ul className="notes">
-                            {NOTES.map((n) => <li key={n}>{n}</li>)}
-                        </ul>
-                    </div>
                 </div>
             </section>
 

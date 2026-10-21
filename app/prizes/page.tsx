@@ -35,6 +35,7 @@ const ED1_PRIZES = [
 ];
 
 const NOTES = [
+    edition2.prizeProofNote,
     'Prizes are awarded to the top 3 positions in each category.',
     'Age categories are determined by the date of birth criteria.',
     'Winners must present valid ID proof (Aadhar / Voter ID / School ID) for verification.',
@@ -109,6 +110,10 @@ export default function PrizesPage() {
                         <div className="sec-head">
                             <div className="split mono">Edition 02 · Prize money by race</div>
                             <h2 className="disp">Top three, every category</h2>
+                        </div>
+                        <div className="notice prize-proof" role="note">
+                            <span className="ic" aria-hidden="true">!</span>
+                            <p><strong>Note:</strong> {edition2.prizeProofNote}</p>
                         </div>
                         <PrizeTables />
                     </div>

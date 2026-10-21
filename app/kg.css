@@ -696,6 +696,9 @@
 .kg .lb-img { display: block; width: 100%; height: auto; }
 
 /* prize tables, one per race */
+.kg .prize-proof { max-width: 880px; margin-bottom: 28px; align-items: center; background: #c62828; color: #ffffff; }
+.kg .prize-proof .ic { background: #ffffff; color: #c62828; }
+.kg .prize-proof p { font-size: clamp(16px, 1.4vw, 18px); }
 .kg .prize-races { display: flex; flex-direction: column; gap: 32px; max-width: 880px; }
 .kg .prize-race { background: var(--kg-card); border: 1.5px solid rgba(26, 32, 21, .14); border-top: 8px solid var(--cat); scroll-margin-top: 100px; }
 .kg .prize-race-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px 24px; padding: 20px 22px 16px; }

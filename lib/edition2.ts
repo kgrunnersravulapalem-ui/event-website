@@ -96,6 +96,8 @@ export const edition2 = {
     prizeCount: 78,
     prizes,
     prizeList: '/images/edition2-prize-list.jpg',
+    // Shown with the prize list.
+    prizeProofNote: 'Age proof and District residential proof are compulsory.',
     earlyBirdLastDate: '30 Nov 2026',
     earlyBirdShort: '30 Nov',
 

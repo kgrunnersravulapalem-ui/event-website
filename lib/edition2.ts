@@ -83,9 +83,9 @@ export const edition2 = {
     startVenue: null as string | null, // e.g. 'Sri Potamsetti Rami Reddy Park'
     town: 'Ravulapalem, Konaseema District',
     bibExpo: null as string | null,
-    registrationOpen: false,
+    registrationOpen: true,
     registrationOpensLabel: 'soon', // e.g. '1 Nov 2026'
-    registerHref: '/register',
+    registerHref: 'https://ifinish.in/Running/KHM27', // official registration (iFinish)
     mapsLink: 'https://maps.app.goo.gl/pKamaAwknD7Vigva8',
     youtubeId: '5W7dELeWMwo',
     poster: '/images/edition2-poster.jpg',

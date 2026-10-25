@@ -23,6 +23,7 @@ const Navbar = () => {
         !href.includes('#') && (pathname === href || (href === '/editions' && pathname.startsWith('/editions/')));
     const registerLabel = 'Register';
     const registerHref = edition2.registrationOpen ? edition2.registerHref : '/#register';
+    const regLinkProps = registerHref.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {};
 
     return (
         <nav className="kg kg-nav" aria-label="Main">
@@ -42,7 +43,7 @@ const Navbar = () => {
                     ))}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <Link className="btn btn-gold nav-cta" href={registerHref}>{registerLabel}</Link>
+                    <Link className="btn btn-gold nav-cta" href={registerHref} {...regLinkProps}>{registerLabel}</Link>
                     <button
                         type="button"
                         className="btn btn-ghost menu-btn"
@@ -61,7 +62,7 @@ const Navbar = () => {
                             {l.name}
                         </Link>
                     ))}
-                    <Link href={registerHref} onClick={() => setOpen(false)} style={{ color: '#F4B400' }}>
+                    <Link href={registerHref} {...regLinkProps} onClick={() => setOpen(false)} style={{ color: '#F4B400' }}>
                         {registerLabel}
                     </Link>
                 </div>

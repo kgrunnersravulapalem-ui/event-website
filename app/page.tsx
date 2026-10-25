@@ -59,6 +59,8 @@ const CAUSE_ICONS: Record<number, React.ReactNode> = {
 export default function Home() {
   const registerHref = edition2.registrationOpen ? edition2.registerHref : "#register";
   const registerLabel = edition2.registrationOpen ? "Register now" : `Registration opens ${edition2.registrationOpensLabel}`;
+  // External registration (iFinish) opens in a new tab
+  const regLinkProps = registerHref.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {};
   const feeLabel = (fee: number | null) => (fee == null ? TBA : `₹${fee}`);
   const tickerItems = [...edition2.causes, ...edition2.causes];
 
@@ -104,7 +106,7 @@ export default function Home() {
             ))}
           </div>
           <div className="cta-row">
-            <Link className="btn btn-gold" href={registerHref}>{registerLabel}</Link>
+            <Link className="btn btn-gold" href={registerHref} {...regLinkProps}>{registerLabel}</Link>
             <a className="btn btn-ghost" href="#poster">See the race poster</a>
           </div>
         </div>
@@ -177,7 +179,7 @@ export default function Home() {
                     )}
                     {c.fee != null && <span className="regular">Regular fee ₹{c.fee}</span>}
                   </div>
-                  <Link href={registerHref}>Register <Arrow /></Link>
+                  <Link href={registerHref} {...regLinkProps}>Register <Arrow /></Link>
                 </div>
               );
               return (
@@ -249,7 +251,7 @@ export default function Home() {
             </p>
             <div className="cta-row" style={{ marginTop: 4 }}>
               <a className="btn btn-gold" href={edition2.poster} download="Konaseema-Half-Marathon-2027-poster.jpg">Download poster</a>
-              <Link className="btn btn-ghost" href={registerHref}>Register</Link>
+              <Link className="btn btn-ghost" href={registerHref} {...regLinkProps}>Register</Link>
             </div>
           </div>
           <div className="poster-card rv">
@@ -329,11 +331,11 @@ export default function Home() {
         <div className="wrap" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
           <p className="lede" style={{ maxWidth: "46ch" }}>
             {edition2.registrationOpen
-              ? "Registration for the Konaseema Half Marathon is open. 3K, 5K, 10K and 21.1K. Lace up early."
+              ? `Registration for the Konaseema Half Marathon is open. 3K, 5K, 10K and 21.1K, with early-bird prices till ${edition2.earlyBirdLastDate}.`
               : `Registration for the Konaseema Half Marathon opens ${edition2.registrationOpensLabel}. 3K, 5K, 10K and 21.1K. Lace up early.`}
           </p>
           {edition2.registrationOpen ? (
-            <Link className="btn btn-ink" href={edition2.registerHref} style={{ minHeight: 56, padding: "0 30px", fontSize: 17 }}>Register now</Link>
+            <Link className="btn btn-ink" href={edition2.registerHref} {...regLinkProps} style={{ minHeight: 56, padding: "0 30px", fontSize: 17 }}>Register now</Link>
           ) : (
             <a className="btn btn-ink" href={`mailto:${edition2.contact.email}?subject=Notify%20me%20when%20registration%20opens`} style={{ minHeight: 56, padding: "0 30px", fontSize: 17 }}>
               Notify me when it opens
